@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" id="html" ng-app="pivotchart" ng-controller="MainCtrl">
+  <head>
+    <meta charset="utf-8">
+    <title>PivotChart.js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="bower_components/codemirror/lib/codemirror.css" rel="stylesheet" type="text/css" >
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="dropdown">
+            <a class="btn btn-info dropdown-toggle">Add chart</a>
+            <ul class="dropdown-menu">
+              <li ng-repeat="type in chartTypes">
+              <a tabindex="-1" ng-click="addChart(type)">{{type.name}}</a>
+              </li>
+            </ul>
+          </div>
+          <ul>
+            <li ng-repeat="chart in charts">
+            <button class="btn btn-default" ng-click="isCollapsed = !isCollapsed">Toggle collapse</button>
+            <div collapse="isCollapsed">
+              <div class="well well-lg">
+                {{chart.fn}}
+                <textarea style="width:200px; height:200px;" ui-codemirror ng-model="chart.fn" ui-refresh="isCollapsed"></textarea>
+              </div> 
+            </div>
+            {{chart.type.name}}
+            </li>
+          </ul>
+        </div><!--/span-->
+      </div><!--/row-fluid-->
+    </div><!--/.container-fluid-->
+
+    <script src="bower_components/codemirror/lib/codemirror.js"></script>
+    <script src="bower_components/codemirror/mode/javascript/javascript.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
+    <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="js/directives.js"></script>
+    <script src="js/services.js"></script>
+    <script src="js/controllers.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/pivotchart.js"></script>
+  </body>
+</html>
