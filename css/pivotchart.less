@@ -1,0 +1,25 @@
+
+@import "../bower_components/bootstrap/less/variables.less";
+@import "../bower_components/bootstrap/less/mixins.less";
+
+body { overflow: hidden; }
+
+.editor { }
+.CodeMirror {
+  border: 1px solid #eee;
+  height: auto;
+}
+.CodeMirror-scroll {
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+
+li.chart { .make-row(); list-style-type: none; }
+div.chart { .make-lg-column(4); }
+div.settingsOuter { .make-lg-column(8); }
+
+.settings { .make-row(); }
+.settings .input, .settings .output { .make-lg-column(4); }
+.settings .code { .make-lg-column(4); }
+
+

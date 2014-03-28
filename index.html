@@ -9,6 +9,8 @@
 
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="bower_components/codemirror/lib/codemirror.css" rel="stylesheet" type="text/css" >
+    <link href="css/pivotchart.css" rel="stylesheet" type="text/css" >
+    <link href="css/pivotchart.less" rel="stylesheet/less" type="text/css" >
   </head>
 
   <body>
@@ -24,15 +26,29 @@
             </ul>
           </div>
           <ul>
-            <li ng-repeat="chart in charts">
-            <button class="btn btn-default" ng-click="isCollapsed = !isCollapsed">Toggle collapse</button>
-            <div collapse="isCollapsed">
-              <div class="well well-lg">
-                {{chart.fn}}
-                <textarea style="width:200px; height:200px;" ui-codemirror ng-model="chart.fn" ui-refresh="isCollapsed"></textarea>
-              </div> 
+            <li ng-repeat="chart in charts" class="chart">
+            <div class="settingsOuter">
+              <div collapse="!isExpanded" class="settings">
+                <panel class="input" heading="Input">
+                <input type="text" ng-model="inputArgs" js-object>
+                </panel>
+                <panel class="code" heading="Transformation">
+                <form name="form">
+                  <editable-function ng-model="chart.fn" eval-args="inputArgs" class="editor">
+                  </editable-function>
+                </form>
+                </panel>
+                <panel class="output" heading="Output">
+                <div>{{chart.fn.apply({}, inputArgs)}}</div>
+                </panel>
+              </div>
             </div>
-            {{chart.type.name}}
+            <div class="chart">
+              <button class="btn btn-default btn-sm" ng-click="isExpanded = !isExpanded">
+                <span class="glyphicon glyphicon-pencil"></span>
+              </button>
+              {{chart.type.name}}
+            </div>
             </li>
           </ul>
         </div><!--/span-->
@@ -44,6 +60,7 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
+    <script src="bower_components/less.js/dist/less-1.7.0.min.js"></script>
     <script src="js/directives.js"></script>
     <script src="js/services.js"></script>
     <script src="js/controllers.js"></script>

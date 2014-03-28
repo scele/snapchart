@@ -3,12 +3,10 @@ angular.module('pivotchart.service', [])
     var types = [
       {
         name: 'Bar chart',
-        fn: ['function(data) {',
-             '    return {',
-             '         x: [\'1\',2],',
-             '         y: [3,1],',
-             '    };',
-             '}'].join('\n'),
+        fn:
+function(data) {
+  return 1+2;
+},
       },
       {
         name: 'Pie chart',

@@ -7,4 +7,5 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     };
     $scope.isCollapsed = false;
     $scope.test = "function() { return 1; }";
+    $scope.inputArgs = [10];
   });
