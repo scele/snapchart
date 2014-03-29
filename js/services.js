@@ -3,13 +3,34 @@ angular.module('pivotchart.service', [])
     var types = [
       {
         name: 'Bar chart',
+        type: 'bar',
+        config: {},
         fn:
 function(data) {
-  return 1+2;
+  return {
+    series: [
+      "Sales",
+      "Income",
+      "Expense"
+    ],
+    data: [
+      {
+        x: "Computers",
+        y: [
+          54,
+          0,
+          879
+        ],
+        tooltip: "This is a tooltip"
+      }
+    ]
+  };
 },
       },
       {
         name: 'Pie chart',
+        type: 'pie',
+        config: {},
       },
     ];
     return {
@@ -25,7 +46,7 @@ function(data) {
         return charts;
       },
       add: function(type) {
-        var chart = { type: type, fn: type.fn };
+        var chart = angular.copy(type);
         charts.push(chart);
       },
       remove: function(chart) {

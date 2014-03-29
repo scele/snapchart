@@ -9,7 +9,6 @@
 
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="bower_components/codemirror/lib/codemirror.css" rel="stylesheet" type="text/css" >
-    <link href="css/pivotchart.css" rel="stylesheet" type="text/css" >
     <link href="css/pivotchart.less" rel="stylesheet/less" type="text/css" >
   </head>
 
@@ -30,7 +29,7 @@
             <div class="settingsOuter">
               <div collapse="!isExpanded" class="settings">
                 <panel class="input" heading="Input">
-                <input type="text" ng-model="inputArgs" js-object>
+                <input type="text" ng-model="chart.inputArgs" js-object>
                 </panel>
                 <panel class="code" heading="Transformation">
                 <form name="form">
@@ -39,7 +38,7 @@
                 </form>
                 </panel>
                 <panel class="output" heading="Output">
-                <div>{{chart.fn.apply({}, inputArgs)}}</div>
+                <div>{{chart.fn.apply({}, chart.inputArgs)}}</div>
                 </panel>
               </div>
             </div>
@@ -47,6 +46,10 @@
               <button class="btn btn-default btn-sm" ng-click="isExpanded = !isExpanded">
                 <span class="glyphicon glyphicon-pencil"></span>
               </button>
+              <div ac-chart="chart.type"
+                ac-data="evalFn(chart)"
+                ac-config="chart.config"
+                class='chart'></div>
               {{chart.type.name}}
             </div>
             </li>
@@ -55,12 +58,15 @@
       </div><!--/row-fluid-->
     </div><!--/.container-fluid-->
 
+    <script src="bower_components/jquery/jquery.min.js"></script>
     <script src="bower_components/codemirror/lib/codemirror.js"></script>
     <script src="bower_components/codemirror/mode/javascript/javascript.js"></script>
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-ui-codemirror/ui-codemirror.js"></script>
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/less.js/dist/less-1.7.0.min.js"></script>
+    <script src='bower_components/d3/d3.min.js'></script>
+    <script src='bower_components/angular-charts/dist/angular-charts.js'></script>
     <script src="js/directives.js"></script>
     <script src="js/services.js"></script>
     <script src="js/controllers.js"></script>

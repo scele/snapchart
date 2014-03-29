@@ -5,7 +5,7 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.addChart = function(type) {
       charts.add(type);
     };
-    $scope.isCollapsed = false;
-    $scope.test = "function() { return 1; }";
-    $scope.inputArgs = [10];
+    $scope.evalFn = function(chart) {
+      return chart.fn.apply({}, chart.inputArgs);
+    };
   });
