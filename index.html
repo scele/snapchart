@@ -13,6 +13,25 @@
   </head>
 
   <body>
+    <script type="text/ng-template" id="import.html">
+      <div class="modal-header">
+        <button type="button" class="close" ng-click="cancel()">&times;</button>
+        <h4 class="modal-title">Import</h4>
+      </div>
+      <div class="modal-body">
+        <p>Type a URL for your JSON data:</p>
+        <input class="form-control" ng-model="data.url" type="text" autofocus></input>
+        <div class="alert alert-danger alert-bottom" ng-show="error">
+          <strong>Error:</strong>
+          HTTP request failed. Make sure the URL is correct and the remote
+          resource has the <code>Access-Control-Allow-Origin: *</code> header.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" ng-click="ok()">Import</button>
+      </div>
+    </script>
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span12">
@@ -28,17 +47,33 @@
             <li ng-repeat="chart in charts" class="chart">
             <div class="settingsOuter">
               <div collapse="!isExpanded" class="settings">
-                <panel class="input" heading="Input">
-                <input type="text" ng-model="chart.inputArgs" js-object>
-                </panel>
+                <div class="input">
+                  <div class="panel panel-default">
+                    <div class="panel-heading">Input
+                      <button class="btn btn-default btn-xs import" title="Import" ng-click="import(chart)">
+                        <span class="glyphicon glyphicon-import"></span>
+                      </button>
+                      <button class="btn btn-default btn-xs" title="Refresh" ng-show="chart.url" ng-click="refresh_import(chart)">
+                        <span class="glyphicon glyphicon-refresh"></span>
+                      </button>
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="panel-body">
+                      <editable-function ng-model="chart.inputArg" class="editor">
+                      </editable-function>
+                    </div>
+                  </div>
+                </div>
                 <panel class="code" heading="Transformation">
                 <form name="form">
-                  <editable-function ng-model="chart.fn" eval-args="inputArgs" class="editor">
+                  <editable-function ng-model="chart.fn" eval-args="[chart.inputArg]" class="editor">
                   </editable-function>
                 </form>
                 </panel>
                 <panel class="output" heading="Output">
-                <div>{{chart.fn.apply({}, chart.inputArgs)}}</div>
+                  <div class="editor">
+                    <textarea ui-codemirror="{readOnly: true}" ng-model="chart._dataCacheStr"></textarea>
+                  </div>
                 </panel>
               </div>
             </div>
@@ -46,7 +81,7 @@
               <button class="btn btn-default btn-sm" ng-click="isExpanded = !isExpanded">
                 <span class="glyphicon glyphicon-pencil"></span>
               </button>
-              <div ac-chart="chart.type"
+              <div ac-chart="chart.type" style="height:400px"
                 ac-data="evalFn(chart)"
                 ac-config="chart.config"
                 class='chart'></div>
@@ -66,6 +101,7 @@
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/less.js/dist/less-1.7.0.min.js"></script>
     <script src='bower_components/d3/d3.min.js'></script>
+    <script src='bower_components/lodash/dist/lodash.min.js'></script>
     <script src='bower_components/angular-charts/dist/angular-charts.js'></script>
     <script src="js/directives.js"></script>
     <script src="js/services.js"></script>

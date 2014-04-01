@@ -1,4 +1,18 @@
 angular.module('pivotchart.directive', [])
+  .directive("autofocus", function($timeout) {
+    return {
+      restrict: 'A',
+      link: function(scope, elm, attrs, ctrl) {
+        // Double $timeout required for this to work, for an unknown reason.
+        $timeout(function() {
+          $timeout(function() {
+            elm[0].focus();
+            elm[0].select();
+          }, false);
+        }, false);
+      },
+    };
+  })
   .directive("panel", function() {
     return {
       restrict: 'E',
@@ -17,10 +31,18 @@ angular.module('pivotchart.directive', [])
     };
   })
   .directive("editableFunction", function() {
+    // Augment lodash with a transpose function commonly needed
+    // in input data transformations.
+    angular.element(document).ready(function() {
+      function transpose(x) {
+        return _.range(x[0].length).map(function(i) { return _.map(x, function(e) { return e[i]; }); });
+      }
+      _.mixin({'transpose': transpose});
+    });
     return {
       restrict: 'E',
       template: '<div><textarea js-function ui-codemirror="opts" ng-model="scopemodel"></textarea>' + 
-          '<div ng-show="error">{{error}}</div>' +
+          '<div class="alert alert-danger alert-bottom" ng-show="error">{{error}}</div>' +
           '</div>',
       scope: {
         scopemodel: '=ngModel',
@@ -28,17 +50,24 @@ angular.module('pivotchart.directive', [])
         evalArgs: '=',
       },
       replace: true,
-      require: 'ngModel',
+      require: ['editableFunction', 'ngModel'],
       controller: function($scope) {
         this.setSyntaxError = function(err) {
           $scope.error = err;
         };
         this.validate = function(f) {
-          f.apply($scope.evalThis || {}, $scope.evalArgs);
           $scope.error = undefined;
+          if ($scope.evalThis || $scope.evalArgs) {
+            try {
+              f.apply($scope.evalThis || {}, $scope.evalArgs);
+            } catch(e) {
+              $scope.error = e.message;
+            }
+          }
         };
       },
-      link: function(scope, elm, attrs, ctrl) {
+      link: function(scope, elm, attrs, ctrls) {
+        var ctrl = ctrls[0];
         function betterTab(cm) {
           if (cm.somethingSelected()) {
             cm.indentSelection("add");
@@ -47,6 +76,12 @@ angular.module('pivotchart.directive', [])
                 Array(cm.getOption("indentUnit") + 1).join(" "), "end", "+input");
           }
         }
+        scope.$watch('evalArgs', function() {
+          ctrl.validate(scope.scopemodel);
+        });
+        scope.$watch('evalThis', function() {
+          ctrl.validate(scope.scopemodel);
+        });
         scope.opts = { tabSize: 2, extraKeys: { Tab: betterTab } };
       },
     };
@@ -56,26 +91,33 @@ angular.module('pivotchart.directive', [])
       restrict: 'A',
       require: ['ngModel', '?^editableFunction'],
       link: function(scope, elm, attrs, ctrl) {
-        var modelCtrl = ctrl[0];
-        var editableCtrl = ctrl[1];
-        modelCtrl.$parsers.unshift(function(viewValue) {
+        var ngModel = ctrl[0];
+        var editableFunction = ctrl[1];
+        ngModel.$parsers.unshift(function(viewValue) {
           try {
             var f = new Function("return " + viewValue)();
-            if (editableCtrl) {
-              editableCtrl.validate(f);
+            if (editableFunction) {
+              editableFunction.validate(f);
             }
-            modelCtrl.$setValidity('function', true);
+            ngModel.$setValidity('function', true);
             return f;
           } catch(err) {
-            modelCtrl.$setValidity('function', false);
-            if (editableCtrl) {
-              editableCtrl.setSyntaxError(err.message);
+            ngModel.$setValidity('function', false);
+            if (editableFunction) {
+              editableFunction.setSyntaxError(err.message);
             }
             return undefined;
           }
         });
-        modelCtrl.$formatters.unshift(function(modelValue) {
-          return modelValue.toString();
+        ngModel.$formatters.unshift(function(modelValue) {
+          if (editableFunction) {
+            editableFunction.validate(modelValue);
+          }
+          if (typeof modelValue === 'object') {
+            return JSON.stringify(modelValue, null, "  ");
+          } else {
+            return modelValue.toString();
+          }
         });
       },
     };

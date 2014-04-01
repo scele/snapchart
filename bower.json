@@ -21,6 +21,7 @@
     "angular-highlightjs": "~0.2.5",
     "ui-codemirror": "https://github.com/scele/ui-codemirror",
     "less.js": "~1.7.0",
-    "angular-charts": "~0.0.1"
+    "angular-charts": "git://github.com/scele/angular-charts#fork",
+    "lodash": "~2.4.1"
   }
 }
