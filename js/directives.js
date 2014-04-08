@@ -33,21 +33,22 @@ angular.module('pivotchart.directive', [])
   .directive("editableFunction", function() {
     // Augment lodash with a transpose function commonly needed
     // in input data transformations.
-    angular.element(document).ready(function() {
-      function transpose(x) {
-        return _.range(x[0].length).map(function(i) { return _.map(x, function(e) { return e[i]; }); });
-      }
-      _.mixin({'transpose': transpose});
-    });
+    function transpose(x) {
+      if (!Array.isArray(x) || !Array.isArray(x[0]))
+        throw new Error('transpose() can only be applied to an array of arrays');
+      return _.range(x[0].length).map(function(i) { return _.map(x, function(e) { return e[i]; }); });
+    }
+    _.mixin({'transpose': transpose});
     return {
       restrict: 'E',
-      template: '<div><textarea js-function ui-codemirror="opts" ng-model="scopemodel"></textarea>' + 
+      template: '<div><div js-function ui-codemirror="opts" ng-model="scopemodel"></div>' +
           '<div class="alert alert-danger alert-bottom" ng-show="error">{{error}}</div>' +
           '</div>',
       scope: {
         scopemodel: '=ngModel',
         evalThis: '=',
         evalArgs: '=',
+        validateFn: '=',
       },
       replace: true,
       require: ['editableFunction', 'ngModel'],
@@ -56,14 +57,20 @@ angular.module('pivotchart.directive', [])
           $scope.error = err;
         };
         this.validate = function(f) {
+          if ($scope.validateFn) {
+            $scope.error = $scope.validateFn(f);
+            return;
+          }
           $scope.error = undefined;
           if ($scope.evalThis || $scope.evalArgs) {
             try {
               f.apply($scope.evalThis || {}, $scope.evalArgs);
             } catch(e) {
               $scope.error = e.message;
+              return false;
             }
           }
+          return true;
         };
       },
       link: function(scope, elm, attrs, ctrls) {
@@ -95,6 +102,8 @@ angular.module('pivotchart.directive', [])
         var editableFunction = ctrl[1];
         ngModel.$parsers.unshift(function(viewValue) {
           try {
+            if (!viewValue)
+              return undefined;
             var f = new Function("return " + viewValue)();
             if (editableFunction) {
               editableFunction.validate(f);
@@ -115,8 +124,10 @@ angular.module('pivotchart.directive', [])
           }
           if (typeof modelValue === 'object') {
             return JSON.stringify(modelValue, null, "  ");
-          } else {
+          } else if (typeof modelValue === 'function') {
             return modelValue.toString();
+          } else {
+            return '';
           }
         });
       },

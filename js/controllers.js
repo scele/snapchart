@@ -3,9 +3,17 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.charts = charts.get();
     $scope.chartTypes = chartTypes.get();
     $scope.addChart = function(type) {
-      type.inputArg = $scope.inputArg;
-      charts.add(type);
+      $scope.chart.type = type.type;
     };
+    $scope.validateFn = function(f) {
+      try {
+        var data = f.apply({}, [$scope.chart.inputArg]);
+      } catch (e) {
+        return e.message;
+      }
+      return $scope.chart.validateFn(data);
+    };
+
     $scope.evalFn = function(chart) {
       var newValue;
       try {
@@ -27,6 +35,8 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       ["Income", 110, 499],
       ["Expense", 879, 79],
     ];
+    $scope.chart = angular.copy($scope.chartTypes[0]);
+    $scope.chart.inputArg = $scope.inputArg;
     $scope.import = function(chart) {
       var ModalInstanceCtrl = function ($scope, $modalInstance) {
         $scope.data = { url: "http://" };
@@ -48,13 +58,12 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
         controller: ModalInstanceCtrl,
         windowClass: 'import',
       });
-   };
-   $scope.refresh_import = function(chart) {
-       $http.get(chart.url).success(function(data) {
-           chart.inputArg = data;
-       }).error(function(data, status, headers, config) {
-           $window.alert("Data refresh failed");
-       });
-   };
-
+    };
+    $scope.refresh_import = function(chart) {
+      $http.get(chart.url).success(function(data) {
+        chart.inputArg = data;
+      }).error(function(data, status, headers, config) {
+        $window.alert("Data refresh failed");
+      });
+    };
   });

@@ -35,60 +35,69 @@
     <div class="container-fluid">
       <div class="row-fluid">
         <div class="span12">
-          <div class="dropdown">
-            <a class="btn btn-info dropdown-toggle">Add chart</a>
-            <ul class="dropdown-menu">
-              <li ng-repeat="type in chartTypes">
-              <a tabindex="-1" ng-click="addChart(type)">{{type.name}}</a>
-              </li>
-            </ul>
-          </div>
-          <ul>
-            <li ng-repeat="chart in charts" class="chart">
-            <div class="settingsOuter">
-              <div collapse="!isExpanded" class="settings">
-                <div class="input">
-                  <div class="panel panel-default">
-                    <div class="panel-heading">Input
-                      <button class="btn btn-default btn-xs import" title="Import" ng-click="import(chart)">
-                        <span class="glyphicon glyphicon-import"></span>
-                      </button>
-                      <button class="btn btn-default btn-xs" title="Refresh" ng-show="chart.url" ng-click="refresh_import(chart)">
-                        <span class="glyphicon glyphicon-refresh"></span>
-                      </button>
-                      <div class="clearfix"></div>
-                    </div>
-                    <div class="panel-body">
-                      <editable-function ng-model="chart.inputArg" class="editor">
-                      </editable-function>
-                    </div>
-                  </div>
+          <div class="settings">
+            <div class="input">
+              <div class="panel panel-default">
+                <div class="panel-heading">Input
+                  <button class="btn btn-default btn-xs right" title="Import" ng-click="import(chart)">
+                    <span class="glyphicon glyphicon-import"></span>
+                  </button>
+                  <button class="btn btn-default btn-xs right" title="Refresh" ng-show="chart.url" ng-click="refresh_import(chart)">
+                    <span class="glyphicon glyphicon-refresh"></span>
+                  </button>
                 </div>
-                <panel class="code" heading="Transformation">
-                <form name="form">
-                  <editable-function ng-model="chart.fn" eval-args="[chart.inputArg]" class="editor">
+                <div class="panel-body">
+                  <editable-function ng-model="chart.inputArg" class="editor">
                   </editable-function>
-                </form>
-                </panel>
-                <panel class="output" heading="Output">
-                  <div class="editor">
-                    <textarea ui-codemirror="{readOnly: true}" ng-model="chart._dataCacheStr"></textarea>
-                  </div>
-                </panel>
+                </div>
               </div>
             </div>
-            <div class="chart">
-              <button class="btn btn-default btn-sm" ng-click="isExpanded = !isExpanded">
-                <span class="glyphicon glyphicon-pencil"></span>
-              </button>
-              <div ac-chart="chart.type" style="height:400px"
+            <div class="code">
+              <div class="panel panel-default">
+                <div class="panel-heading">Transformation
+                </div>
+                <div class="panel-body">
+                  <editable-function ng-model="chart.fn" eval-args="[chart.inputArg]"
+                    validate-fn="validateFn" class="editor">
+                  </editable-function>
+                </div>
+              </div>
+            </div>
+            <div class="output">
+              <div class="panel panel-default">
+                <div class="panel-heading">Output
+                  <span class="dropdown right">
+                    <button class="btn btn-default btn-xs dropdown-toggle"
+                      data-toggle="dropdown" title="Select chart type">
+                      <span class="glyphicon glyphicon-th"></span>
+                    </button>
+                    <ul class="dropdown-menu pull-right" role="menu">
+                      <li ng-repeat="type in chartTypes">
+                      <a tabindex="-1" ng-click="addChart(type)">
+                        {{type.name}}
+                        <span class="glyphicon glyphicon-ok" ng-show="type.type == chart.type"></span>
+                      </a>
+                      </li>
+                    </ul>
+                  </span>
+                </div>
+                <div class="panel-body">
+                  <div class="editor">
+                    <textarea ui-codemirror="{readOnly: true}"
+                      ng-model="chart._dataCacheStr"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chart-outer">
+            <div class="chart-inner">
+              <div ac-chart="chart.type"
                 ac-data="evalFn(chart)"
                 ac-config="chart.config"
                 class='chart'></div>
-              {{chart.type.name}}
             </div>
-            </li>
-          </ul>
+          </div>
         </div><!--/span-->
       </div><!--/row-fluid-->
     </div><!--/.container-fluid-->

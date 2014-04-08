@@ -1,5 +1,22 @@
 angular.module('pivotchart.service', [])
   .factory('chartTypes', function() {
+    function commonValidateFn(data) {
+      if (typeof data !== 'object')
+        return 'Return value must be an object';
+      if (!Array.isArray(data.series))
+        return 'Returned object must have a "series" property which is an array';
+      if (!_.all(data.series, function(x) { return typeof x === 'string'; }))
+        return 'Elements in the "series" array must be strings';
+      if (!Array.isArray(data.data))
+        return 'Returned object must have a "data" property which is an array';
+      if (!_.all(data.data, function(x) { return typeof x === 'object'; }))
+        return 'Elements in the "data" array must be objects';
+      if (!_.all(data.data, function(x) { return typeof x.x === 'string'; }))
+        return 'Objects in the "data" array must have "x" properties of type string';
+      if (!_.all(data.data, function(x) { return Array.isArray(x.y); }))
+        return 'Objects in the "data" array must have "y" properties which are arrays';
+      return '';
+    }
     var types = [
       {
         name: 'Bar chart',
@@ -12,6 +29,7 @@ function(data) {
     data: _(data).transpose().rest(1).map(function(x) { return {x: _.first(x), y: _.rest(x)};}).value(),
   }
 },
+        validateFn: commonValidateFn,
       },
       {
         name: 'Pie chart',
@@ -32,6 +50,19 @@ function(data) {
     ]
   };
 },
+        validateFn: commonValidateFn,
+      },
+      {
+        name: 'Line chart',
+        type: 'line',
+      },
+      {
+        name: 'Point chart',
+        type: 'point',
+      },
+      {
+        name: 'Area chart',
+        type: 'area',
       },
     ];
     return {

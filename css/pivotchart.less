@@ -2,7 +2,7 @@
 @import "../bower_components/bootstrap/less/variables.less";
 @import "../bower_components/bootstrap/less/mixins.less";
 
-body { overflow-x: hidden; }
+body { overflow-x: hidden; margin-top: 20px; }
 
 .editor { }
 .CodeMirror {
@@ -15,20 +15,14 @@ body { overflow-x: hidden; }
   max-height: 350px;
 }
 
-/*
-li.chart { .make-row(); list-style-type: none; }
-div.chart { .make-lg-column(4); }
-div.settingsOuter { .make-lg-column(8); }
-*/
-
-li.chart { list-style-type: none; }
-div.chart { .make-row(); }
-div.settingsOuter { }
-
-
+.chart-outer { .make-row(); }
+.chart-inner { .make-lg-column(12); }
+.chart-inner .chart { margin-left: auto; margin-right: auto; width: 700px; height: 400px; }
 .settings { .make-row(); }
 .settings .input, .settings .output { .make-lg-column(4); }
 .settings .code { .make-lg-column(4); }
 
-.panel-heading .btn { float: right; margin-left: 10px; }
+.panel-heading .right { float: right; margin-left: 10px; }
 .alert-bottom { margin-top: 20px; margin-bottom: 0px; }
+
+.dropdown-menu .glyphicon { float: right; }
