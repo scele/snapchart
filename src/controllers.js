@@ -6,8 +6,9 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       $scope.chart.type = type.type;
     };
     $scope.validateFn = function(f) {
+      var data;
       try {
-        var data = f.apply({}, [$scope.chart.inputArg]);
+        data = f.apply({}, [$scope.chart.inputArg]);
       } catch (e) {
         return e.message;
       }

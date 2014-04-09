@@ -104,7 +104,9 @@ angular.module('pivotchart.directive', [])
           try {
             if (!viewValue)
               return undefined;
+            /* jshint -W054 */
             var f = new Function("return " + viewValue)();
+            /* jshint +W054 */
             if (editableFunction) {
               editableFunction.validate(f);
             }
@@ -179,7 +181,7 @@ angular.module('pivotchart.directive', [])
             return null;
           var d = 100 * (x - ref) / ref;
           var neg = scope.smallerIsBetter ? "good" : "bad";
-          var pos = scope.smallerIsBetter ? "bad" : "good"
+          var pos = scope.smallerIsBetter ? "bad" : "good";
           return {
             str: (d >= 0 ? "+" : "") + d.toFixed(0) + "%",
             class2: (d < 0) ? neg : (d > 0 ? pos : ""),
@@ -197,7 +199,7 @@ angular.module('pivotchart.directive', [])
         if (!attrs.yscale) {
           scope.y = d3.scale.ordinal();
           scope.$watch('data', function(data) {
-            scope.y.rangeRoundBands([0, data.length * scope.barHeight], .1);
+            scope.y.rangeRoundBands([0, data.length * scope.barHeight], 0.1);
           });
         }
       }

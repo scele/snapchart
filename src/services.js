@@ -27,7 +27,7 @@ function(data) {
   return {
     series: _(data).map(_.first).rest(1).value(),
     data: _(data).transpose().rest(1).map(function(x) { return {x: _.first(x), y: _.rest(x)};}).value(),
-  }
+  };
 },
         validateFn: commonValidateFn,
       },
