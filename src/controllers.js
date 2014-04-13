@@ -5,22 +5,24 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.addChart = function(type) {
       $scope.chart.type = type.type;
     };
+    $scope.width = 525;
+    $scope.height = 376;
 
     $scope.saveAs = function(event) {
       // Put SVG to img element
       var img = new Image();
-      img.width = 400;
-      img.height = 400;
-      var data = $('.chart-inner > .chart svg');
-      var xml = (new XMLSerializer).serializeToString(data.get(0));
+      img.width = $scope.width;
+      img.height = $scope.height;
+      var data = $('.chart-inner svg');
+      var xml = (new XMLSerializer()).serializeToString(data.get(0));
       img.src =  'data:image/svg+xml;charset=utf-8,' + xml;
       //var data = $('.chart-inner > .chart > .ac-chart').html();
       //img.src 'data:image/svg+xml;base64,' + btoa(data);
 
       // Draw img element to canvas
       var canvas = document.createElement('canvas');
-      canvas.width = 400;
-      canvas.height = 400;
+      canvas.width = $scope.width;
+      canvas.height = $scope.height;
       var ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0);
 

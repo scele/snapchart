@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" ng-attr-width="{{width}}" ng-attr-height="{{height}}">
+  <style>
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #333;
+    }
+    text { font-size: 11pt; }
+    .x.axis text { alignment-baseline: middle; }
+  </style>
+  <g transform="translate({{margin.left}},{{margin.top}})">
+    <g d3-axis class="x axis"
+      ng-attr-transform="translate(0,{{innerHeight}})" orient="bottom" scale="x" tick-size="0">
+    </g>
+    <g d3-axis class="y axis"
+      orient="left" ticks="10" tickFormat="s" scale="y">
+    </g>
+    <g ng-attr-transform="translate({{x(group.x)}},0)" ng-repeat="group in data.data">
+      <rect ng-repeat="bar in group.y"
+        ng-attr-width="{{x0.rangeBand()}}"
+        ng-attr-x="{{x0($index)}}"
+        ng-attr-y="{{y(max(0, bar))}}"
+        ng-attr-height="{{abs(y(bar)-y(0))}}"
+        style="fill: {{color($index)}};">
+      </rect>
+    </g>
+    <g d3-legend data="data.series" width="innerWidth" transform="translate(0,20)"></g>
+    <!-- Draw one zero line in case negative values exist -->
+    <line ng-attr-x1="{{innerWidth}}" ng-attr-y1="{{y(0)}}" ng-attr-y2="{{y(0)}}"
+      style="stroke: #c0c0c0;">
+    </line>
+  </g>
+</svg>

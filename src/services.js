@@ -1,4 +1,27 @@
 angular.module('pivotchart.service', [])
+  .factory('colors', function() {
+    var cc = [
+      'steelBlue',
+      'rgb(255,153,0)',
+      'rgb(220,57,18)',
+      'rgb(70,132,238)',
+      'rgb(73,66,204)',
+      'rgb(0,128,0)'
+    ];
+    return {
+      get: function(i) {
+        if(i < cc.length) {
+          return cc[i];
+        } else {
+          var color = 'rgb(' + Math.round(Math.random() * 255) + ',' +
+                               Math.round(Math.random() * 255) + ',' +
+                               Math.round(Math.random() * 255) + ')';
+          cc.push(color);
+          return color;
+        }
+      },
+    };
+  })
   .factory('chartTypes', function() {
     function commonValidateFn(data) {
       if (typeof data !== 'object')

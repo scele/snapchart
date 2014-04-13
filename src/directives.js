@@ -1,4 +1,86 @@
 angular.module('pivotchart.directive', [])
+  .directive("d3Axis", function() {
+    return {
+      // Unfortunately <d3-axis ... /> with replace:true doesn't seem to work,
+      // at least in Chrome. Using an attribute on a <g> element instead.
+      restrict: 'A',
+      scope: {
+        scale: '=',
+        orient: '@',
+        tickFormat: '@',
+        ticks: '=',
+        tickSize: '=',
+      },
+      link: function(scope, elm, attrs, ctrl) {
+        var axis = d3.svg.axis();
+        scope.$watch('[scale,orient,tickFormat,ticks]', function() {
+          if (!angular.isUndefined(scope.scale)) axis.scale(scope.scale);
+          if (!angular.isUndefined(scope.orient)) axis.orient(scope.orient);
+          if (!angular.isUndefined(scope.tickFormat)) axis.tickFormat(d3.format(scope.tickFormat));
+          if (!angular.isUndefined(scope.ticks)) axis.ticks(parseInt(scope.ticks));
+          if (!angular.isUndefined(scope.tickSize)) axis.tickSize(parseInt(scope.tickSize));
+          axis(elm);
+        }, true);
+      },
+    };
+  })
+  .directive("d3Legend", function(colors) {
+    return {
+      restrict: 'A',
+      template: '<g ng-repeat="d in data" transform="translate({{x}},{{20 * $index}})">' +
+                  '<rect width="15" height="15" ' +
+                  '  style="fill:{{color($index)}}">' +
+                  '</rect>' +
+                  '<text x="20" y="9" style="text-anchor:top; alignment-baseline:middle;">' +
+                    '{{d}}' +
+                  '</text>' +
+                '</g>',
+      scope: {
+        data: '=',
+        width: '=',
+      },
+      link: function(scope, elm, attrs, ctrl) {
+        scope.color = colors.get;
+        scope.$watch(function() {
+          var bbox = elm[0].getBBox();
+          scope.x = scope.width - bbox.width;
+        });
+      },
+    };
+  })
+  .directive("pivotBars", function(colors) {
+    return {
+      restrict: 'E',
+      templateUrl: 'src/templates/bars.html',
+      replace: true,
+      scope: {
+        data: '=',
+        width: '=w',
+        height: '=h',
+      },
+      link: function(scope, elm, attrs, ctrl) {
+        scope.$watch('data', function() {
+          var pts = scope.data.data;
+          var allY = _(pts).map('y').flatten();
+          scope.margin = {top: 0, right: 40, bottom: 30, left: 50};
+          scope.innerWidth = scope.width - scope.margin.left - scope.margin.right;
+          scope.innerHeight = scope.height - scope.margin.top - scope.margin.bottom;
+          scope.x = d3.scale.ordinal()
+            .rangeRoundBands([0, scope.innerWidth], 0.1)
+            .domain(_.map(pts, 'x'));
+          scope.x0 = d3.scale.ordinal()
+            .rangeRoundBands([0, scope.x.rangeBand()])
+            .domain(d3.range(_(pts).map('y').map('length').max()));
+          scope.y = d3.scale.linear()
+            .range([scope.innerHeight, 10])
+            .domain([Math.min(0, allY.min()), allY.max()]).nice();
+          scope.color = colors.get;
+          scope.abs = Math.abs;
+          scope.max = Math.max;
+        }, true);
+      },
+    };
+  })
   .directive("autofocus", function($timeout) {
     return {
       restrict: 'A',
