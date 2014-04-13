@@ -5,6 +5,10 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.addChart = function(type) {
       $scope.chart.type = type.type;
     };
+    $scope.getSvgData = function() {
+      var data = $('.chart-inner > .chart').html();
+      return 'data:image/svg+xml;base64,\n' + btoa(data);
+    };
     $scope.validateFn = function(f) {
       var data;
       try {
