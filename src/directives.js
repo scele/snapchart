@@ -81,6 +81,33 @@ angular.module('pivotchart.directive', [])
       },
     };
   })
+  .directive("pivotPie", function(colors) {
+    return {
+      restrict: 'E',
+      templateUrl: 'src/templates/pie.html',
+      replace: true,
+      scope: {
+        data: '=',
+        width: '=w',
+        height: '=h',
+      },
+      link: function(scope, elm, attrs, ctrl) {
+        scope.$watch('data', function() {
+          var pts = scope.data.data;
+          var allY = _(pts).map('y').flatten();
+          scope.margin = {top: 0, right: 40, bottom: 30, left: 50};
+          scope.innerWidth = scope.width - scope.margin.left - scope.margin.right;
+          scope.innerHeight = scope.height - scope.margin.top - scope.margin.bottom;
+          var d3arc = d3.svg.arc().outerRadius(Math.min(scope.innerWidth, scope.innerHeight)/2);
+          var pie = d3.layout.pie()(_.map(pts, function(d) { return d.y[0]; }));
+          scope.arc = function(i) {
+            return d3arc(pie[i]);
+          };
+        }, true);
+        scope.color = colors.get;
+      },
+    };
+  })
   .directive("autofocus", function($timeout) {
     return {
       restrict: 'A',
