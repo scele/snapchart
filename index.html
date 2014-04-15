@@ -96,11 +96,17 @@
           </div>
           <div class="chart-outer">
             <div class="chart-inner">
-              <!--<div ac-chart="chart.type"
+              <div ac-chart="chart.type"
                 ac-data="evalFn(chart)"
                 ac-config="chart.config"
-                class='chart'></div>-->
-              <pivot-bars data="evalFn(chart)" x-w="width" x-h="height"></pivot-bars>
+                class='chart' style="width: 700px; height: 400px;"></div>
+
+              <graph-area data="evalFn(chart)" x-w="width" x-h="height">
+                <pivot-pie data="evalFn(chart)"></pivot-pie>
+              </graph-area>
+              <graph-area data="evalFn(chart)" x-w="width" x-h="height">
+                <pivot-bars data="evalFn(chart)"></pivot-bars>
+              </graph-area>
             </div>
           </div>
         </div><!--/span-->

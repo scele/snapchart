@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" ng-attr-width="{{width}}" ng-attr-height="{{height}}">
+  <style>
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #333;
+    }
+    text { font-size: 11pt; }
+    .x.axis text { alignment-baseline: middle; }
+  </style>
+  <g transform="translate({{margin.left}},{{margin.top}})">
+    <g ng-transclude>
+    </g>
+  </g>
+  <g d3-legend data="data.series" transform="translate({{width - legendWidth}},20)"></g>
+</svg>

@@ -1,19 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" ng-attr-width="{{width}}" ng-attr-height="{{height}}">
-  <style>
-    .axis path,
-    .axis line {
-      fill: none;
-      stroke: #333;
-    }
-    text { font-size: 11pt; }
-    .x.axis text { alignment-baseline: middle; }
-  </style>
-  <g transform="translate({{margin.left}},{{margin.top}})">
+<svg xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate({{margin}},0)">
     <g d3-axis class="x axis"
-      ng-attr-transform="translate(0,{{innerHeight}})" orient="bottom" scale="x" tick-size="0">
+      ng-attr-transform="translate(0,{{height}})" orient="bottom" scale="x" tick-size="0">
     </g>
     <!-- Draw one zero line in case negative values exist -->
-    <line ng-attr-x1="{{innerWidth}}" ng-attr-y1="{{y(0)}}" ng-attr-y2="{{y(0)}}"
+    <line ng-attr-x1="{{width-margin}}" ng-attr-y1="{{y(0)}}" ng-attr-y2="{{y(0)}}"
       style="stroke: #c0c0c0;">
     </line>
     <g d3-axis class="y axis"
@@ -28,6 +19,5 @@
         style="fill: {{color($index)}};">
       </rect>
     </g>
-    <g d3-legend data="data.series" width="innerWidth" transform="translate(0,20)"></g>
   </g>
 </svg>

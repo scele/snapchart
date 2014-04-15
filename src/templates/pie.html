@@ -1,21 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" ng-attr-width="{{width}}" ng-attr-height="{{height}}">
-  <style>
-    .axis path,
-    .axis line {
-      fill: none;
-      stroke: #333;
-    }
-    text { font-size: 11pt; }
-    .x.axis text { alignment-baseline: middle; }
-  </style>
-  <g transform="translate({{margin.left}},{{margin.top}})">
-    <g transform="translate({{innerWidth/2}},{{innerHeight/2}})">
-      <g ng-repeat="group in data.data">
-        <path ng-attr-d="{{arc($index)}}"
-          style="fill: {{color($index)}};">
-        </path>
-      </g>
+<svg xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate({{width/2}},{{height/2}})">
+    <g ng-repeat="group in data.data">
+      <path ng-attr-d="{{arc($index)}}"
+        style="fill: {{color($index)}};">
+      </path>
     </g>
-    <g d3-legend data="data.series" width="innerWidth" transform="translate(0,20)"></g>
   </g>
 </svg>

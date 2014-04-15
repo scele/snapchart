@@ -27,7 +27,7 @@ angular.module('pivotchart.directive', [])
   .directive("d3Legend", function(colors) {
     return {
       restrict: 'A',
-      template: '<g ng-repeat="d in data" transform="translate({{x}},{{20 * $index}})">' +
+      template: '<g ng-repeat="d in data" transform="translate(0,{{20 * $index}})">' +
                   '<rect width="15" height="15" ' +
                   '  style="fill:{{color($index)}}">' +
                   '</rect>' +
@@ -37,14 +37,52 @@ angular.module('pivotchart.directive', [])
                 '</g>',
       scope: {
         data: '=',
-        width: '=',
       },
-      link: function(scope, elm, attrs, ctrl) {
+      require: '?^graphArea',
+      link: function(scope, elm, attrs, graphArea) {
         scope.color = colors.get;
         scope.$watch(function() {
-          var bbox = elm[0].getBBox();
-          scope.x = scope.width - bbox.width;
+          if (graphArea) {
+            var bbox = elm[0].getBBox();
+            graphArea.setLegendWidth(bbox.width);
+          }
         });
+      },
+    };
+  })
+  .directive("graphArea", function(colors) {
+    return {
+      restrict: 'E',
+      templateUrl: 'src/templates/graphArea.html',
+      replace: true,
+      scope: {
+        data: '=',
+        width: '=w',
+        height: '=h',
+      },
+      transclude: true,
+      controller: function($scope, $element, $attrs, $transclude) {
+        return {
+          setLegendWidth: function(w) {
+            $scope.legendWidth = w;
+          },
+          setGraphArea: function(scope) {
+            this.graphScope = scope;
+            scope.width = $scope.graphWidth;
+            scope.height = $scope.graphHeight;
+          },
+        };
+      },
+      link: function(scope, elm, attrs, ctrl, transcludeFn) {
+        scope.$watch('[width,height,legendWidth]', function() {
+          scope.margin = {top: 0, right: 40, bottom: 30, left: 50};
+          scope.graphWidth = scope.width - scope.margin.left - scope.margin.right - (scope.legendWidth || 0);
+          scope.graphHeight = scope.height - scope.margin.top - scope.margin.bottom;
+          if (ctrl.graphScope) {
+            ctrl.graphScope.width = scope.graphWidth;
+            ctrl.graphScope.height = scope.graphHeight;
+          }
+        }, true);
       },
     };
   })
@@ -55,24 +93,26 @@ angular.module('pivotchart.directive', [])
       replace: true,
       scope: {
         data: '=',
-        width: '=w',
-        height: '=h',
+        width: '=?',
+        height: '=?',
       },
-      link: function(scope, elm, attrs, ctrl) {
-        scope.$watch('data', function() {
+      require: '?^graphArea',
+      link: function(scope, elm, attrs, graphArea) {
+        if (graphArea) {
+          graphArea.setGraphArea(scope);
+        }
+        scope.margin = 50;
+        scope.$watch('[data, width, height]', function() {
           var pts = scope.data.data;
           var allY = _(pts).map('y').flatten();
-          scope.margin = {top: 0, right: 40, bottom: 30, left: 50};
-          scope.innerWidth = scope.width - scope.margin.left - scope.margin.right;
-          scope.innerHeight = scope.height - scope.margin.top - scope.margin.bottom;
           scope.x = d3.scale.ordinal()
-            .rangeRoundBands([0, scope.innerWidth], 0.1)
+            .rangeRoundBands([0, scope.width - scope.margin], 0.1)
             .domain(_.map(pts, 'x'));
           scope.x0 = d3.scale.ordinal()
             .rangeRoundBands([0, scope.x.rangeBand()])
             .domain(d3.range(_(pts).map('y').map('length').max()));
           scope.y = d3.scale.linear()
-            .range([scope.innerHeight, 10])
+            .range([scope.height, 10])
             .domain([Math.min(0, allY.min()), allY.max()]).nice();
           scope.color = colors.get;
           scope.abs = Math.abs;
@@ -88,18 +128,17 @@ angular.module('pivotchart.directive', [])
       replace: true,
       scope: {
         data: '=',
-        width: '=w',
-        height: '=h',
+        width: '=?',
+        height: '=?',
       },
-      link: function(scope, elm, attrs, ctrl) {
-        scope.$watch('data', function() {
-          var pts = scope.data.data;
-          var allY = _(pts).map('y').flatten();
-          scope.margin = {top: 0, right: 40, bottom: 30, left: 50};
-          scope.innerWidth = scope.width - scope.margin.left - scope.margin.right;
-          scope.innerHeight = scope.height - scope.margin.top - scope.margin.bottom;
-          var d3arc = d3.svg.arc().outerRadius(Math.min(scope.innerWidth, scope.innerHeight)/2);
-          var pie = d3.layout.pie()(_.map(pts, function(d) { return d.y[0]; }));
+      require: '?^graphArea',
+      link: function(scope, elm, attrs, graphArea) {
+        if (graphArea) {
+          graphArea.setGraphArea(scope);
+        }
+        scope.$watch('[data, width, height]', function() {
+          var d3arc = d3.svg.arc().outerRadius(Math.min(scope.width, scope.height)/2);
+          var pie = d3.layout.pie()(_.map(scope.data.data, function(d) { return d.y[0]; }));
           scope.arc = function(i) {
             return d3arc(pie[i]);
           };
