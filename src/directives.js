@@ -1,4 +1,24 @@
 angular.module('pivotchart.directive', [])
+  .directive("resizable", function() {
+    return {
+      restrict: 'A',
+      scope: {
+        width: '=',
+        height: '=',
+      },
+      link: function(scope, elm, attrs, ctrl) {
+        elm.resizable({
+          resize: function(e, ui) {
+            scope.$apply(function() {
+              scope.width = ui.size.width;
+              scope.height = ui.size.height;
+            });
+          },
+        });
+      },
+    };
+  })
+
   .directive("d3Axis", function() {
     return {
       // Unfortunately <d3-axis ... /> with replace:true doesn't seem to work,

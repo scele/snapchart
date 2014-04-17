@@ -8,6 +8,7 @@
     <meta name="author" content="">
 
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css" rel="stylesheet" media="screen">
     <link href="bower_components/codemirror/lib/codemirror.css" rel="stylesheet" type="text/css" >
     <link href="less/pivotchart.less" rel="stylesheet/less" type="text/css" >
   </head>
@@ -33,12 +34,15 @@
       </div>
     </script>
     <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span12">
+      <div class="">
+        <div class="container">
           <div class="settings">
-            <div class="input">
+            <div class="input" id="accordion">
               <div class="panel panel-default">
-                <div class="panel-heading">Input
+                <div class="panel-heading">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                    Input
+                  </a>
                   <button class="btn btn-default btn-xs right" title="Import" ng-click="import(chart)">
                     <span class="glyphicon glyphicon-import"></span>
                   </button>
@@ -46,7 +50,7 @@
                     <span class="glyphicon glyphicon-refresh"></span>
                   </button>
                 </div>
-                <div class="panel-body">
+                <div id="collapseOne" class="panel-collapse collapse in">
                   <editable-function ng-model="chart.inputArg" class="editor">
                   </editable-function>
                 </div>
@@ -54,7 +58,10 @@
             </div>
             <div class="code">
               <div class="panel panel-default">
-                <div class="panel-heading">Transformation
+                <div class="panel-heading">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                    Transformation
+                  </a>
                 </div>
                 <div class="panel-body">
                   <editable-function ng-model="chart.fn" eval-args="[chart.inputArg]"
@@ -65,7 +72,10 @@
             </div>
             <div class="output">
               <div class="panel panel-default">
-                <div class="panel-heading">Output
+                <div class="panel-heading">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                    Output
+                  </a>
                   <span class="dropdown right">
                     <a class="btn btn-default btn-xs" title="Save as PNG" ng-click="saveAs($event)"
                        download="pivotchartjs.png">
@@ -96,17 +106,46 @@
           </div>
           <div class="chart-outer">
             <div class="chart-inner">
-              <div ac-chart="chart.type"
+              <!--<div ac-chart="chart.type" ng-show="false"
                 ac-data="evalFn(chart)"
                 ac-config="chart.config"
-                class='chart' style="width: 700px; height: 400px;"></div>
+                class='chart' style="width: 700px; height: 400px;"></div>-->
 
-              <graph-area data="evalFn(chart)" x-w="width" x-h="height">
-                <pivot-pie data="evalFn(chart)"></pivot-pie>
-              </graph-area>
-              <graph-area data="evalFn(chart)" x-w="width" x-h="height">
+              <div resizable width="width" height="height" class="resizable"
+                  style="width:{{width}}px; height:{{height}}px;">
+                <graph-area data="evalFn(chart)" x-w="width" x-h="height">
+                  <pivot-pie data="evalFn(chart)"></pivot-pie>
+                </graph-area>
+              </div>
+              <!--<graph-area data="evalFn(chart)" x-w="width" x-h="height" ng-show="false">
                 <pivot-bars data="evalFn(chart)"></pivot-bars>
-              </graph-area>
+                </graph-area>-->
+              <!-- This doesn't work with codemirror for some reason..
+              <div class="config">
+              <accordion>
+                <accordion-group heading="Input" is-open="true">
+                  <editable-function ng-model="chart.inputArg" class="editor">
+                  </editable-function>
+                </accordion-group>
+                <accordion-group heading="Transformation">
+                  <editable-function ng-model="chart.fn" eval-args="[chart.inputArg]"
+                    validate-fn="validateFn" class="editor">
+                  </editable-function>
+                </accordion-group>
+                <accordion-group heading="Output">
+                  <div class="editor">
+                    <textarea ui-codemirror="{readOnly: true}"
+                      ng-model="chart._dataCacheStr"></textarea>
+                  </div>
+                </accordion-group>
+                <accordion-group heading="Appearance">
+                </accordion-group>
+                <accordion-group heading="{{chart.type}} options">
+                </accordion-group>
+              </accordion>
+              </div>
+              -->
+
             </div>
           </div>
         </div><!--/span-->
@@ -114,6 +153,8 @@
     </div><!--/.container-fluid-->
 
     <script src="bower_components/jquery/jquery.min.js"></script>
+    <script src="bower_components/jquery-ui/ui/jquery-ui.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="bower_components/codemirror/lib/codemirror.js"></script>
     <script src="bower_components/codemirror/mode/javascript/javascript.js"></script>
     <script src="bower_components/angular/angular.js"></script>
