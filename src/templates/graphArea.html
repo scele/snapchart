@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" ng-attr-width="{{width}}" ng-attr-height="{{height}}">
+<svg xmlns="http://www.w3.org/2000/svg" ng-attr-width="{{width}}" ng-attr-height="{{height}}" ng-attr-style="font-family:{{font.family}}; font-weight:{{font.weight}};">
   <style>
     .axis path,
     .axis line {
@@ -7,10 +7,18 @@
     }
     text { font-size: 11pt; }
     .x.axis text { alignment-baseline: middle; }
+    .title { text-anchor: middle; }
+    .title text { alignment-baseline: hanging; }
   </style>
-  <g transform="translate({{margin.left}},{{margin.top}})">
-    <g ng-transclude>
+  <g>
+    <g transform="translate({{width/2}},{{margin.top}})"
+      ng-show="showTitle" class="title">
+      <text style="font-size: {{titleSize}}pt;">{{title}}</text>
+    </g>
+    <g transform="translate({{margin.left}},{{margin.top+titleHeight}})" ng-transclude>
     </g>
   </g>
-  <g d3-legend data="data.series" transform="translate({{width - legendWidth}},20)"></g>
+  <g transform="translate({{width - legendWidth - margin.right}},{{margin.top + titleHeight}})" ng-show="showLegend">
+    <d3-legend data="data.series"></d3-legend>
+  </g>
 </svg>

@@ -71,12 +71,38 @@
                   ng-model="chart._dataCacheStr"></div>
               </div>
             </accordion-group>
-            <accordion-group heading="Appearance">
+            <accordion-group heading="Appearance" is-open="true">
+              <div class="form-group">
+                <label>
+                  Font
+                  <select ng-model="chart.font" class="form-control"
+                    ng-options="font.title for font in fonts">
+                  </select>
+                </label>
+              </div>
+              <div class="form-group">
+                <label>
+                  Margin
+                  <input type="number" ng-model="chart.margin" class="form-control">
+                </label>
+              </div>
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="chart.showLegend"> Show legend
+                </label>
+              </div>
               <div class="checkbox">
                 <label>
                   <input type="checkbox" ng-model="chart.showTitle"> Show title
                 </label>
               </div>
+              <div class="form-group" ng-show="chart.showTitle">
+                <label>
+                  Title size
+                  <input type="number" ng-model="chart.titleSize" class="form-control">
+                </label>
+              </div>
+
             </accordion-group>
             <accordion-group heading="{{chart.type}} options">
             </accordion-group>
@@ -85,8 +111,11 @@
         <div class="col-md-8 chart-pane">
           <div resizable width="width" height="height" class="resizable"
             style="width:{{width}}px; height:{{height}}px;">
-            <graph-area data="chart._dataCache" x-w="width" x-h="height">
-              <pivot-pie data="chart._dataCache"></pivot-pie>
+            <graph-area data="chart._dataCache" x-w="width" x-h="height"
+              show-title="chart.showTitle" title="chart.title"
+              title-size="chart.titleSize" font="chart.font"
+              margin="chart.margin" show-legend="chart.showLegend">
+              <pivot-bars data="chart._dataCache"></pivot-bars>
             </graph-area>
           </div>
         </div>

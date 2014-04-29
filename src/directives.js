@@ -46,23 +46,25 @@ angular.module('pivotchart.directive', [])
   })
   .directive("d3Legend", function(colors) {
     return {
-      restrict: 'A',
-      template: '<g ng-repeat="d in data" transform="translate(0,{{20 * $index}})">' +
+      restrict: 'EA',
+      template: '<svg><g ng-repeat="d in data" transform="translate(0,{{20 * $index}})">' +
                   '<rect width="15" height="15" ' +
                   '  style="fill:{{color($index)}}">' +
                   '</rect>' +
                   '<text x="20" y="9" style="text-anchor:top; alignment-baseline:middle;">' +
                     '{{d}}' +
                   '</text>' +
-                '</g>',
+                '</g></svg>',
       scope: {
         data: '=',
       },
       require: '?^graphArea',
+      replace: true,
       link: function(scope, elm, attrs, graphArea) {
         scope.color = colors.get;
         scope.$watch(function() {
           if (graphArea) {
+            var s = scope.data;
             var bbox = elm[0].getBBox();
             graphArea.setLegendWidth(bbox.width);
           }
@@ -79,6 +81,12 @@ angular.module('pivotchart.directive', [])
         data: '=',
         width: '=w',
         height: '=h',
+        title: '=',
+        showTitle: '=',
+        titleSize: '=',
+        font: '=',
+        userMargin: '=margin',
+        showLegend: '=',
       },
       transclude: true,
       controller: function($scope, $element, $attrs, $transclude) {
@@ -94,10 +102,19 @@ angular.module('pivotchart.directive', [])
         };
       },
       link: function(scope, elm, attrs, ctrl, transcludeFn) {
-        scope.$watch('[width,height,legendWidth]', function() {
-          scope.margin = {top: 0, right: 40, bottom: 30, left: 50};
-          scope.graphWidth = scope.width - scope.margin.left - scope.margin.right - (scope.legendWidth || 0);
-          scope.graphHeight = scope.height - scope.margin.top - scope.margin.bottom;
+        var titleElm = elm.find('.title')[0];
+        scope.$watch('[width,height,legendWidth,title,showTitle,titleSize,font,userMargin,showLegend]', function() {
+          scope.titleHeight = scope.showTitle ? titleElm.getBBox().height : 0;
+          scope.legendWidth = scope.showLegend ? (scope.legendWidth || 0) : 0;
+          scope.margin = {
+            top: scope.userMargin,
+            right: scope.userMargin,
+            bottom: scope.userMargin,
+            left: scope.userMargin
+          };
+          var legendWidth = 0;
+          scope.graphWidth = scope.width - scope.margin.left - scope.margin.right - scope.legendWidth;
+          scope.graphHeight = scope.height - scope.margin.top - scope.margin.bottom - scope.titleHeight;
           if (ctrl.graphScope) {
             ctrl.graphScope.width = scope.graphWidth;
             ctrl.graphScope.height = scope.graphHeight;
