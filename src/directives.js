@@ -18,7 +18,28 @@ angular.module('pivotchart.directive', [])
       },
     };
   })
-
+  .directive("dynamicDirective", function($parse, $compile) {
+    return {
+      restrict: 'EA',
+      link: function(scope, elm, attrs, ctrl) {
+        scope.$watch(
+          function(scope) {
+            return scope.$eval(attrs.dynamicDirective);
+          },
+          function(newVal, prevVal) {
+            var e = angular.element('<' + newVal + '></' + newVal + '>');
+            angular.forEach(elm.prop('attributes'), function (a) {
+              if (a.name !== 'dynamic-directive') {
+                e.attr(a.name, a.textContent);
+              }
+            });
+            elm.html(e);
+            $compile(elm.contents())(scope);
+          }
+        );
+      },
+    };
+  })
   .directive("d3Axis", function() {
     return {
       // Unfortunately <d3-axis ... /> with replace:true doesn't seem to work,
@@ -47,7 +68,7 @@ angular.module('pivotchart.directive', [])
   .directive("d3Legend", function(colors) {
     return {
       restrict: 'EA',
-      template: '<svg><g ng-repeat="d in data" transform="translate(0,{{20 * $index}})">' +
+      template: '<svg><g ng-repeat="d in data track by $index" transform="translate(0,{{20 * $index}})">' +
                   '<rect width="15" height="15" ' +
                   '  style="fill:{{color($index)}}">' +
                   '</rect>' +
@@ -104,7 +125,7 @@ angular.module('pivotchart.directive', [])
       link: function(scope, elm, attrs, ctrl, transcludeFn) {
         var titleElm = elm.find('.title')[0];
         scope.$watch('[width,height,legendWidth,title,showTitle,titleSize,font,userMargin,showLegend]', function() {
-          scope.titleHeight = scope.showTitle ? titleElm.getBBox().height : 0;
+          scope.titleHeight = scope.showTitle ? 1.3 * titleElm.getBBox().height : 0;
           scope.legendWidth = scope.showLegend ? (scope.legendWidth || 0) : 0;
           scope.margin = {
             top: scope.userMargin,

@@ -104,7 +104,15 @@
               </div>
 
             </accordion-group>
-            <accordion-group heading="{{chart.type}} options">
+            <accordion-group heading="Chart type">
+              <div class="form-group">
+                <label>
+                  Chart type
+                  <select ng-model="chart.type" class="form-control"
+                    ng-options="type.type as type.name for type in chartTypes">
+                  </select>
+                </label>
+              </div>
             </accordion-group>
           </accordion>
         </div>
@@ -115,7 +123,7 @@
               show-title="chart.showTitle" title="chart.title"
               title-size="chart.titleSize" font="chart.font"
               margin="chart.margin" show-legend="chart.showLegend">
-              <pivot-bars data="chart._dataCache"></pivot-bars>
+              <svg dynamic-directive="chart.type" data="chart._dataCache"></svg>
             </graph-area>
           </div>
         </div>

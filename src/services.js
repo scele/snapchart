@@ -43,7 +43,7 @@ angular.module('pivotchart.service', [])
     var types = [
       {
         name: 'Bar chart',
-        type: 'bar',
+        type: 'pivot-bars',
         config: { legend: {display: true, position: 'right'} },
         fn:
 function(data) {
@@ -56,7 +56,7 @@ function(data) {
       },
       {
         name: 'Pie chart',
-        type: 'pie',
+        type: 'pivot-pie',
         config: { legend: {display: true, position: 'right'} },
         fn:
 function(data) {
@@ -77,15 +77,15 @@ function(data) {
       },
       {
         name: 'Line chart',
-        type: 'line',
+        type: 'pivot-line',
       },
       {
         name: 'Point chart',
-        type: 'point',
+        type: 'pivot-point',
       },
       {
         name: 'Area chart',
-        type: 'area',
+        type: 'pivot-area',
       },
     ];
     return {

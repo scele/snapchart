@@ -11,7 +11,7 @@
       orient="left" ticks="10" tickFormat="s" scale="y">
     </g>
     <g ng-attr-transform="translate({{x(group.x)}},0)" ng-repeat="group in data.data">
-      <rect ng-repeat="bar in group.y"
+      <rect ng-repeat="bar in group.y track by $index"
         ng-attr-width="{{x0.rangeBand()}}"
         ng-attr-x="{{x0($index)}}"
         ng-attr-y="{{y(max(0, bar))}}"

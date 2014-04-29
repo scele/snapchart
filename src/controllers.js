@@ -68,6 +68,8 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.chart.title = "Chart title";
     $scope.chart.titleSize = 24;
     $scope.chart.margin = 30;
+    $scope.chart.showLegend = true;
+    $scope.chart.showTitle = true;
     $scope.fonts = [
       {title: "Open Sans Light", family: "'Open Sans',sans-serif", weight: 100},
       {title: "Open Sans", family: "'Open Sans',sans-serif", weight: 400},
