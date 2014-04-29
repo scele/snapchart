@@ -198,6 +198,72 @@ angular.module('pivotchart.directive', [])
       link: function(scope, elm, attrs, ctrl) {},
     };
   })
+  // A simplified (and working) version of http://github.com/angular-ui/ui-codemirror.
+  .directive('uiCodemirror', function () {
+    return {
+      restrict: 'EA',
+      require: '?ngModel',
+      priority: 1,
+      link: function(scope, iElement, iAttrs, ngModel) {
+        if (angular.isUndefined(window.CodeMirror)) {
+          throw new Error('ui-codemirror needs CodeMirror to work.');
+        }
+
+        // http://codemirror.net/doc/manual.html#api_constructor
+        var codeMirror = new window.CodeMirror(function (cm_el) {
+          iElement.append(cm_el);
+        });
+
+        function updateOptions(newValues) {
+          for (var key in newValues) {
+            if (newValues.hasOwnProperty(key)) {
+              codeMirror.setOption(key, newValues[key]);
+            }
+          }
+        }
+        updateOptions(scope.$eval(iAttrs.uiCodemirror));
+        if (angular.isDefined(scope.$eval(iAttrs.uiCodemirror))) {
+          scope.$watch(iAttrs.uiCodemirror, updateOptions, true);
+        }
+
+        codeMirror.on('change', function (instance) {
+          var newValue = instance.getValue();
+          if (ngModel && newValue !== ngModel.$viewValue) {
+            ngModel.$setViewValue(newValue);
+            scope.$apply();
+          }
+        });
+
+        if (ngModel) {
+          ngModel.$formatters.unshift(function (value) {
+            if (angular.isUndefined(value) || value === null) {
+              return '';
+            }
+            else if (angular.isObject(value) || angular.isArray(value)) {
+              throw new Error('ui-codemirror cannot use an object or an array as a model');
+            }
+            return value;
+          });
+
+          ngModel.$render = function () {
+            var safeViewValue = ngModel.$viewValue || '';
+            codeMirror.setValue(safeViewValue);
+          };
+        }
+
+        // Watch ui-refresh and refresh the directive
+        if (iAttrs.uiRefresh) {
+          scope.$watch(iAttrs.uiRefresh, function (newVal, oldVal) {
+            // Skip the initial watch firing
+            if (newVal !== oldVal) {
+              codeMirror.refresh();
+            }
+          });
+        }
+
+      }
+    };
+  })
   .directive("editableFunction", function() {
     // Augment lodash with a transpose function commonly needed
     // in input data transformations.
@@ -209,7 +275,7 @@ angular.module('pivotchart.directive', [])
     _.mixin({'transpose': transpose});
     return {
       restrict: 'E',
-      template: '<div><div js-function ui-codemirror="opts" ng-model="scopemodel"></div>' +
+      template: '<div><div js-function ui-codemirror="opts" ui-refresh="refresh" ng-model="scopemodel"></div>' +
           '<div class="alert alert-danger alert-bottom" ng-show="error">{{error}}</div>' +
           '</div>',
       scope: {
@@ -217,6 +283,7 @@ angular.module('pivotchart.directive', [])
         evalThis: '=',
         evalArgs: '=',
         validateFn: '=',
+        refresh: '=uiRefresh',
       },
       replace: true,
       require: ['editableFunction', 'ngModel'],

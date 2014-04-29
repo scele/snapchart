@@ -2,11 +2,11 @@
 @import "../bower_components/bootstrap/less/variables.less";
 @import "../bower_components/bootstrap/less/mixins.less";
 
-body { overflow-x: hidden; margin-top: 20px; }
+body { }
 
 .editor { }
 .CodeMirror {
-  border: 1px solid #eee;
+  border: 1px solid #ddd;
   height: auto;
 }
 .CodeMirror-scroll {
@@ -15,7 +15,7 @@ body { overflow-x: hidden; margin-top: 20px; }
   max-height: 350px;
 }
 
-.resizable { display: inline-block; float: left; border: 1px solid black; }
+.resizable { display: inline-block; border: 1px solid #ddd; }
 
 .container { .make-row(); }
 .settings { .make-md-column(5); .make-lg-column(6); }
@@ -25,3 +25,6 @@ body { overflow-x: hidden; margin-top: 20px; }
 .alert-bottom { margin-top: 20px; margin-bottom: 0px; }
 
 .dropdown-menu .glyphicon { float: right; }
+
+.main { padding-top: 60px; }
+.chart-pane { text-align: center; }

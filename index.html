@@ -8,6 +8,8 @@
     <meta name="author" content="">
 
     <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css" rel="stylesheet">
+
     <link href="bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css" rel="stylesheet" media="screen">
     <link href="bower_components/codemirror/lib/codemirror.css" rel="stylesheet" type="text/css" >
     <link href="less/pivotchart.less" rel="stylesheet/less" type="text/css" >
@@ -97,8 +99,8 @@
                 </div>
                 <div class="panel-body">
                   <div class="editor">
-                    <textarea ui-codemirror="{readOnly: true}"
-                      ng-model="chart._dataCacheStr"></textarea>
+                    <div ui-codemirror="{readOnly: true}"
+                      ng-model="chart._dataCacheStr"></div>
                   </div>
                 </div>
               </div>
@@ -113,8 +115,8 @@
 
               <div resizable width="width" height="height" class="resizable"
                   style="width:{{width}}px; height:{{height}}px;">
-                <graph-area data="evalFn(chart)" x-w="width" x-h="height">
-                  <pivot-pie data="evalFn(chart)"></pivot-pie>
+                <graph-area data="chart._dataCache" x-w="width" x-h="height">
+                  <pivot-pie data="chart._dataCache"></pivot-pie>
                 </graph-area>
               </div>
               <!--<graph-area data="evalFn(chart)" x-w="width" x-h="height" ng-show="false">

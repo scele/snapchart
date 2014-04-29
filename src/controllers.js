@@ -41,8 +41,9 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       return $scope.chart.validateFn(data);
     };
 
-    $scope.evalFn = function(chart) {
+    $scope.$watch(function() {
       var newValue;
+      var chart = $scope.chart;
       try {
         newValue = chart.fn ? chart.fn.apply({}, [chart.inputArg]) : chart._dataCache;
       } catch(e) {
@@ -54,8 +55,8 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
         chart._dataCache = newValue;
         chart._dataCacheStr = JSON.stringify(newValue, null, "  ");
       }
-      return chart._dataCache;
-    };
+    });
+
     $scope.inputArg = [
       ["", "Category 1", "Category 2"],
       ["Sales", 54, 150],
