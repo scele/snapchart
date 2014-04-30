@@ -2,18 +2,15 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
   .controller('MainCtrl', function($scope, chartTypes, charts, $modal, $http, $timeout, $window) {
     $scope.charts = charts.get();
     $scope.chartTypes = chartTypes.get();
-    $scope.addChart = function(type) {
-      $scope.chart.type = type.type;
-    };
     $scope.width = 525;
     $scope.height = 376;
 
-    $scope.saveAs = function(event) {
+    $scope.saveAs = function(event, selector) {
       // Put SVG to img element
       var img = new Image();
       img.width = $scope.width;
       img.height = $scope.height;
-      var data = $('.chart-inner svg');
+      var data = $(selector);
       var xml = (new XMLSerializer()).serializeToString(data.get(0));
       img.src =  'data:image/svg+xml;charset=utf-8,' + xml;
       //var data = $('.chart-inner > .chart > .ac-chart').html();
@@ -63,13 +60,19 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       ["Income", 110, 499],
       ["Expense", 879, 79],
     ];
+    $scope.scaleTypes = [
+      { type: 'linear', name: 'Linear' },
+      { type: 'log', name: 'Logarithmic' }
+    ];
     $scope.chart = angular.copy($scope.chartTypes[0]);
+    $scope.chart.type = $scope.chartTypes[0];
     $scope.chart.inputArg = $scope.inputArg;
     $scope.chart.title = "Chart title";
     $scope.chart.titleSize = 24;
     $scope.chart.margin = 30;
     $scope.chart.showLegend = true;
     $scope.chart.showTitle = true;
+    $scope.chart.vAxis = { auto: true, type: 'linear', format: 'n', ticks: 10 };
     $scope.fonts = [
       {title: "Open Sans Light", family: "'Open Sans',sans-serif", weight: 100},
       {title: "Open Sans", family: "'Open Sans',sans-serif", weight: 400},

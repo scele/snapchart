@@ -53,6 +53,7 @@ function(data) {
   };
 },
         validateFn: commonValidateFn,
+        hasVAxis: true,
       },
       {
         name: 'Pie chart',

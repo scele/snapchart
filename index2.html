@@ -98,8 +98,60 @@
               </div>
               <div class="form-group" ng-show="chart.showTitle">
                 <label>
+                  Title
+                  <input type="text" ng-model="chart.title" class="form-control">
+                </label>
+              </div>
+              <div class="form-group" ng-show="chart.showTitle">
+                <label>
                   Title size
                   <input type="number" ng-model="chart.titleSize" class="form-control">
+                </label>
+              </div>
+            </accordion-group>
+            <accordion-group heading="Vertical axis" is-open="true" ng-show="chart.type.hasVAxis">
+              <div class="form-group">
+                <label>
+                  Scale
+                  <select ng-model="chart.vAxis.type" class="form-control"
+                    ng-options="type.type as type.name for type in scaleTypes">
+                  </select>
+                </label>
+              </div>
+
+              <div class="radio">
+                <label>
+                  <input type="radio" ng-model="chart.vAxis.auto" ng-value="true"> Auto
+                </label>
+              </div>
+
+              <div class="radio">
+                <label>
+                  <input type="radio" ng-model="chart.vAxis.auto" ng-value="false">
+                  <div class="form-group form-inline axis-domain">
+                    <label>
+                      Min
+                      <input type="number" ng-model="chart.vAxis.min" class="form-control">
+                    </label>
+                    <label>
+                      Max
+                      <input type="number" ng-model="chart.vAxis.max" class="form-control">
+                    </label>
+                  </div>
+
+
+                </label>
+              </div>
+              <div class="form-group">
+                <label>
+                  Format
+                  <input type="text" ng-model="chart.vAxis.format" class="form-control">
+                </label>
+              </div>
+              <div class="form-group" ng-show="chart.vAxis.type == 'linear'">
+                <label>
+                  Ticks
+                  <input type="number" ng-model="chart.vAxis.ticks" class="form-control">
                 </label>
               </div>
 
@@ -109,7 +161,7 @@
                 <label>
                   Chart type
                   <select ng-model="chart.type" class="form-control"
-                    ng-options="type.type as type.name for type in chartTypes">
+                    ng-options="type as type.name for type in chartTypes">
                   </select>
                 </label>
               </div>
@@ -117,13 +169,18 @@
           </accordion>
         </div>
         <div class="col-md-8 chart-pane">
+                    <a class="btn btn-default btn-xs" title="Save as PNG" ng-click="saveAs($event, '#chart')"
+                       download="pivotchartjs.png">
+                      <span class="glyphicon glyphicon-floppy-save"></span>
+                    </a>
+
           <div resizable width="width" height="height" class="resizable"
             style="width:{{width}}px; height:{{height}}px;">
-            <graph-area data="chart._dataCache" x-w="width" x-h="height"
+            <graph-area id="chart" data="chart._dataCache" x-w="width" x-h="height"
               show-title="chart.showTitle" title="chart.title"
               title-size="chart.titleSize" font="chart.font"
               margin="chart.margin" show-legend="chart.showLegend">
-              <svg dynamic-directive="chart.type" data="chart._dataCache"></svg>
+              <svg dynamic-directive="chart.type.type" data="chart._dataCache" chart="chart"></svg>
             </graph-area>
           </div>
         </div>

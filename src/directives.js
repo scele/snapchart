@@ -48,13 +48,13 @@ angular.module('pivotchart.directive', [])
       scope: {
         scale: '=',
         orient: '@',
-        tickFormat: '@',
+        tickFormat: '=',
         ticks: '=',
         tickSize: '=',
       },
       link: function(scope, elm, attrs, ctrl) {
         var axis = d3.svg.axis();
-        scope.$watch('[scale,orient,tickFormat,ticks]', function() {
+        scope.$watch('[scale,orient,tickFormat,ticks,tickSize]', function() {
           if (!angular.isUndefined(scope.scale)) axis.scale(scope.scale);
           if (!angular.isUndefined(scope.orient)) axis.orient(scope.orient);
           if (!angular.isUndefined(scope.tickFormat)) axis.tickFormat(d3.format(scope.tickFormat));
@@ -145,11 +145,19 @@ angular.module('pivotchart.directive', [])
     };
   })
   .directive("pivotBars", function(colors) {
+    function getScale(config, defaultDomain) {
+      var axis = d3.scale[config.type]();
+      if (config.auto)
+        return axis.domain(defaultDomain).nice();
+      else
+        return axis.domain([config.min, config.max]);
+    }
     return {
       restrict: 'E',
       templateUrl: 'src/templates/bars.html',
       replace: true,
       scope: {
+        chart: '=',
         data: '=',
         width: '=?',
         height: '=?',
@@ -160,8 +168,9 @@ angular.module('pivotchart.directive', [])
           graphArea.setGraphArea(scope);
         }
         scope.margin = 50;
-        scope.$watch('[data, width, height]', function() {
+        scope.$watch('[data, chart, width, height]', function() {
           var pts = scope.data.data;
+          var vAxis = scope.chart.vAxis;
           var allY = _(pts).map('y').flatten();
           scope.x = d3.scale.ordinal()
             .rangeRoundBands([0, scope.width - scope.margin], 0.1)
@@ -169,9 +178,10 @@ angular.module('pivotchart.directive', [])
           scope.x0 = d3.scale.ordinal()
             .rangeRoundBands([0, scope.x.rangeBand()])
             .domain(d3.range(_(pts).map('y').map('length').max()));
-          scope.y = d3.scale.linear()
-            .range([scope.height, 10])
-            .domain([Math.min(0, allY.min()), allY.max()]).nice();
+          scope.y = getScale(vAxis, [Math.min(0, allY.min()), allY.max()])
+            .range([scope.height, 10]);
+          vAxis.min = scope.y.domain()[0];
+          vAxis.max = scope.y.domain()[1];
           scope.color = colors.get;
           scope.abs = Math.abs;
           scope.max = Math.max;
@@ -428,56 +438,6 @@ angular.module('pivotchart.directive', [])
       },
     };
   })
-  .directive("bars", function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'partials/bars.html',
-      scope: {
-        data: '=',
-        selector: '=',
-        x: '=?xscale',
-        y: '=?yscale',
-        formatter: '=',
-        showDiff: '=',
-        smallerIsBetter: '=',
-      },
-      replace: true,
-      link: function(scope, elm, attrs, ctrl) {
-        scope.barHeight = 30;
-        var hovered = null;
-        scope.diff = function(datum) {
-          if (!hovered || hovered == datum || !scope.showDiff)
-            return null;
-          var ref = scope.selector(hovered);
-          var x = scope.selector(datum);
-          if (typeof ref != "number" || typeof x != "number")
-            return null;
-          var d = 100 * (x - ref) / ref;
-          var neg = scope.smallerIsBetter ? "good" : "bad";
-          var pos = scope.smallerIsBetter ? "bad" : "good";
-          return {
-            str: (d >= 0 ? "+" : "") + d.toFixed(0) + "%",
-            class2: (d < 0) ? neg : (d > 0 ? pos : ""),
-          };
-        };
-        scope.mouseover = function(datum, b) {
-          hovered = b ? datum : null;
-        };
-        if (!attrs.xscale) {
-          scope.x = d3.scale.linear().range([0, 80]);
-          scope.$watch('data', function(data) {
-            scope.x.domain([0, d3.max(data, scope.selector)]);
-          });
-        }
-        if (!attrs.yscale) {
-          scope.y = d3.scale.ordinal();
-          scope.$watch('data', function(data) {
-            scope.y.rangeRoundBands([0, data.length * scope.barHeight], 0.1);
-          });
-        }
-      }
-    };
-  })
   .directive('contenteditable', function($rootScope) {
     return {
       require: 'ngModel',
@@ -485,14 +445,9 @@ angular.module('pivotchart.directive', [])
         // view -> model
         elm.bind('blur', function() {
           if (elm.html() != ctrl.$viewValue) {
-            var d = new Date();
-            var start = d.getTime();
             scope.$apply(function() {
               ctrl.$setViewValue(elm.html().replace(/<br>/g, ""));
-              $rootScope.$broadcast('contenteditable', scope, elm);
             });
-            d = new Date();
-            console.log("scope.$apply + $broadcast took " + (d.getTime() - start) + " ms\n");
           }
         });
         elm.bind('keypress', function(e) { return e.which != 13; });
