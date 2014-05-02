@@ -6,25 +6,39 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.height = 376;
 
     $scope.saveAs = function(event, selector) {
-      // Put SVG to img element
+      // SVG XML
+      var data = $(selector);
+      var xml = (new XMLSerializer()).serializeToString(data.get(0));
+
+      // Canvas
+      function createCanvas() {
+        var canvas = document.createElement('canvas');
+        canvas.width = $scope.width;
+        canvas.height = $scope.height;
+        return canvas;
+      }
+      var canvas = createCanvas();
+
+      // Put SVG to the canvas
       var img = new Image();
       img.width = $scope.width;
       img.height = $scope.height;
-      var data = $(selector);
-      var xml = (new XMLSerializer()).serializeToString(data.get(0));
       img.src =  'data:image/svg+xml;charset=utf-8,' + xml;
       //var data = $('.chart-inner > .chart > .ac-chart').html();
       //img.src 'data:image/svg+xml;base64,' + btoa(data);
-
-      // Draw img element to canvas
-      var canvas = document.createElement('canvas');
-      canvas.width = $scope.width;
-      canvas.height = $scope.height;
       var ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0);
+      var url;
+      try {
+        // This will fail on most browsers
+        // http://stackoverflow.com/questions/8158312/rasterizing-an-in-document-svg-to-canvas
+        url = canvas.toDataURL('image/png');
+      } catch (ex) {
+        canvas = createCanvas();
+        canvg(canvas, xml);
+        url = canvas.toDataURL('image/png');
+      }
 
-      // Get data url from canvas
-      var url = canvas.toDataURL('image/png');
       event.target.parentElement.href = url;
     };
 
@@ -72,6 +86,8 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.chart.margin = 30;
     $scope.chart.showLegend = true;
     $scope.chart.showTitle = true;
+    $scope.chart.background = "rgba(255,255,255,1)";
+    $scope.chart.innerRadius = 0;
     $scope.chart.vAxis = { auto: true, type: 'linear', format: 'n', ticks: 10 };
     $scope.fonts = [
       {title: "Open Sans Light", family: "'Open Sans',sans-serif", weight: 100},

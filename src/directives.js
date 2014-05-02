@@ -108,6 +108,7 @@ angular.module('pivotchart.directive', [])
         font: '=',
         userMargin: '=margin',
         showLegend: '=',
+        background: '=',
       },
       transclude: true,
       controller: function($scope, $element, $attrs, $transclude) {
@@ -195,6 +196,7 @@ angular.module('pivotchart.directive', [])
       templateUrl: 'src/templates/pie.html',
       replace: true,
       scope: {
+        chart: '=',
         data: '=',
         width: '=?',
         height: '=?',
@@ -204,8 +206,11 @@ angular.module('pivotchart.directive', [])
         if (graphArea) {
           graphArea.setGraphArea(scope);
         }
-        scope.$watch('[data, width, height]', function() {
-          var d3arc = d3.svg.arc().outerRadius(Math.min(scope.width, scope.height)/2);
+        scope.$watch('[data, width, height, chart]', function() {
+          var r = Math.min(scope.width, scope.height)/2;
+          var d3arc = d3.svg.arc()
+            .outerRadius(r)
+            .innerRadius((scope.chart.innerRadius || 0) * r);
           var pie = d3.layout.pie()(_.map(scope.data.data, function(d) { return d.y[0]; }));
           scope.arc = function(i) {
             return d3arc(pie[i]);
@@ -459,6 +464,22 @@ angular.module('pivotchart.directive', [])
         // model -> view
         ctrl.$render = function() {
           elm.html(ctrl.$viewValue);
+        };
+      }
+    };
+  })
+  .directive("percentage", function() {
+    return {
+      restrict: 'A',
+      require: 'ngModel',
+      compile: function(tElement, tAttrs, transclude) {
+        return function (scope, elm, attrs, ctrl) {
+          ctrl.$parsers.unshift(function (viewValue) {
+            return parseFloat(viewValue) / 100;
+          });
+          ctrl.$formatters.unshift(function (modelValue) {
+            return modelValue * 100 + ' %';
+          });
         };
       }
     };

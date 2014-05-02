@@ -21,6 +21,7 @@
     "less.js": "~1.7.0",
     "angular-charts": "git://github.com/scele/angular-charts#fork",
     "lodash": "~2.4.1",
-    "jquery-ui": "~1.10.4"
+    "jquery-ui": "~1.10.4",
+    "angular-bootstrap-colorpicker": "~3.0.7"
   }
 }
