@@ -10,11 +10,11 @@
     <g d3-axis class="y axis"
       orient="left" ticks="chart.vAxis.ticks" tick-format="chart.vAxis.format" scale="y">
     </g>
-    <g ng-attr-transform="translate({{x(group.x)}},0)" ng-repeat="group in data.data">
-      <rect ng-repeat="bar in group.y track by $index"
+    <g ng-attr-transform="translate({{x(s)}},0)" ng-repeat="s in xdata track by $index">
+      <rect ng-repeat="bar in ydata[$index] track by $index"
         ng-attr-width="{{x0.rangeBand()}}"
-        ng-attr-x="{{x0($index)}}"
-        ng-attr-y="{{y(max(0, bar))}}"
+        ng-attr-x="{{barX($index)}}"
+        ng-attr-y="{{barY($parent.$index, $index)}}"
         ng-attr-height="{{abs(y(bar)-y(chart.vAxis.min))}}"
         style="fill: {{color($index)}};">
       </rect>

@@ -49,9 +49,24 @@ angular.module('pivotchart.service', [])
 function(data) {
   return {
     series: _(data).map(_.first).rest(1).value(),
-    data: _(data).transpose().rest(1).map(function(x) { return {x: _.first(x), y: _.rest(x)};}).value(),
+    x: _(data[0]).rest(1).value(),
+    y: _(data).rest(1).map(function(d){return _.rest(d,1); }).transpose().value(),
   };
-},
+},/*
+function (data) {
+  data = ["sin", "cos"];
+  var fns = _.map(data, function(d) { return Math[d]; });
+  var domain = _.range(-5, 5 ,.1);
+  return {
+    series: data,
+    x: domain,
+    y: fns.map(function (f) {
+      return domain.map(function (x) {
+        return f(x);
+      });
+    }),
+  };
+},*/
         validateFn: commonValidateFn,
         hasVAxis: true,
       },
@@ -78,7 +93,9 @@ function(data) {
       },
       {
         name: 'Line chart',
-        type: 'pivot-line',
+        type: 'pivot-lines',
+        hasVAxis: true,
+        hasHAxis: true,
       },
       {
         name: 'Point chart',

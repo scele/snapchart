@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg">
   <g transform="translate({{width/2}},{{height/2}})">
-    <g ng-repeat="group in data.data">
+    <g ng-repeat="group in data.y[0]">
       <path ng-attr-d="{{arc($index)}}"
         style="fill: {{color($index)}};">
       </path>

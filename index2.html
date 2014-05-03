@@ -72,7 +72,7 @@
                   ng-model="chart._dataCacheStr"></div>
               </div>
             </accordion-group>
-            <accordion-group heading="Appearance" is-open="true">
+            <accordion-group heading="Appearance">
               <div class="form-group">
                 <label>
                   Font
@@ -117,54 +117,13 @@
                 </label>
               </div>
             </accordion-group>
-            <accordion-group heading="Vertical axis" ng-show="chart.type.hasVAxis">
-              <div class="form-group">
-                <label>
-                  Scale
-                  <select ng-model="chart.vAxis.type" class="form-control"
-                    ng-options="type.type as type.name for type in scaleTypes">
-                  </select>
-                </label>
-              </div>
-
-              <div class="radio">
-                <label>
-                  <input type="radio" ng-model="chart.vAxis.auto" ng-value="true"> Auto
-                </label>
-              </div>
-
-              <div class="radio">
-                <label>
-                  <input type="radio" ng-model="chart.vAxis.auto" ng-value="false">
-                  <div class="form-group form-inline axis-domain">
-                    <label>
-                      Min
-                      <input type="number" ng-model="chart.vAxis.min" class="form-control">
-                    </label>
-                    <label>
-                      Max
-                      <input type="number" ng-model="chart.vAxis.max" class="form-control">
-                    </label>
-                  </div>
-
-
-                </label>
-              </div>
-              <div class="form-group">
-                <label>
-                  Format
-                  <input type="text" ng-model="chart.vAxis.format" class="form-control">
-                </label>
-              </div>
-              <div class="form-group" ng-show="chart.vAxis.type == 'linear'">
-                <label>
-                  Ticks
-                  <input type="number" ng-model="chart.vAxis.ticks" class="form-control">
-                </label>
-              </div>
-
+            <accordion-group heading="Horizontal axis" ng-show="chart.type.hasHAxis">
+              <axis-config axis="chart.hAxis"></axis-config>
             </accordion-group>
-            <accordion-group heading="Chart type">
+            <accordion-group heading="Vertical axis" ng-show="chart.type.hasVAxis">
+              <axis-config axis="chart.vAxis"></axis-config>
+            </accordion-group>
+            <accordion-group heading="Chart type" is-open="true">
               <div class="form-group">
                 <label>
                   Chart type
@@ -179,6 +138,24 @@
                   <input type="text" percentage ng-model="chart.innerRadius"
                     class="form-control">
                   </select>
+                </label>
+              </div>
+              <div class="radio" ng-show="chart.type.type == 'pivot-bars'">
+                <label>
+                  <input type="radio" ng-model="chart.barPlacement" value="adjacent">
+                  Clustered
+                </label>
+              </div>
+              <div class="radio" ng-show="chart.type.type == 'pivot-bars'">
+                <label>
+                  <input type="radio" ng-model="chart.barPlacement" value="stacked">
+                  Stacked
+                </label>
+              </div>
+              <div class="radio" ng-show="chart.type.type == 'pivot-bars'">
+                <label>
+                  <input type="radio" ng-model="chart.barPlacement" value="overlapping">
+                  Overlapping
                 </label>
               </div>
             </accordion-group>
@@ -197,6 +174,7 @@
               show-title="chart.showTitle" title="chart.title"
               title-size="chart.titleSize" font="chart.font"
               margin="chart.margin" show-legend="chart.showLegend"
+              reverse-legend="chart.type.type == 'pivot-bars' && chart.barPlacement == 'stacked'"
               background="chart.background">
               <svg dynamic-directive="chart.type.type" data="chart._dataCache" chart="chart"></svg>
             </graph-area>
