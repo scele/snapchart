@@ -66,9 +66,10 @@ function (data) {
       });
     }),
   };
-},*/
+},
         validateFn: commonValidateFn,
         hasVAxis: true,
+        hasHAxis: true,
       },
       {
         name: 'Pie chart',

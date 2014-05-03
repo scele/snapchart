@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate({{margin}},0)">
+    <g d3-axis class="x axis"
+      ng-attr-transform="translate(0,{{height}})" orient="bottom" scale="x" tick-size="0">
+    </g>
+    <!-- Draw one zero line in case negative values exist -->
+    <line ng-attr-x1="{{width-margin}}" ng-attr-y1="{{y(0)}}" ng-attr-y2="{{y(0)}}"
+      style="stroke: #333;">
+    </line>
+    <g d3-axis class="y axis"
+      orient="left" ticks="chart.vAxis.ticks" tick-format="chart.vAxis.format" scale="y">
+    </g>
+    <path ng-repeat="d in dataBySeries track by $index"
+      ng-attr-stroke="{{color($index)}}"
+      fill="none"
+      ng-attr-d="{{line(d)}}">
+    </rect>
+  </g>
+</svg>

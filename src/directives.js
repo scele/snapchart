@@ -60,7 +60,7 @@ angular.module('pivotchart.directive', [])
               var allY = _(scope.ydata).flatten();
               if (hAxis.type == 'ordinal') {
                 scope.x = d3.scale.ordinal().domain(scope.xdata);
-                scope.x.rangeRoundBands([0, scope.width - scope.margin], 0.1);
+                scope.x.rangeRoundBands([0, scope.width - scope.margin], hAxis.band);
                 if (scope.chart.barPlacement == 'adjacent') {
                   scope.x0 = d3.scale.ordinal()
                     .rangeRoundBands([0, scope.x.rangeBand()])
