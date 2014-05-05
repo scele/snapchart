@@ -46,13 +46,14 @@ angular.module('pivotchart.service', [])
         type: 'pivot-bars',
         config: { legend: {display: true, position: 'right'} },
         fn:
+/*
 function(data) {
   return {
     series: _(data).map(_.first).rest(1).value(),
     x: _(data[0]).rest(1).value(),
     y: _(data).rest(1).map(function(d){return _.rest(d,1); }).transpose().value(),
   };
-},/*
+},*/
 function (data) {
   data = ["sin", "cos"];
   var fns = _.map(data, function(d) { return Math[d]; });

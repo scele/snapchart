@@ -63,8 +63,8 @@ angular.module('pivotchart.directive', [])
                 scope.x.rangeRoundBands([0, scope.width - scope.margin], hAxis.band);
                 if (scope.chart.barPlacement == 'adjacent') {
                   scope.x0 = d3.scale.ordinal()
-                    .rangeRoundBands([0, scope.x.rangeBand()])
-                    .domain(d3.range(_(scope.ydata).map('length').max()));
+                    .rangeRoundBands([0, scope.x.rangeBand()], hAxis.band2)
+                    .domain(d3.range(scope.ydata.length));
                 } else {
                   scope.x0 = d3.scale.ordinal()
                     .rangeRoundBands([0, scope.x.rangeBand()])
@@ -79,35 +79,38 @@ angular.module('pivotchart.directive', [])
               scope.line = d3.svg.line()
                 .x(function (d) { return scope.x(d.x); })
                 .y(function (d) { return scope.y(d.y); });
-              scope.reverseIdx = function (idx, collection) {
-                if (scope.chart.barPlacement != 'adjacent')
-                  return collection.length - idx - 1;
-                else
-                  return idx;
-              };
               scope.barY = function (seriesIdx, categoryIdx) {
                 var ydata = scope.ydata[seriesIdx];
                 var y = ydata[categoryIdx];
                 if (scope.chart.barPlacement == 'stacked') {
-                  y += _(ydata).take(categoryIdx)
+                  var others = _(scope.ydata).take(seriesIdx)
+                    .map(function (x) { return x[categoryIdx]; })
+                    .filter(function (x) { return x * y >= 0; })
                     .reduce(function (sum, num) {
                       return sum + num;
                     }, 0);
-                  return scope.y(Math.max(0, y));
+                  return scope.y(Math.max(0, y) + others);
                 } else {
                   return scope.y(Math.max(0, y));
                 }
               };
-              scope.barX = function (categoryIdx) {
+              scope.barX = function (seriesIdx) {
                 if (scope.chart.barPlacement == 'adjacent')
-                  return scope.x0(categoryIdx);
+                  return scope.x0(seriesIdx);
                 else
                   return 0;
               };
+
               vAxis.min = scope.y.domain()[0];
               vAxis.max = scope.y.domain()[1];
               hAxis.min = scope.x.domain()[0];
               hAxis.max = _.last(scope.x.domain());
+
+              scope.barHeight = function (val) {
+                var zero = Math.min(Math.max(0, vAxis.min), vAxis.max);
+                return Math.abs(scope.y(val) - scope.y(zero));
+              };
+
               scope.color = colors.get;
               scope.abs = Math.abs;
               scope.max = Math.max;
@@ -313,7 +316,8 @@ angular.module('pivotchart.directive', [])
           var d3arc = d3.svg.arc()
             .outerRadius(r)
             .innerRadius((scope.chart.innerRadius || 0) * r);
-          var pie = d3.layout.pie()(scope.data.y[0]);
+          scope.yfirst = _.map(scope.data.y, _.first);
+          var pie = d3.layout.pie()(scope.yfirst);
           scope.arc = function(i) {
             return d3arc(pie[i]);
           };

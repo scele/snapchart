@@ -132,6 +132,14 @@
                   </select>
                 </label>
               </div>
+              <div class="form-group" ng-show="chart.type.type == 'pivot-lines'">
+                <label>
+                  Line interpolation
+                  <select ng-model="chart.lineInterpolation" class="form-control"
+                    ng-options="mode as mode for mode in lineInterpolationModes">
+                  </select>
+                </label>
+              </div>
               <div class="form-group" ng-show="chart.type.type == 'pivot-pie'">
                 <label>
                   Inner radius
