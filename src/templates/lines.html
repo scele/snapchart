@@ -1,6 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath ng-attr-id="drawArea{{id}}">
+      <rect x="0" ng-attr-y="{{y.range()[1]}}"
+        ng-attr-width="{{innerWidth}}"
+        ng-attr-height="{{y.range()[0]-y.range()[1]}}" />
+    </clipPath>
+    <clipPath ng-attr-id="markersDrawArea{{id}}">
+      <rect
+        ng-attr-x="{{-chart.markers.size-1}}"
+        ng-attr-y="{{y.range()[1]-chart.markers.size-1}}"
+        ng-attr-width="{{innerWidth+2*(chart.markers.size+1)}}"
+        ng-attr-height="{{y.range()[0]-y.range()[1]+2*(chart.markers.size+1)}}" />
+    </clipPath>
+  </defs>
   <g transform="translate({{margin}},0)">
     <g d3-axis class="x axis"
+      ticks="chart.hAxis.ticks"
+      tick-format="chart.hAxis.format"
       ng-attr-transform="translate(0,{{height}})" orient="bottom" scale="x" tick-size="0">
     </g>
     <!-- Draw one zero line in case negative values exist -->
@@ -10,10 +26,21 @@
     <g d3-axis class="y axis"
       orient="left" ticks="chart.vAxis.ticks" tick-format="chart.vAxis.format" scale="y">
     </g>
+
     <path ng-repeat="d in dataBySeries track by $index"
       ng-attr-stroke="{{color($index)}}"
       fill="none"
+      ng-attr-clip-path="url(#drawArea{{id}})"
       ng-attr-d="{{line(d)}}">
-    </rect>
+    </path>
+    <g ng-repeat="pts in dataBySeries track by $index">
+      <circle ng-attr-cx="{{lineX(d.x)}}" ng-attr-cy="{{y(d.y)}}"
+        fill="white"
+        ng-attr-r="{{chart.markers.size}}"
+        ng-attr-stroke="{{color($parent.$index)}}"
+        ng-attr-clip-path="url(#markersDrawArea{{id}})"
+        ng-repeat="d in pts">
+      </circle>
+    </g>
   </g>
 </svg>

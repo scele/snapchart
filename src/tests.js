@@ -36,26 +36,27 @@ angular.module('pivotchart.tests', ['pivotchart.directive', 'pivotchart.service'
       hAxis: { auto: true, type: 'ordinal', format: 'n', ticks: 10, band: 0.1, band2: 0.1 },
       lineInterpolation: 'linear',
       barPlacement: 'adjacent',
+      markers: { size: 3 },
     };
-    var bars = { type: { type: 'pivot-bars', hasVAxis: true, hasHAxis: true } };
-    var pie = { type: { type: 'pivot-pie', hasVAxis: false, hasHAxis: false } };
-    var lines = { type: { type: 'pivot-lines', hasVAxis: true, hasHAxis: true } };
+    var bars = { type: { type: 'pivot-bars', hasVAxis: true, hasHAxis: true, hasMarkers: false } };
+    var pie = { type: { type: 'pivot-pie', hasVAxis: false, hasHAxis: false, hasMarkers: false } };
+    var lines = { type: { type: 'pivot-lines', hasVAxis: true, hasHAxis: true, hasMarkers: true } };
     var stacked = { barPlacement: 'stacked' };
     var overlapping = { barPlacement: 'overlapping' };
     var linearX = { hAxis: { type: 'linear' } };
-    var ordinalX = { hAxis: { type: 'ordinal' } };
+    var ordinalX = { hAxis: { type: 'ordinal', format: '.1f', ticks: 5 } };
     var smallDomainX = { hAxis: { auto: false, min: -1, max: 1 } };
     var smallDomainY = { vAxis: { auto: false, min: -0.5, max: 0.5 } };
 
     // Test data
     var trigTen = data(
       ['sin', 'cos'],
-      _.range(-5, 5, 1),
+      _.range(-5, 5.1, 1),
       [Math.sin, Math.cos]
     );
     var trigHundred = data(
       ['sin', 'cos'],
-      _.range(-5, 5, 0.1),
+      _.range(-5, 5.01, 0.1),
       [Math.sin, Math.cos]
     );
     var sparse = data(
@@ -78,8 +79,8 @@ angular.module('pivotchart.tests', ['pivotchart.directive', 'pivotchart.service'
       chart("Ordinal-X bars", bars, ordinalX),
       chart("Ordinal-X stacked bars", bars, stacked, ordinalX),
       chart("Ordinal-X overlapping bars", bars, overlapping, ordinalX),
-      //chart(bars, linearX),
-      //chart(bars, stacked, linearX),
+      chart("Linear-X bars", bars, linearX, { hAxis: { band: 0.5 } }),
+      chart("Linear-X stacked bars", bars, stacked, linearX),
       chart("Pie", pie),
       chart("Donut", pie, { innerRadius: 0.5 }),
       chart("Formatting", pie, {

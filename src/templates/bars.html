@@ -1,6 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg">
+  <defs>
+  <clipPath ng-attr-id="drawArea{{id}}">
+      <rect x="0" ng-attr-y="{{y.range()[1]}}"
+        ng-attr-width="{{innerWidth}}"
+        ng-attr-height="{{y.range()[0]-y.range()[1]}}" />
+    </clipPath>
+  </defs>
   <g transform="translate({{margin}},0)">
-    <g d3-axis class="x axis"
+    <g d3-axis class="x axis" ticks="chart.hAxis.ticks"
+      tick-format="chart.hAxis.format"
       ng-attr-transform="translate(0,{{height}})" orient="bottom" scale="x" tick-size="0">
     </g>
     <!-- Draw one zero line in case negative values exist -->
@@ -10,12 +18,13 @@
     <g d3-axis class="y axis"
       orient="left" ticks="chart.vAxis.ticks" tick-format="chart.vAxis.format" scale="y">
     </g>
-    <g ng-attr-transform="translate({{x(s)}},0)" ng-repeat="s in xdata track by $index">
+    <g ng-attr-transform="translate({{barsX(s)}},0)" ng-repeat="s in xdata track by $index">
       <rect ng-repeat="bars in ydata track by $index"
         ng-attr-width="{{x0.rangeBand()}}"
         ng-attr-x="{{barX($index)}}"
         ng-attr-y="{{barY($index, $parent.$index)}}"
         ng-attr-height="{{barHeight(bars[$parent.$index])}}"
+        ng-attr-clip-path="url(#drawArea{{id}})"
         style="fill: {{color($index)}};">
         <!-- $index = seriesIdx, $parent.$index = categoryIdx -->
       </rect>

@@ -117,6 +117,19 @@
                 </label>
               </div>
             </accordion-group>
+            <accordion-group heading="Markers" ng-show="chart.type.hasMarkers">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" ng-model="chart.markers.show"> Show markers
+                </label>
+              </div>
+              <div class="form-group" ng-show="chart.markers.show">
+                <label>
+                  Size
+                  <input type="number" ng-model="chart.markers.size" class="form-control">
+                </label>
+              </div>
+            </accordion-group>
             <accordion-group heading="Horizontal axis" ng-show="chart.type.hasHAxis">
               <axis-config axis="chart.hAxis"></axis-config>
             </accordion-group>
