@@ -5,6 +5,45 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.width = 525;
     $scope.height = 376;
 
+    $scope.columns = [
+      { name: 'Column 1', type: 'number' },
+      { name: 'Column 2', type: 'text' },
+      { name: 'Column 3', type: 'text' },
+    ];
+    $scope.selectedColumns = [
+      { name: 'Column 3', type: 'text' },
+    ];
+    $scope.selectedRows = [
+      { name: 'Column 3', type: 'text' },
+    ];
+    $scope.selectedColors = [
+      { name: 'Column 1', type: 'number' },
+    ];
+    $scope.sortableSrc = {
+      connectWith: '.data-list',
+      helper: 'clone',
+      copy: true,
+      update: function(event, ui) {
+        // If trying to reorder source columns, cancel.
+        if (ui.item.sortable.droptarget.not(event.target).length == 0) {
+          ui.item.sortable.cancel();
+        }
+      },
+      start: function(event, ui) {
+        // Source columns shouldn't disappear when they are dragged.
+        ui.item.show();
+      },
+      receive: function(e, ui) {
+        // Dragging an item from another list to this one will
+        // delete the item.
+        ui.item.sortable.cancel();
+        ui.item.sortable.deleted = true;
+      },
+    };
+    $scope.sortableDst = {
+      connectWith: '.data-list',
+    };
+
     $scope.saveAs = function(event, selector) {
       // SVG XML
       var data = $(selector);

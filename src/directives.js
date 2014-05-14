@@ -224,6 +224,25 @@ angular.module('pivotchart.directive', [])
       },
     };
   })
+  .directive("pivotColumn", function() {
+    return {
+      restrict: 'EA',
+      templateUrl: 'src/templates/column.html',
+      replace: true,
+      scope: {
+        column: '=pivotColumn',
+      },
+      link: function(scope, elm, attrs, ctrl) {
+        scope.columnLabel = function(type) {
+          return {
+            number: { class: 'label-success', text: 'Number'},
+            text: { class: 'label-info', text: 'Text'},
+            date: { class: 'label-warning', text: 'Date'},
+          }[type];
+        };
+      },
+    };
+  })
   .directive("axisConfig", function() {
     return {
       restrict: 'E',

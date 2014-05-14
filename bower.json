@@ -22,6 +22,7 @@
     "angular-charts": "git://github.com/scele/angular-charts#fork",
     "lodash": "~2.4.1",
     "jquery-ui": "~1.10.4",
-    "angular-bootstrap-colorpicker": "~3.0.7"
+    "angular-bootstrap-colorpicker": "~3.0.7",
+    "angular-ui-sortable": "git://github.com/scele/ui-sortable#bower"
   }
 }

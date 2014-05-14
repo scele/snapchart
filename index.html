@@ -136,7 +136,7 @@
             <accordion-group heading="Vertical axis" ng-show="chart.type.hasVAxis">
               <axis-config axis="chart.vAxis"></axis-config>
             </accordion-group>
-            <accordion-group heading="Chart type" is-open="true">
+            <accordion-group heading="Chart type">
               <div class="form-group">
                 <label>
                   Chart type
@@ -180,6 +180,37 @@
                 </label>
               </div>
             </accordion-group>
+            <accordion-group heading="Data" is-open="true">
+            <div class="row">
+              <div class="col-xs-6">
+                <h5>Data</h5>
+                <ul class="list-group data-list data-src-list"
+                    ui-sortable="sortableSrc" ng-model="columns">
+                  <li pivot-column="col" ng-repeat="col in columns track by $index"></li>
+                </ul>
+              </div>
+              <div class="col-xs-6">
+                <h5>Columns</h5>
+                <ul class="list-group data-list"
+                    ui-sortable="sortableDst" ng-model="selectedColumns">
+                  <li pivot-column="col" ng-repeat="col in selectedColumns track by $index"></li>
+                </ul>
+                <h5>Rows</h5>
+                <ul class="list-group data-list"
+                    ui-sortable="sortableDst" ng-model="selectedRows">
+                  <li pivot-column="col" ng-repeat="col in selectedRows track by $index"></li>
+                </ul>
+                <h5>Color</h5>
+                <ul class="list-group data-list"
+                    ui-sortable="sortableDst" ng-model="selectedColors">
+                  <li pivot-column="col" ng-repeat="col in selectedColors track by $index"></li>
+                </ul>
+                <!-- Size -->
+                <!-- Text -->
+                <!-- Detail? Tooltip? -->
+              </div>
+            </div>
+            </accordion-group>
           </accordion>
         </div>
         <div class="col-md-8 chart-pane">
@@ -219,6 +250,7 @@
     <script src='bower_components/lodash/dist/lodash.min.js'></script>
     <script src='bower_components/angular-charts/dist/angular-charts.js'></script>
     <script src='bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js'></script>
+    <script src='bower_components/angular-ui-sortable/sortable.js'></script>
     <script src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script>
     <script src="http://canvg.googlecode.com/svn/trunk/StackBlur.js"></script>
     <script src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script>
