@@ -3,7 +3,6 @@ angular.module('pivotchart',
    'pivotchart.directive',
    'ui.bootstrap',
    'ui.sortable',
-   'angularCharts',
    'colorpicker.module',
   ]).config([
     '$compileProvider',
