@@ -31,13 +31,13 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       ["Expense", 879, 79],
     ]);
     $scope.inputArg = [
-      ["Category", "Type", "Value"],
-      ["Category 1", "Sales", 54],
-      ["Category 2", "Sales", 150],
-      ["Category 1", "Income", 110],
-      ["Category 2", "Income", 499],
-      ["Category 1", "Expense", 879],
-      ["Category 2", "Expense", 79],
+      ["Category", "Geography", "Sales", "Profit"],
+      ["Category 1", "Europe", 154, 23],
+      ["Category 2", "Europe", 150, 30],
+      ["Category 1", "America", 110, 4],
+      ["Category 2", "America", 499, 99],
+      ["Category 1", "Asia", 879, 200],
+      ["Category 2", "Asia", 79, 10],
     ];
 
     input.load($scope.inputArg);

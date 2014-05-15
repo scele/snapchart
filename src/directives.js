@@ -30,10 +30,43 @@ angular.module('pivotchart.directive', [])
             scope.margin = 50;
             scope.id = id++;
             scope.$watch('[data, maps, chart, width, height]', function() {
-              scope.xdata = _(scope.data)
-                .map(scope.maps.columns[0].get)
-                .unique()
-                .value();
+              var vAxis = scope.chart.vAxis;
+              var hAxis = scope.chart.hAxis;
+              scope.innerWidth = scope.width - scope.margin;
+              scope.barWidth = scope.innerWidth;
+              scope.xdata = _(scope.maps.columns).map(function(col, i) {
+                return _(scope.data).map(col.get).unique().value();
+              }).value();
+              scope.colordata = _(scope.maps.colors).map(function (c, i) {
+                return _(scope.data).map(c.get).unique().value();
+              }).cartesianProduct().filter('length').map(function (a) {
+                return a.join(" ");
+              }).value();
+              scope.color = d3.scale.category20().domain(scope.colordata);
+              if (graphArea) {
+                graphArea.setLegendData(_(scope.colordata).map(function (c) {
+                  return {
+                    text: c,
+                    color: scope.color(c),
+                  };
+                }).value());
+              }
+
+              scope.x = _(scope.maps.columns).map(function(col, i) {
+                var xdata = scope.xdata[i];
+                var band = hAxis.bands ? hAxis.bands[i] : 0.1;
+                if (_.isUndefined(band)) {
+                  band = 0.1;
+                }
+                var x = d3.scale.ordinal()
+                  .domain(xdata)
+                  .rangeRoundBands([0, scope.barWidth], band, 0);
+                if (x.rangeBand() == 0) {
+                  x.rangeBands([0, scope.barWidth], band, 0);
+                }
+                scope.barWidth = x.rangeBand();
+                return x;
+              }).value();
               scope.ydata = _(scope.data)
                 .groupBy(scope.maps.columns[0].get)
                 .map(function(a) { return _.map(a, scope.maps.rows[0].get); })
@@ -41,12 +74,10 @@ angular.module('pivotchart.directive', [])
               //_(scope.data).map(scope.maps.rows[0].get).value();
               //scope.seriesdata = _(scope.data).map(scope.maps.colors[0].get).value();
               //scope.dataBySeries = _(scope.data).groupBy(scope.maps.colors[0].get).toArray();
-              var vAxis = scope.chart.vAxis;
-              var hAxis = scope.chart.hAxis;
               var range0, domain0;
               var xOffset = 0;
-              scope.innerWidth = scope.width - scope.margin;
-              if (hAxis.type == 'ordinal') {
+              scope.axisPadding = 30;
+              /*if (hAxis.type == 'ordinal') {
                 scope.x = d3.scale.ordinal().domain(scope.xdata);
                 scope.x.rangeRoundBands([0, scope.innerWidth], hAxis.band, 0);
                 if (scope.x.rangeBand() == 0) {
@@ -89,7 +120,13 @@ angular.module('pivotchart.directive', [])
                 if (scope.x0.rangeBand() == 0) {
                   scope.x0.rangeBands(range0, hAxis.band2);
                 }
-              }
+              }*/
+              scope.showAxis = function (axis) {
+                var dimension = _.indexOf(scope.x, axis);
+                return -1 == _(scope.maps.colors)
+                  .findIndex({ index: scope.maps.columns[dimension].index });
+              };
+              scope.visibleXAxes = _(scope.x).filter(scope.showAxis).value();
 
               var minY, maxY;
               if (scope.chart.type.type == 'pivot-bars' &&
@@ -110,13 +147,16 @@ angular.module('pivotchart.directive', [])
                 maxY = allY.max();
               }
               scope.y = getScale(vAxis, [Math.min(0, minY), Math.max(maxY, 0)])
-                .range([scope.height, 10]);
+                .range([scope.height - Math.max(0, (scope.visibleXAxes.length - 1)) *
+                                          scope.axisPadding, 10]);
               scope.line = d3.svg.line()
                 .x(function (d) { return scope.lineX(d.x); })
                 .y(function (d) { return scope.y(d.y); })
                 .interpolate(scope.chart.lineInterpolation);
-              scope.barY = function (seriesIdx, categoryIdx) {
-                var ydata = scope.ydata[categoryIdx];
+              scope.barY = function (d) {
+                var y = scope.maps.rows[0].get(d);
+                return scope.y(Math.max(0, y));
+                /*var ydata = scope.ydata[categoryIdx];
                 var y = ydata[seriesIdx];
                 if (scope.chart.barPlacement == 'stacked') {
                   var others = _(scope.ydata[categoryIdx])
@@ -128,18 +168,35 @@ angular.module('pivotchart.directive', [])
                   return scope.y(Math.max(0, y) + others);
                 } else {
                   return scope.y(Math.max(0, y));
+                }*/
+              };
+              scope.xAxisPositions = function (axis) {
+                var dimension = _.indexOf(scope.x, axis);
+                if (dimension == 0) {
+                  return [0];
+                } else {
+                  var d = scope.x[dimension - 1].range()[1];
+                  var num = _(scope.xdata).map('length').take(dimension).product();
+                  return _.range(0, num * d, d);
                 }
               };
               scope.barsX = function (x) {
                 return scope.x(x) + xOffset;
               };
-              scope.barX = function (seriesIdx) {
-                if (scope.chart.barPlacement == 'adjacent')
+              scope.barX = function (d) {
+                return _(scope.x).map(function(x, i) {
+                  return x(scope.maps.columns[i].get(d));
+                }).sum();
+                /*if (scope.chart.barPlacement == 'adjacent')
                   return scope.x0(seriesIdx);
                 else
-                  return 0;
+                  return 0;*/
               };
-              scope.barColor = function(seriesIdx) {
+              scope.barColor = function (d) {
+                var key = _(scope.maps.colors).map(function(c, i) {
+                  return c.get(d);
+                }).join(" ");
+                return scope.color(key);
                 //if (s
               };
               scope.lineX = function (x) {
@@ -153,15 +210,16 @@ angular.module('pivotchart.directive', [])
 
               vAxis.min = scope.y.domain()[0];
               vAxis.max = scope.y.domain()[1];
-              hAxis.min = scope.x.domain()[0];
-              hAxis.max = _.last(scope.x.domain());
+              //hAxis.min = scope.x.domain()[0];
+              //hAxis.max = _.last(scope.x.domain());
 
-              scope.barHeight = function (val) {
+              scope.barHeight = function (d) {
                 var zero = Math.min(Math.max(0, vAxis.min), vAxis.max);
-                return Math.abs(scope.y(val) - scope.y(zero));
+                var y = scope.maps.rows[0].get(d);
+                return Math.abs(scope.y(y) - scope.y(zero));
               };
 
-              scope.color = colors.get;
+              //scope.color = colors.get;
               scope.abs = Math.abs;
               scope.max = Math.max;
             }, true);
@@ -283,14 +341,13 @@ angular.module('pivotchart.directive', [])
       restrict: 'EA',
       template: '<svg><g ng-repeat="d in reversedData track by $index" transform="translate(0,{{20 * $index}})">' +
                   '<rect width="15" height="15" ' +
-                  '  style="fill:{{color(d.index)}}">' +
+                  '  style="fill:{{d.color}}">' +
                   '</rect>' +
                   '<text x="20" y="9" style="text-anchor:top; alignment-baseline:middle;">' +
                     '{{d.text}}' +
                   '</text>' +
                 '</g></svg>',
       scope: {
-        data: '=',
         reverse: '=',
       },
       require: '?^graphArea',
@@ -298,15 +355,15 @@ angular.module('pivotchart.directive', [])
       link: function(scope, elm, attrs, graphArea) {
         scope.color = colors.get;
         scope.$watch('[reverse,data]', function() {
-          scope.reversedData = _(scope.data).clone().map(function (d, i) {
-              return { text: d, index: i }; });
-            if (scope.reverse) scope.reversedData.reverse();
+          scope.reversedData = _(scope.data).clone();
+          if (scope.reverse) scope.reversedData.reverse();
         }, true);
         scope.$watch(function() {
           if (graphArea) {
             var s = scope.data;
             var bbox = elm[0].getBBox();
             graphArea.setLegendWidth(bbox.width);
+            scope.data = graphArea.getLegendData();
           }
         });
       },
@@ -333,9 +390,16 @@ angular.module('pivotchart.directive', [])
       },
       transclude: true,
       controller: function($scope, $element, $attrs, $transclude) {
+        var legendData = [];
         return {
           setLegendWidth: function(w) {
             $scope.legendWidth = w;
+          },
+          setLegendData: function (d) {
+            legendData = d;
+          },
+          getLegendData: function (d) {
+            return legendData;
           },
           setGraphArea: function(scope) {
             this.graphScope = scope;
@@ -517,7 +581,30 @@ angular.module('pivotchart.directive', [])
         throw new Error('transpose() can only be applied to an array of arrays');
       return _.range(x[0].length).map(function(i) { return _.map(x, function(e) { return e[i]; }); });
     }
+    function sum(yy) {
+      return _.reduce(yy, function(sum, num) {
+        return sum + num;
+      }, 0);
+    }
+    function product(yy) {
+      return _.reduce(yy, function(product, num) {
+        return product * num;
+      }, 1);
+    }
+    function cartesianProduct(array) {
+      return _.reduce(array, function(a, b) {
+        return _.flatten(_.map(a, function(x) {
+          return _.map(b, function(y) {
+            return x.concat([y]);
+          });
+        }), true);
+      }, [ [] ]);
+    };
+
     _.mixin({'transpose': transpose});
+    _.mixin({'cartesianProduct': cartesianProduct});
+    _.mixin({'sum': sum}, {chain: false});
+    _.mixin({'product': product}, {chain: false});
     return {
       restrict: 'E',
       template: '<div><div js-function ui-codemirror="opts" ui-refresh="refresh" ng-model="scopemodel"></div>' +
