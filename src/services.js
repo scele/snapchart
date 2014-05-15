@@ -1,4 +1,35 @@
 angular.module('pivotchart.service', [])
+  .factory('input', function() {
+    var input = {
+      columns: [],
+      data: [],
+    };
+
+    function detectType(data) {
+      if (_(data).all(function(d) { return typeof d === 'number'; }))
+        return 'number';
+      if (_(data).all(function(d) { return d instanceof Date; }))
+        return 'date';
+      return 'text';
+    };
+    input.load = function(data) {
+      input.columns.length = 0;
+      _.merge(input.columns, _(data[0]).map(function(name, i) {
+        var get = function(d) { return d[i]; };
+        var values = _(data).rest().map(get);
+        return {
+          name: name,
+          index: i,
+          type: detectType(values),
+          get: get,
+          tooltip: values.unique().join(', ').substring(0, 100),
+        };
+      }).value());
+      input.data.length = 0;
+      _.merge(input.data, _.rest(data));
+    };
+    return input;
+  })
   .factory('colors', function() {
     var cc = [
       'steelBlue',
@@ -47,12 +78,15 @@ angular.module('pivotchart.service', [])
         config: { legend: {display: true, position: 'right'} },
         fn:
 function(data) {
+  return data;
+},
+/*function(data) {
   return {
     series: _(data).map(_.first).rest(1).value(),
     x: _(data[0]).rest(1).value(),
     y: _(data).rest(1).map(function(d){return _.rest(d,1); }).transpose().value(),
   };
-},/*
+},*//*
 function (data) {
   data = ["sin", "cos"];
   var fns = _.map(data, function(d) { return Math[d]; });

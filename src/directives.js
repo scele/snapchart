@@ -18,6 +18,7 @@ angular.module('pivotchart.directive', [])
           scope: {
             chart: '=',
             data: '=',
+            maps: '=',
             width: '=?',
             height: '=?',
           },
@@ -28,35 +29,18 @@ angular.module('pivotchart.directive', [])
             }
             scope.margin = 50;
             scope.id = id++;
-            scope.$watch('[data, chart, width, height]', function() {
-              if (Array.isArray(scope.data)) {
-                scope.xdata = _(scope.data).map('x');
-                scope.ydata = _(scope.data).map('y');
-                scope.seriesdata = _(scope.data).map('series');
-                scope.dataBySeries = _(scope.data).groupBy('series').toArray();
-              } else {
-                scope.dataBySeries = _.map(scope.data.y, function (yy, i) {
-                  return _.map(yy, function (y, j) {
-                    return {
-                      x: scope.data.x[j],
-                      y: y,
-                      series: scope.data.series[i],
-                    };
-                  });
-                });
-                scope.xdata = scope.data.x;
-                scope.ydata = scope.data.y;
-                scope.seriesdata = scope.data.series;
-              }
-              if (!Array.isArray(scope.ydata[0])) {
-                scope.ydata = [scope.ydata];
-              }
-              if (!Array.isArray(scope.xdata)) {
-                scope.xdata = [scope.xdata];
-              }
-              if (!Array.isArray(scope.seriesdata)) {
-                scope.seriesdata = [scope.seriesdata];
-              }
+            scope.$watch('[data, maps, chart, width, height]', function() {
+              scope.xdata = _(scope.data)
+                .map(scope.maps.columns[0].get)
+                .unique()
+                .value();
+              scope.ydata = _(scope.data)
+                .groupBy(scope.maps.columns[0].get)
+                .map(function(a) { return _.map(a, scope.maps.rows[0].get); })
+                .value();
+              //_(scope.data).map(scope.maps.rows[0].get).value();
+              //scope.seriesdata = _(scope.data).map(scope.maps.colors[0].get).value();
+              //scope.dataBySeries = _(scope.data).groupBy(scope.maps.colors[0].get).toArray();
               var vAxis = scope.chart.vAxis;
               var hAxis = scope.chart.hAxis;
               var range0, domain0;
@@ -69,7 +53,7 @@ angular.module('pivotchart.directive', [])
                   scope.x.rangeBands([0, scope.innerWidth], hAxis.band, 0);
                 }
                 range0 = [0, scope.x.rangeBand()];
-                domain0 = d3.range(scope.ydata.length);
+                domain0 = d3.range(scope.ydata[0].length);
                 if (scope.chart.barPlacement == 'adjacent') {
                   scope.x0 = d3.scale.ordinal()
                     .rangeRoundBands(range0, hAxis.band2)
@@ -95,7 +79,7 @@ angular.module('pivotchart.directive', [])
                 xOffset = -band/2 + pad;
                 range0 = [0, band - 2 * pad];
                 if (scope.chart.barPlacement == 'adjacent') {
-                  domain0 = d3.range(scope.ydata.length);
+                  domain0 = d3.range(scope.ydata[0].length);
                 } else {
                   domain0 = [0];
                 }
@@ -132,11 +116,11 @@ angular.module('pivotchart.directive', [])
                 .y(function (d) { return scope.y(d.y); })
                 .interpolate(scope.chart.lineInterpolation);
               scope.barY = function (seriesIdx, categoryIdx) {
-                var ydata = scope.ydata[seriesIdx];
-                var y = ydata[categoryIdx];
+                var ydata = scope.ydata[categoryIdx];
+                var y = ydata[seriesIdx];
                 if (scope.chart.barPlacement == 'stacked') {
-                  var others = _(scope.ydata).take(seriesIdx)
-                    .map(function (x) { return x[categoryIdx]; })
+                  var others = _(scope.ydata[categoryIdx])
+                    .take(seriesIdx)
                     .filter(function (x) { return x * y >= 0; })
                     .reduce(function (sum, num) {
                       return sum + num;
@@ -154,6 +138,9 @@ angular.module('pivotchart.directive', [])
                   return scope.x0(seriesIdx);
                 else
                   return 0;
+              };
+              scope.barColor = function(seriesIdx) {
+                //if (s
               };
               scope.lineX = function (x) {
                 if (scope.chart.hAxis.type == 'ordinal') {
@@ -276,7 +263,7 @@ angular.module('pivotchart.directive', [])
         scope.$watch('[scale,orient,tickFormat,ticks,tickSize]', function() {
           if (!angular.isUndefined(scope.scale)) axis.scale(scope.scale);
           if (!angular.isUndefined(scope.orient)) axis.orient(scope.orient);
-          if (!angular.isUndefined(scope.tickFormat)) axis.tickFormat(d3.format(scope.tickFormat));
+          //if (!angular.isUndefined(scope.tickFormat)) axis.tickFormat(d3.format(scope.tickFormat));
           if (!angular.isUndefined(scope.ticks)) {
             var n = parseInt(scope.ticks);
             axis.ticks(n);
@@ -332,6 +319,7 @@ angular.module('pivotchart.directive', [])
       replace: true,
       scope: {
         data: '=',
+        maps: '=',
         width: '=w',
         height: '=h',
         title: '=',
@@ -358,6 +346,13 @@ angular.module('pivotchart.directive', [])
       },
       link: function(scope, elm, attrs, ctrl, transcludeFn) {
         var titleElm = elm.find('.title')[0];
+        scope.$watch('[data,maps]', function() {
+          if (scope.maps.colors && scope.maps.colors.length) {
+            scope.legendData = _(scope.data).map(scope.maps.colors[0].get).unique().value();
+          } else {
+            scope.legendData = [];
+          }
+        }, true);
         scope.$watch('[width,height,legendWidth,title,showTitle,titleSize,font,userMargin,showLegend]', function() {
           scope.titleHeight = scope.showTitle ? 1.3 * titleElm.getBBox().height : 0;
           scope.legendWidth = scope.showLegend ? (scope.legendWidth || 0) : 0;

@@ -1,24 +1,54 @@
 angular.module('pivotchart.controller', ['pivotchart.service'])
-  .controller('MainCtrl', function($scope, chartTypes, charts, $modal, $http, $timeout, $window) {
+  .controller('MainCtrl', function($scope, chartTypes, charts, input, $modal, $http, $timeout, $window) {
     $scope.charts = charts.get();
     $scope.chartTypes = chartTypes.get();
     $scope.width = 525;
     $scope.height = 376;
 
-    $scope.columns = [
-      { name: 'Column 1', type: 'number' },
-      { name: 'Column 2', type: 'text' },
-      { name: 'Column 3', type: 'text' },
+    //$scope.columns = [
+    //  { name: 'Column 1', type: 'number' },
+    //  { name: 'Column 2', type: 'text' },
+    //  { name: 'Column 3', type: 'text' },
+    //];
+    //$scope.selectedColumns = [
+    //  { name: 'Column 3', type: 'text' },
+    //];
+    //$scope.selectedRows = [
+    //  { name: 'Column 3', type: 'text' },
+    //];
+    //$scope.selectedColors = [
+    //  { name: 'Column 1', type: 'number' },
+    //];
+    $scope.maps = {
+      rows: [],
+      columns: [],
+      colors: [],
+    };
+    $scope.inputArg = _.transpose([
+      ["", "Category 1", "Category 2"],
+      ["Sales", 54, 150],
+      ["Income", 110, 499],
+      ["Expense", 879, 79],
+    ]);
+    $scope.inputArg = [
+      ["Category", "Type", "Value"],
+      ["Category 1", "Sales", 54],
+      ["Category 2", "Sales", 150],
+      ["Category 1", "Income", 110],
+      ["Category 2", "Income", 499],
+      ["Category 1", "Expense", 879],
+      ["Category 2", "Expense", 79],
     ];
-    $scope.selectedColumns = [
-      { name: 'Column 3', type: 'text' },
+
+    input.load($scope.inputArg);
+    $scope.inputArg = input.data;
+    $scope.columns = input.columns;
+
+    $scope.scaleTypes = [
+      { type: 'linear', name: 'Linear' },
+      { type: 'log', name: 'Logarithmic' }
     ];
-    $scope.selectedRows = [
-      { name: 'Column 3', type: 'text' },
-    ];
-    $scope.selectedColors = [
-      { name: 'Column 1', type: 'number' },
-    ];
+
     $scope.sortableSrc = {
       connectWith: '.data-list',
       helper: 'clone',
@@ -123,16 +153,6 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       }
     });
 
-    $scope.inputArg = [
-      ["", "Category 1", "Category 2"],
-      ["Sales", 54, 150],
-      ["Income", 110, 499],
-      ["Expense", 879, 79],
-    ];
-    $scope.scaleTypes = [
-      { type: 'linear', name: 'Linear' },
-      { type: 'log', name: 'Logarithmic' }
-    ];
     $scope.chart = angular.copy($scope.chartTypes[0]);
     $scope.chart.type = $scope.chartTypes[0];
     $scope.chart.inputArg = $scope.inputArg;

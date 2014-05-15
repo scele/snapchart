@@ -190,20 +190,20 @@
                 </ul>
               </div>
               <div class="col-xs-6">
-                <h5>Columns</h5>
+                <h5>X-axis</h5>
                 <ul class="list-group data-list"
-                    ui-sortable="sortableDst" ng-model="selectedColumns">
-                  <li pivot-column="col" ng-repeat="col in selectedColumns track by $index"></li>
+                    ui-sortable="sortableDst" ng-model="maps.columns">
+                  <li pivot-column="col" ng-repeat="col in maps.columns track by $index"></li>
                 </ul>
-                <h5>Rows</h5>
+                <h5>Y-axis</h5>
                 <ul class="list-group data-list"
-                    ui-sortable="sortableDst" ng-model="selectedRows">
-                  <li pivot-column="col" ng-repeat="col in selectedRows track by $index"></li>
+                    ui-sortable="sortableDst" ng-model="maps.rows">
+                  <li pivot-column="col" ng-repeat="col in maps.rows track by $index"></li>
                 </ul>
                 <h5>Color</h5>
                 <ul class="list-group data-list"
-                    ui-sortable="sortableDst" ng-model="selectedColors">
-                  <li pivot-column="col" ng-repeat="col in selectedColors track by $index"></li>
+                    ui-sortable="sortableDst" ng-model="maps.colors">
+                  <li pivot-column="col" ng-repeat="col in maps.colors track by $index"></li>
                 </ul>
                 <!-- Size -->
                 <!-- Text -->
@@ -222,13 +222,15 @@
                download="pivotchartjs.png" ng-show="hoverChart">
               <span class="glyphicon glyphicon-floppy-save"></span>
             </a>
-            <graph-area id="chart" data="chart._dataCache" x-w="width" x-h="height"
+            <graph-area id="chart" data="chart._dataCache" maps="maps"
+              x-w="width" x-h="height"
               show-title="chart.showTitle" title="chart.title"
               title-size="chart.titleSize" font="chart.font"
               margin="chart.margin" show-legend="chart.showLegend"
               reverse-legend="chart.type.type == 'pivot-bars' && chart.barPlacement == 'stacked'"
               background="chart.background">
-              <svg dynamic-directive="chart.type.type" data="chart._dataCache" chart="chart"></svg>
+              <svg dynamic-directive="chart.type.type" data="chart._dataCache"
+                maps="maps" chart="chart"></svg>
             </graph-area>
           </div>
         </div>

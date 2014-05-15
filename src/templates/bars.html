@@ -19,11 +19,11 @@
       orient="left" ticks="chart.vAxis.ticks" tick-format="chart.vAxis.format" scale="y">
     </g>
     <g ng-attr-transform="translate({{barsX(s)}},0)" ng-repeat="s in xdata track by $index">
-      <rect ng-repeat="bars in ydata track by $index"
+      <rect ng-repeat="bar in ydata[$index] track by $index"
         ng-attr-width="{{x0.rangeBand()}}"
         ng-attr-x="{{barX($index)}}"
         ng-attr-y="{{barY($index, $parent.$index)}}"
-        ng-attr-height="{{barHeight(bars[$parent.$index])}}"
+        ng-attr-height="{{barHeight(bar)}}"
         ng-attr-clip-path="url(#drawArea{{id}})"
         style="fill: {{color($index)}};">
         <!-- $index = seriesIdx, $parent.$index = categoryIdx -->
