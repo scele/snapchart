@@ -18,6 +18,7 @@
     <link href="bower_components/codemirror/lib/codemirror.css" rel="stylesheet" type="text/css" >
     <link href="bower_components/angular-bootstrap-colorpicker/css/colorpicker.css" rel="stylesheet" type="text/css" >
     <link href="less/pivotchart.less" rel="stylesheet/less" type="text/css" >
+    <link rel="stylesheet" media="screen" href="bower_components/handsontable/dist/jquery.handsontable.full.css">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -58,6 +59,11 @@
               <editable-function ng-model="chart.inputArg"
                 class="editor" ui-refresh="inputIsOpen">
               </editable-function>
+            </accordion-group>
+            <accordion-group heading="Input" is-open="true">
+              <div ng-model="tableInput"
+                class="handsontable" handsontable="tableConfig">
+              </div>
             </accordion-group>
             <accordion-group heading="Transformation" is-open="transformIsOpen">
               <editable-function ng-model="chart.fn"
@@ -250,6 +256,7 @@
     <script src="bower_components/less.js/dist/less-1.7.0.min.js"></script>
     <script src='bower_components/d3/d3.js'></script>
     <script src='bower_components/lodash/dist/lodash.min.js'></script>
+    <script src='bower_components/handsontable/dist/jquery.handsontable.full.js'></script>
     <script src='bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js'></script>
     <script src='bower_components/angular-ui-sortable/sortable.js'></script>
     <script src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script>

@@ -6,17 +6,34 @@ angular.module('pivotchart.service', [])
     };
 
     function detectType(data) {
-      if (_(data).all(function(d) { return typeof d === 'number'; }))
+      if (_(data).all(function(d) { return typeof d === 'number' || d === '' || _.isNull(d); }))
         return 'number';
       if (_(data).all(function(d) { return d instanceof Date; }))
         return 'date';
       return 'text';
     };
     input.load = function(data) {
+      function getEmptyRows(table) {
+        return _(table).map(function (row) {
+          return _(row).all(function (x) {
+            return _.isNull(x) || x === '';
+          });
+        }).foldr(function (state, b) {
+          return b && !state[1] ? [state[0] + 1, false] : [state[0], true];
+        }, [0, false])[0];
+      }
+
+      // Look for empty rows at the bottom
+      var emptyRows = getEmptyRows(data);
+      input.data.length = 0;
+      _.merge(input.data, _(data).take(data.length - emptyRows).rest().value());
+
+      // Look for empty columns on the right
+      var emptyColumns = getEmptyRows(_(data).transpose());
       input.columns.length = 0;
-      _.merge(input.columns, _(data[0]).map(function(name, i) {
+      var columns = _(data[0]).take(data[0].length - emptyColumns).map(function(name, i) {
         var get = function(d) { return d[i]; };
-        var values = _(data).rest().map(get);
+        var values = _(input.data).map(get);
         return {
           name: name,
           index: i,
@@ -24,15 +41,14 @@ angular.module('pivotchart.service', [])
           get: get,
           tooltip: values.unique().join(', ').substring(0, 100),
         };
-      }).value());
+      }).value();
+      _.merge(input.columns, columns);
       input.columns.unshift({
         name: 'Variable name',
         type: 'text',
         index: -1,
         variable: true,
       });
-      input.data.length = 0;
-      _.merge(input.data, _.rest(data));
     };
     return input;
   })

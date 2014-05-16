@@ -24,13 +24,13 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       columns: [],
       colors: [],
     };
-    $scope.inputArg = _.transpose([
+    $scope.tableInput = _.transpose([
       ["", "Category 1", "Category 2"],
       ["Sales", 54, 150],
       ["Income", 110, 499],
       ["Expense", 879, 79],
     ]);
-    $scope.inputArg = [
+    $scope.tableInput = [
       ["Category", "Geography", "Sales", "Profit"],
       ["Category 1", "Europe", 154, 23],
       ["Category 2", "Europe", 150, 30],
@@ -40,7 +40,13 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       ["Category 2", "Asia", 79, 10],
     ];
 
-    input.load($scope.inputArg);
+    $scope.tableConfig = {
+      minSpareCols: 1,
+      minSpareRows: 1,
+    };
+    $scope.$watch('tableInput', function() {
+      input.load($scope.tableInput);
+    }, true);
     $scope.inputArg = input.data;
     $scope.columns = input.columns;
 
@@ -141,7 +147,7 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       var newValue;
       var chart = $scope.chart;
       try {
-        newValue = chart.fn ? chart.fn.apply({}, [chart.inputArg]) : chart._dataCache;
+        newValue = chart.fn ? chart.fn.apply({}, [angular.copy(chart.inputArg)]) : chart._dataCache;
       } catch(e) {
           chart._dataCache = undefined;
           chart._dataCacheStr = "";

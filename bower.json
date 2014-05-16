@@ -25,6 +25,7 @@
     "angular-ui-sortable": "git://github.com/scele/ui-sortable#bower",
     "codemirror": "~4.1.0",
     "jquery": "~2.1.1",
-    "d3": "~3.4.6"
+    "d3": "~3.4.6",
+    "handsontable": "~0.10.5"
   }
 }

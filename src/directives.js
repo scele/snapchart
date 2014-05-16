@@ -516,6 +516,56 @@ angular.module('pivotchart.directive', [])
       link: function(scope, elm, attrs, ctrl) {},
     };
   })
+  .directive('handsontable', function ($rootScope) {
+    return {
+      restrict: 'A',
+      require: '?ngModel',
+      link: function(scope, iElement, iAttrs, ngModel) {
+        var ht;
+        var opts = {
+          cells: function (row, col, prop) {
+              if (!ht) return;
+              var val = ht.getData()[row][col];
+              var num = Number(val);
+              var meta = {};
+              if (val != '' && !Number.isNaN(num)) {
+                meta.renderer = Handsontable.NumericRenderer;
+              } else {
+                meta.renderer = Handsontable.TextRenderer;
+              }
+              return meta;
+          },
+          beforeChange: function (changes, source) {
+            _(changes).each(function(c) {
+              var row = c[0], col = c[1], old = c[2], next = c[3];
+              var meta = ht.getCellMeta(row, col);
+              var num = Number(c[3]);
+              if (c[3] != '' && !Number.isNaN(num)) {
+                c[3] = num;
+                meta.renderer = Handsontable.NumericRenderer;
+              } else {
+                meta.renderer = Handsontable.TextRenderer;
+              }
+            });
+          },
+          afterChange: function (changes, source) {
+            if (!scope.$$phase)
+              $rootScope.$apply();
+          },
+        };
+        _.extend(opts, scope.$eval(iAttrs.handsontable));
+        $(iElement).handsontable(opts);
+        ht = $(iElement).handsontable('getInstance');
+        if (ngModel) {
+          ngModel.$render = function (d) {
+            if (ngModel.$viewValue != ht.getData())
+              ht.loadData(ngModel.$viewValue);
+            ht.render();
+          };
+        }
+      },
+    };
+  })
   // A simplified (and working) version of http://github.com/angular-ui/ui-codemirror.
   .directive('uiCodemirror', function () {
     return {
