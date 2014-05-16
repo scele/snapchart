@@ -71,7 +71,7 @@ angular.module('pivotchart.directive', [])
                 var x = d3.scale.ordinal()
                   .domain(xdata)
                   .rangeRoundBands([0, scope.barWidth], band, 0);
-                if (x.rangeBand() == 0) {
+                if (x.rangeBand() === 0) {
                   x.rangeBands([0, scope.barWidth], band, 0);
                 }
                 scope.barWidth = x.rangeBand();
@@ -185,7 +185,7 @@ angular.module('pivotchart.directive', [])
               scope.xAxisPositions = function (axis) {
                 var dimension = _.indexOf(scope.x, axis);
                 return _(scope.x).take(dimension).map(function(x, i) {
-                  return x.range()
+                  return x.range();
                 }).cartesianProduct().map(function(x) {
                   return _(x).sum();
                 }).value();
@@ -336,7 +336,9 @@ angular.module('pivotchart.directive', [])
             axis.ticks(n);
             if (typeof(scope.scale.rangeBands) !== "undefined") {
               var nth = Math.ceil(scope.scale.domain().length / n);
-              axis.tickValues(scope.scale.domain().filter(function(d,i) { return !(i%nth); }));
+              var vals = scope.scale.domain()
+                          .filter(function(d,i) { return i % nth === 0; });
+              axis.tickValues(vals);
             }
           }
           if (!angular.isUndefined(scope.tickSize)) axis.tickSize(parseInt(scope.tickSize));
@@ -528,7 +530,7 @@ angular.module('pivotchart.directive', [])
               var val = ht.getData()[row][col];
               var num = Number(val);
               var meta = {};
-              if (val != '' && !Number.isNaN(num)) {
+              if (val !== '' && !Number.isNaN(num)) {
                 meta.renderer = Handsontable.NumericRenderer;
               } else {
                 meta.renderer = Handsontable.TextRenderer;
@@ -540,7 +542,7 @@ angular.module('pivotchart.directive', [])
               var row = c[0], col = c[1], old = c[2], next = c[3];
               var meta = ht.getCellMeta(row, col);
               var num = Number(c[3]);
-              if (c[3] != '' && !Number.isNaN(num)) {
+              if (c[3] !== '' && !Number.isNaN(num)) {
                 c[3] = num;
                 meta.renderer = Handsontable.NumericRenderer;
               } else {
@@ -658,7 +660,7 @@ angular.module('pivotchart.directive', [])
           });
         }), true);
       }, [ [] ]);
-    };
+    }
 
     _.mixin({'transpose': transpose});
     _.mixin({'cartesianProduct': cartesianProduct});

@@ -61,7 +61,7 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       copy: true,
       update: function(event, ui) {
         // If trying to reorder source columns, cancel.
-        if (ui.item.sortable.droptarget.not(event.target).length == 0) {
+        if (!ui.item.sortable.droptarget.not(event.target).length) {
           ui.item.sortable.cancel();
         }
       },

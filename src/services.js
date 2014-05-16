@@ -11,7 +11,7 @@ angular.module('pivotchart.service', [])
       if (_(data).all(function(d) { return d instanceof Date; }))
         return 'date';
       return 'text';
-    };
+    }
     input.load = function(data) {
       function getEmptyRows(table) {
         return _(table).map(function (row) {
