@@ -35,16 +35,26 @@ angular.module('pivotchart.directive', [])
               scope.innerWidth = scope.width - scope.margin;
               scope.barWidth = scope.innerWidth;
               scope.xdata = _(scope.maps.columns).map(function(col, i) {
-                return _(scope.data).map(col.get).unique().value();
+                if (col.variable) {
+                  return _(scope.maps.rows).map('name').unique().value();
+                } else {
+                  return _(scope.data).map(col.get).unique().value();
+                }
               }).value();
-              scope.colordata = _(scope.maps.colors).map(function (c, i) {
-                return _(scope.data).map(c.get).unique().value();
-              }).cartesianProduct().filter('length').map(function (a) {
-                return a.join(" ");
+              scope.colordata = _(scope.maps.colors).map(function (col, i) {
+                if (col.variable) {
+                  return _(scope.maps.rows).map('name').unique().value();
+                } else {
+                  return _(scope.data).map(col.get).unique().value();
+                }
               }).value();
-              scope.color = d3.scale.category20().domain(scope.colordata);
+              scope.legenddata = _(scope.colordata)
+                .cartesianProduct().filter('length').map(function (a) {
+                  return a.join(" ");
+                }).value();
+              scope.color = d3.scale.category20().domain(scope.legenddata);
               if (graphArea) {
-                graphArea.setLegendData(_(scope.colordata).map(function (c) {
+                graphArea.setLegendData(_(scope.legenddata).map(function (c) {
                   return {
                     text: c,
                     color: scope.color(c),
@@ -123,6 +133,8 @@ angular.module('pivotchart.directive', [])
               }*/
               scope.showAxis = function (axis) {
                 var dimension = _.indexOf(scope.x, axis);
+                if (dimension == -1)
+                  return false;
                 return -1 == _(scope.maps.colors)
                   .findIndex({ index: scope.maps.columns[dimension].index });
               };
@@ -153,8 +165,8 @@ angular.module('pivotchart.directive', [])
                 .x(function (d) { return scope.lineX(d.x); })
                 .y(function (d) { return scope.y(d.y); })
                 .interpolate(scope.chart.lineInterpolation);
-              scope.barY = function (d) {
-                var y = scope.maps.rows[0].get(d);
+              scope.barY = function (d, yidx) {
+                var y = scope.maps.rows[yidx].get(d);
                 return scope.y(Math.max(0, y));
                 /*var ydata = scope.ydata[categoryIdx];
                 var y = ydata[seriesIdx];
@@ -172,32 +184,33 @@ angular.module('pivotchart.directive', [])
               };
               scope.xAxisPositions = function (axis) {
                 var dimension = _.indexOf(scope.x, axis);
-                if (dimension == 0) {
-                  return [0];
-                } else {
-                  var d = scope.x[dimension - 1].range()[1];
-                  var num = _(scope.xdata).map('length').take(dimension).product();
-                  return _.range(0, num * d, d);
-                }
+                return _(scope.x).take(dimension).map(function(x, i) {
+                  return x.range()
+                }).cartesianProduct().map(function(x) {
+                  return _(x).sum();
+                }).value();
               };
               scope.barsX = function (x) {
                 return scope.x(x) + xOffset;
               };
-              scope.barX = function (d) {
+              scope.barX = function (d, yidx) {
                 return _(scope.x).map(function(x, i) {
-                  return x(scope.maps.columns[i].get(d));
+                  if (scope.maps.columns[i].variable) {
+                    return x(scope.xdata[i][yidx]);
+                  } else {
+                    return x(scope.maps.columns[i].get(d));
+                  }
                 }).sum();
-                /*if (scope.chart.barPlacement == 'adjacent')
-                  return scope.x0(seriesIdx);
-                else
-                  return 0;*/
               };
-              scope.barColor = function (d) {
+              scope.barColor = function (d, yidx) {
                 var key = _(scope.maps.colors).map(function(c, i) {
-                  return c.get(d);
+                  if (c.variable) {
+                    return scope.colordata[i][yidx];
+                  } else {
+                    return c.get(d);
+                  }
                 }).join(" ");
                 return scope.color(key);
-                //if (s
               };
               scope.lineX = function (x) {
                 if (scope.chart.hAxis.type == 'ordinal') {
@@ -213,15 +226,11 @@ angular.module('pivotchart.directive', [])
               //hAxis.min = scope.x.domain()[0];
               //hAxis.max = _.last(scope.x.domain());
 
-              scope.barHeight = function (d) {
+              scope.barHeight = function (d, yidx) {
                 var zero = Math.min(Math.max(0, vAxis.min), vAxis.max);
-                var y = scope.maps.rows[0].get(d);
+                var y = scope.maps.rows[yidx].get(d);
                 return Math.abs(scope.y(y) - scope.y(zero));
               };
-
-              //scope.color = colors.get;
-              scope.abs = Math.abs;
-              scope.max = Math.max;
             }, true);
           },
         };

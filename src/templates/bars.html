@@ -24,14 +24,16 @@
     <g d3-axis class="y axis"
       orient="left" ticks="chart.vAxis.ticks" tick-format="chart.vAxis.format" scale="y">
     </g>
-    <rect ng-repeat="d in data track by $index"
-      ng-attr-width="{{barWidth}}"
-      ng-attr-x="{{barX(d)}}"
-      ng-attr-y="{{barY(d)}}"
-      ng-attr-height="{{barHeight(d)}}"
-      ng-attr-clip-path="url(#drawArea{{id}})"
-      style="fill: {{barColor(d)}};">
-      <!-- $index = seriesIdx, $parent.$index = categoryIdx -->
-    </rect>
+    <g ng-repeat="d in data track by $index">
+      <rect ng-repeat="_unused in maps.rows track by $index"
+        ng-attr-width="{{barWidth}}"
+        ng-attr-x="{{barX(d, $index)}}"
+        ng-attr-y="{{barY(d, $index)}}"
+        ng-attr-height="{{barHeight(d, $index)}}"
+        ng-attr-clip-path="url(#drawArea{{id}})"
+        style="fill: {{barColor(d, $index)}};">
+        <!-- $index = seriesIdx, $parent.$index = categoryIdx -->
+      </rect>
+    </g>
   </g>
 </svg>

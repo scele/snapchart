@@ -25,6 +25,12 @@ angular.module('pivotchart.service', [])
           tooltip: values.unique().join(', ').substring(0, 100),
         };
       }).value());
+      input.columns.unshift({
+        name: 'Variable name',
+        type: 'text',
+        index: -1,
+        variable: true,
+      });
       input.data.length = 0;
       _.merge(input.data, _.rest(data));
     };
