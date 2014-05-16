@@ -173,7 +173,6 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.chart.hAxis = { auto: true, type: 'ordinal', format: 'n', ticks: 10, band: 0.1, band2: 0.1 };
     $scope.chart.markers = { show: true, size: 3 };
     $scope.chart.lineInterpolation = 'linear';
-    $scope.chart.barPlacement = 'adjacent';
     $scope.fonts = [
       {title: "Open Sans Light", family: "'Open Sans',sans-serif", weight: 100},
       {title: "Open Sans", family: "'Open Sans',sans-serif", weight: 400},
