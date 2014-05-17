@@ -68,6 +68,7 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       { type: 'linear', name: 'Linear' },
       { type: 'log', name: 'Logarithmic' }
     ];
+    $scope.showPromo = true;
 
     $scope.sortableSrc = {
       connectWith: '.data-list',

@@ -27,8 +27,15 @@
     <![endif]-->
   </head>
 
-  <body>
-
+  <body ng-class="{showPromo: showPromo}" ng-cloak>
+    <div class="fade" ng-show="showPromo"></div>
+    <div class="promo-outer" ng-show="showPromo">
+      <div class="promo">
+        <a class="btn btn-primary btn-lg" role="button" ng-click="showPromo = false">
+          Got it!
+        </a>
+      </div>
+    </div>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
@@ -54,9 +61,19 @@
 
     <div class="container-fluid main">
       <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-5">
           <accordion close-others="false">
             <accordion-group heading="Input" is-open="true">
+              <div class="tutorial-container">
+                <div class="tutorial step1">
+                  1. Paste your data from Excel
+                  <div class="small">
+                    <p>...or type it in manually</p>
+                    <p>...or import a CSV file</p>
+                    <p>...or connect to a JSON data source</p>
+                  </div>
+                </div>
+              </div>
               <div class="controls">
                 <a ng-click="jsonMode = !jsonMode" href="#" class="toggle-json">
                   {{jsonMode ? 'Show table' : 'Show JSON'}}
@@ -86,6 +103,18 @@
               </div>
             </accordion-group>
             <accordion-group heading="Chart" is-open="true">
+              <svg xmlns="http://www.w3.org/2000/svg" class="arrow"
+                viewBox="0 90 160 200" preserveAspectRatio="xMidYMax meet">
+                <path d="M 0 200 q 50 -60 110 -30"></path>
+                <path d="M 0 200 m 110 -30 m -10 -10 q 25 15 -10 10"></path>
+                <path d="M 0 240 q 50 30 110 10"></path>
+                <path d="M 0 240 m 15 1 q -25 -10 -10 10"></path>
+              </svg>
+              <div class="tutorial-container">
+                <div class="tutorial step2">
+                  2. Drag columns around
+                </div>
+              </div>
               <div class="form-group">
                 <label>
                   <h5>Chart type</h5>
@@ -111,35 +140,35 @@
                 </label>
               </div>
 
-            <div class="row">
-              <div class="col-xs-6">
-                <h5>Data columns</h5>
-                <ul class="list-group data-list data-src-list"
-                    ui-sortable="sortableSrc" ng-model="columns">
-                  <li pivot-column="col" ng-repeat="col in columns track by $index"></li>
-                </ul>
+              <div class="row">
+                <div class="col-xs-6">
+                  <h5>Data columns</h5>
+                  <ul class="list-group data-list data-src-list"
+                      ui-sortable="sortableSrc" ng-model="columns">
+                    <li pivot-column="col" ng-repeat="col in columns track by $index"></li>
+                  </ul>
+                </div>
+                <div class="col-xs-6">
+                  <h5>X-axis</h5>
+                  <ul class="list-group data-list"
+                      ui-sortable="sortableDst" ng-model="maps.columns">
+                    <li pivot-column="col" ng-repeat="col in maps.columns track by $index"></li>
+                  </ul>
+                  <h5>Y-axis</h5>
+                  <ul class="list-group data-list"
+                      ui-sortable="sortableDst" ng-model="maps.rows">
+                    <li pivot-column="col" ng-repeat="col in maps.rows track by $index"></li>
+                  </ul>
+                  <h5>Color</h5>
+                  <ul class="list-group data-list"
+                      ui-sortable="sortableDst" ng-model="maps.colors">
+                    <li pivot-column="col" ng-repeat="col in maps.colors track by $index"></li>
+                  </ul>
+                  <!-- Size -->
+                  <!-- Text -->
+                  <!-- Detail? Tooltip? -->
+                </div>
               </div>
-              <div class="col-xs-6">
-                <h5>X-axis</h5>
-                <ul class="list-group data-list"
-                    ui-sortable="sortableDst" ng-model="maps.columns">
-                  <li pivot-column="col" ng-repeat="col in maps.columns track by $index"></li>
-                </ul>
-                <h5>Y-axis</h5>
-                <ul class="list-group data-list"
-                    ui-sortable="sortableDst" ng-model="maps.rows">
-                  <li pivot-column="col" ng-repeat="col in maps.rows track by $index"></li>
-                </ul>
-                <h5>Color</h5>
-                <ul class="list-group data-list"
-                    ui-sortable="sortableDst" ng-model="maps.colors">
-                  <li pivot-column="col" ng-repeat="col in maps.colors track by $index"></li>
-                </ul>
-                <!-- Size -->
-                <!-- Text -->
-                <!-- Detail? Tooltip? -->
-              </div>
-            </div>
             </accordion-group>
 
             <accordion-group heading="Appearance">
@@ -220,7 +249,15 @@
             </accordion-group>
           </accordion>
         </div>
-        <div class="col-md-8 chart-pane">
+        <div class="col-md-7 chart-pane">
+          <div class="tutorial-container">
+            <div class="tutorial step3">
+              3. Save your chart as PNG
+              <div class="small">
+                <p>...or embed it to your web page as SVG</p>
+              </div>
+            </div>
+          </div>
 
           <div resizable width="width" height="height" class="resizable"
             style="width:{{width+2}}px; height:{{height+2}}px;"
@@ -234,7 +271,7 @@
               show-title="chart.showTitle" title="chart.title"
               title-size="chart.titleSize" font="chart.font"
               margin="chart.margin" show-legend="chart.showLegend"
-              reverse-legend="chart.type.type == 'pivot-bars' && chart.barPlacement == 'stacked'"
+              reverse-legend="false"
               background="chart.background">
               <svg dynamic-directive="chart.type.type" data="chart._dataCache"
                 maps="maps" chart="chart"></svg>
