@@ -24,6 +24,11 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       columns: [],
       colors: [],
     };
+    $scope.$watch('maps', function() {
+      while ($scope.maps.columns.length > $scope.chart.hAxis.bands.length) {
+        $scope.chart.hAxis.bands.push(0.1);
+      }
+    }, true);
     $scope.tableInput = _.transpose([
       ["", "Category 1", "Category 2"],
       ["Sales", 54, 150],
@@ -43,12 +48,21 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.tableConfig = {
       minSpareCols: 1,
       minSpareRows: 1,
+      stretchH: 'all',
+      minRows: 5,
+      minCols: 4,
     };
     $scope.$watch('tableInput', function() {
       input.load($scope.tableInput);
     }, true);
+    input.load($scope.tableInput);
     $scope.inputArg = input.data;
     $scope.columns = input.columns;
+
+    // Put up a sample graph
+    $scope.maps.columns = [$scope.columns[2], $scope.columns[0]];
+    $scope.maps.rows    = [$scope.columns[3], $scope.columns[4]];
+    $scope.maps.colors  = [$scope.columns[1]];
 
     $scope.scaleTypes = [
       { type: 'linear', name: 'Linear' },
@@ -169,8 +183,8 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.chart.showTitle = true;
     $scope.chart.background = "rgba(255,255,255,1)";
     $scope.chart.innerRadius = 0;
-    $scope.chart.vAxis = { auto: true, type: 'linear', format: 'n', ticks: 10 };
-    $scope.chart.hAxis = { auto: true, type: 'ordinal', format: 'n', ticks: 10, band: 0.1, band2: 0.1 };
+    $scope.chart.vAxis = { auto: true, type: 'linear', format: 'n', ticks: 10, bands: [] };
+    $scope.chart.hAxis = { auto: true, type: 'ordinal', format: 'n', ticks: 10, band: 0.1, band2: 0.1, bands: [] };
     $scope.chart.markers = { show: true, size: 3 };
     $scope.chart.lineInterpolation = 'linear';
     $scope.fonts = [
