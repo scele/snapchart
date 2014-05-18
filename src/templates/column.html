@@ -1,7 +1,9 @@
-<li class="list-group-item" title="{{column.tooltip}}">
+<li class="list-group-item data-column" title="{{column.tooltip}}">
   <span class="label {{columnLabel(column.type).class}}">
     {{columnLabel(column.type).text}}
   </span>
   <span ng-class="{variable: column.variable}">{{column.name}}</span>
+  <span class="glyphicon glyphicon-exclamation-sign error"
+    ng-show="instance.error" title="{{instance.error}}"></span>
 </li>
 

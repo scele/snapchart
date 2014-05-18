@@ -12,6 +12,9 @@ angular.module('pivotchart.service', [])
         return 'date';
       return 'text';
     }
+    input.instantiateColumn = function (c) {
+      return { source: c };
+    };
     input.load = function(data) {
       function getEmptyRows(table) {
         return _(table).map(function (row) {
@@ -30,24 +33,27 @@ angular.module('pivotchart.service', [])
 
       // Look for empty columns on the right
       var emptyColumns = getEmptyRows(_(data).transpose());
-      input.columns.length = 0;
-      var columns = _(data[0]).take(data[0].length - emptyColumns).map(function(name, i) {
-        var get = function(d) { return d[i]; };
-        var values = _(input.data).map(get);
-        return {
-          name: name,
-          index: i,
-          type: detectType(values),
-          get: get,
-          tooltip: values.unique().join(', ').substring(0, 100),
-        };
-      }).value();
-      _.merge(input.columns, columns);
-      input.columns.unshift({
+      var first = input.columns[0] || {};
+      _.merge(first, {
         name: 'Variable name',
         type: 'text',
         index: -1,
         variable: true,
+      });
+      input.columns[0] = first;
+      input.columns.length = data[0].length - emptyColumns + 1;
+      _(input.columns).rest().forEach(function (c, i) {
+        var get = function(d) { return d[i]; };
+        var values = _(input.data).map(get);
+        var dst = c || {};
+        _.merge(dst, {
+          name: data[0][i],
+          index: i,
+          type: detectType(values),
+          get: get,
+          tooltip: values.unique().join(', ').substring(0, 100),
+        });
+        input.columns[i+1] = dst;
       });
     };
     return input;

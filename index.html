@@ -76,7 +76,7 @@
               </div>
               <div class="controls">
                 <a ng-click="jsonMode = !jsonMode" href="#" class="toggle-json">
-                  {{jsonMode ? 'Show table' : 'Show JSON'}}
+                  {{jsonMode ? 'Show spreadsheet' : 'Show JSON'}}
                 </a>
               </div>
               <div class="clearfix"></div>
@@ -143,27 +143,20 @@
               <div class="row">
                 <div class="col-xs-6">
                   <h5>Data columns</h5>
-                  <ul class="list-group data-list data-src-list"
-                      ui-sortable="sortableSrc" ng-model="columns">
-                    <li pivot-column="col" ng-repeat="col in columns track by $index"></li>
-                  </ul>
+                  <pivot-column-container ng-model="columns" pivot-is-source="true">
+                  </pivot-column-container>
                 </div>
                 <div class="col-xs-6">
                   <h5>X-axis</h5>
-                  <ul class="list-group data-list"
-                      ui-sortable="sortableDst" ng-model="maps.columns">
-                    <li pivot-column="col" ng-repeat="col in maps.columns track by $index"></li>
-                  </ul>
+                  <pivot-column-container ng-model="maps.x">
+                  </pivot-column-container>
                   <h5>Y-axis</h5>
-                  <ul class="list-group data-list"
-                      ui-sortable="sortableDst" ng-model="maps.rows">
-                    <li pivot-column="col" ng-repeat="col in maps.rows track by $index"></li>
-                  </ul>
+                  <pivot-column-container ng-model="maps.y" pivot-name="Y-axis"
+                    pivot-restrict="['number']">
+                  </pivot-column-container>
                   <h5>Color</h5>
-                  <ul class="list-group data-list"
-                      ui-sortable="sortableDst" ng-model="maps.colors">
-                    <li pivot-column="col" ng-repeat="col in maps.colors track by $index"></li>
-                  </ul>
+                  <pivot-column-container ng-model="maps.color">
+                  </pivot-column-container>
                   <!-- Size -->
                   <!-- Text -->
                   <!-- Detail? Tooltip? -->
@@ -193,7 +186,7 @@
                   <input type="number" ng-model="chart.margin" class="form-control">
                 </label>
               </div>
-              <div class="checkbox" ng-show="maps.colors.length">
+              <div class="checkbox" ng-show="maps.color.length">
                 <label>
                   <input type="checkbox" ng-model="chart.showLegend"> Show legend
                 </label>
@@ -230,13 +223,13 @@
               </div>
             </accordion-group>
             <accordion-group heading="X-axis"
-              ng-show="chart.type.hasHAxis && maps.columns.length">
+              ng-show="chart.type.hasHAxis && maps.x.length">
               <axis-config axis="chart.hAxis"
               ng-show="chart.hAxis.type != 'ordinal'"></axis-config>
               <div class="form-group"
-                ng-repeat="col in maps.columns">
+                ng-repeat="col in maps.x">
                 <label>
-                  {{col.name}} spacing
+                  {{col.source.name}} spacing
                   <input type="text" percentage ng-model="chart.hAxis.bands[$index]"
                     class="form-control">
                 </label>
@@ -244,7 +237,7 @@
 
             </accordion-group>
             <accordion-group heading="Y-axis"
-              ng-show="chart.type.hasVAxis && maps.rows.length">
+              ng-show="chart.type.hasVAxis && maps.y.length">
               <axis-config axis="chart.vAxis"></axis-config>
             </accordion-group>
           </accordion>

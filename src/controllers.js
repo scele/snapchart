@@ -20,12 +20,12 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     //  { name: 'Column 1', type: 'number' },
     //];
     $scope.maps = {
-      rows: [],
-      columns: [],
-      colors: [],
+      y: [],
+      x: [],
+      color: [],
     };
     $scope.$watch('maps', function() {
-      while ($scope.maps.columns.length > $scope.chart.hAxis.bands.length) {
+      while ($scope.maps.x.length > $scope.chart.hAxis.bands.length) {
         $scope.chart.hAxis.bands.push(0.1);
       }
     }, true);
@@ -60,40 +60,17 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.columns = input.columns;
 
     // Put up a sample graph
-    $scope.maps.columns = [$scope.columns[2], $scope.columns[0]];
-    $scope.maps.rows    = [$scope.columns[3], $scope.columns[4]];
-    $scope.maps.colors  = [$scope.columns[1]];
+    $scope.maps.x     = [input.instantiateColumn($scope.columns[2]),
+                         input.instantiateColumn($scope.columns[0])];
+    $scope.maps.y     = [input.instantiateColumn($scope.columns[3]),
+                         input.instantiateColumn($scope.columns[4])];
+    $scope.maps.color = [input.instantiateColumn($scope.columns[1])];
 
     $scope.scaleTypes = [
       { type: 'linear', name: 'Linear' },
       { type: 'log', name: 'Logarithmic' }
     ];
     $scope.showPromo = true;
-
-    $scope.sortableSrc = {
-      connectWith: '.data-list',
-      helper: 'clone',
-      copy: true,
-      update: function(event, ui) {
-        // If trying to reorder source columns, cancel.
-        if (!ui.item.sortable.droptarget.not(event.target).length) {
-          ui.item.sortable.cancel();
-        }
-      },
-      start: function(event, ui) {
-        // Source columns shouldn't disappear when they are dragged.
-        ui.item.show();
-      },
-      receive: function(e, ui) {
-        // Dragging an item from another list to this one will
-        // delete the item.
-        ui.item.sortable.cancel();
-        ui.item.sortable.deleted = true;
-      },
-    };
-    $scope.sortableDst = {
-      connectWith: '.data-list',
-    };
 
     $scope.saveAs = function(event, selector) {
       // SVG XML

@@ -30,20 +30,23 @@ angular.module('pivotchart.directive', [])
             scope.margin = 50;
             scope.id = id++;
             scope.$watch('[data, maps, chart, width, height]', function() {
+              var xmaps = _(scope.maps.x).reject('error').map('source').value();
+              var ymaps = _(scope.maps.y).reject('error').map('source').value();
+              var colormaps = _(scope.maps.color).reject('error').map('source').value();
               var vAxis = scope.chart.vAxis;
               var hAxis = scope.chart.hAxis;
               scope.innerWidth = scope.width - scope.margin;
               scope.barWidth = scope.innerWidth;
-              scope.xdata = _(scope.maps.columns).map(function(col, i) {
+              scope.xdata = _(xmaps).map(function(col, i) {
                 if (col.variable) {
-                  return _(scope.maps.rows).map('name').unique().value();
+                  return _(ymaps).map('name').unique().value();
                 } else {
                   return _(scope.data).map(col.get).unique().value();
                 }
               }).value();
-              scope.colordata = _(scope.maps.colors).map(function (col, i) {
+              scope.colordata = _(colormaps).map(function (col, i) {
                 if (col.variable) {
-                  return _(scope.maps.rows).map('name').unique().value();
+                  return _(ymaps).map('name').unique().value();
                 } else {
                   return _(scope.data).map(col.get).unique().value();
                 }
@@ -62,7 +65,7 @@ angular.module('pivotchart.directive', [])
                 }).value());
               }
 
-              scope.x = _(scope.maps.columns).map(function(col, i) {
+              scope.x = _(xmaps).map(function(col, i) {
                 var xdata = scope.xdata[i];
                 var band = hAxis.bands ? hAxis.bands[i] : 0.1;
                 if (_.isUndefined(band)) {
@@ -81,7 +84,7 @@ angular.module('pivotchart.directive', [])
               var bars = _(scope.xdata).cartesianProduct().value();
 
               function barColorKey(d, yidx) {
-                return _(scope.maps.colors).map(function(c, i) {
+                return _(colormaps).map(function(c, i) {
                   if (c.variable) {
                     return scope.colordata[i][yidx];
                   } else {
@@ -91,10 +94,10 @@ angular.module('pivotchart.directive', [])
               }
 
               scope.ydata = _(bars).map(function (bar) {
-                return _([scope.data, scope.maps.rows]).cartesianProduct()
+                return _([scope.data, ymaps]).cartesianProduct()
                   //.map(function (dd) { return { d: dd[0], column: dd[1] }; })
                   .filter(function (dd) {
-                    return _(scope.maps.columns).all(function (c, i) {
+                    return _(xmaps).all(function (c, i) {
                       if (c.variable)
                         return dd[1].name == bar[i];
                       else
@@ -104,7 +107,7 @@ angular.module('pivotchart.directive', [])
               }).value();
               scope.itemdata = _(scope.ydata).map(function (bar, i) {
                 var colors = _(bar).groupBy(function (dd) {
-                  return barColorKey(dd[0], _.indexOf(scope.maps.rows, dd[1]));
+                  return barColorKey(dd[0], _.indexOf(ymaps, dd[1]));
                 }).map(function (v, k) {
                   var reducedValue = _(v).map(function (dd) {
                     return dd[1].get(dd[0]);
@@ -148,8 +151,8 @@ angular.module('pivotchart.directive', [])
                 var dimension = _.indexOf(scope.x, axis);
                 if (dimension == -1)
                   return false;
-                return -1 == _(scope.maps.colors)
-                  .findIndex({ index: scope.maps.columns[dimension].index });
+                return -1 == _(colormaps)
+                  .findIndex({ index: xmaps[dimension].index });
               };
               scope.visibleXAxes = _(scope.x).filter(scope.showAxis).value();
 
@@ -202,10 +205,10 @@ angular.module('pivotchart.directive', [])
               };
               scope.barX = function (d) {
                 return _(scope.x).map(function(x, i) {
-                  if (scope.maps.columns[i].variable) {
+                  if (xmaps[i].variable) {
                     return x(d.reduced[0][1].name);
                   } else {
-                    return x(scope.maps.columns[i].get(d.reduced[0][0]));
+                    return x(xmaps[i].get(d.reduced[0][0]));
                   }
                 }).sum();
               };
@@ -277,15 +280,84 @@ angular.module('pivotchart.directive', [])
       },
     };
   })
+  .directive("pivotColumnContainer", function(input) {
+    return {
+      restrict: 'EA',
+      templateUrl: 'src/templates/columnContainer.html',
+      replace: true,
+      scope: {
+        isSource: '=pivotIsSource',
+        restrict: '=pivotRestrict',
+        name: '@pivotName',
+      },
+      require: 'ngModel',
+      link: function(scope, elm, attrs, ngModel) {
+        scope.$watch(function () { return ngModel.$modelValue; }, function () {
+          scope.columns = ngModel.$modelValue;
+          //if (!scope.isSource) {
+          //  for (var i = 0; i < scope.columns.length; i++) {
+          //    var c = scope.columns[i];
+          //    if (!c.source) {
+          //      scope.columns.splice(i, 1, {
+          //        source: c,
+          //      });
+          //    }
+          //  };
+          //}
+        });
+        scope.$watch('columns', function () {
+          _(scope.columns).each(function (c) {
+            if (scope.restrict && !_(scope.restrict).contains(c.source.type)) {
+              var types = scope.restrict.join(' and ');
+              c.error = scope.name + ' only supports ' + types + ' columns.';
+            } else {
+              c.error = null;
+            }
+          });
+        }, true);
+        scope.sortableSrc = {
+          connectWith: '.data-list',
+          helper: 'clone',
+          copy: true,
+          update: function(event, ui) {
+            // If trying to reorder source columns, cancel.
+            if (!ui.item.sortable.droptarget.not(event.target).length) {
+              ui.item.sortable.cancel();
+            }
+          },
+          start: function(event, ui) {
+            // Source columns shouldn't disappear when they are dragged.
+            ui.item.show();
+          },
+          receive: function(e, ui) {
+            // Dragging an item from another list to this one will
+            // delete the item.
+            ui.item.sortable.cancel();
+            ui.item.sortable.deleted = true;
+          },
+        };
+        scope.sortableDst = {
+          connectWith: '.data-list',
+          receive: function(e, ui) {
+            if (!ui.item.sortable.moved.source)
+              ui.item.sortable.moved = input.instantiateColumn(ui.item.sortable.moved);
+          },
+        };
+      },
+    };
+  })
   .directive("pivotColumn", function() {
     return {
       restrict: 'EA',
       templateUrl: 'src/templates/column.html',
       replace: true,
       scope: {
-        column: '=pivotColumn',
+        instance: '=pivotColumn',
       },
       link: function(scope, elm, attrs, ctrl) {
+        scope.$watch('instance', function () {
+          scope.column = scope.instance.source || scope.instance;
+        });
         scope.columnLabel = function(type) {
           return {
             number: { class: 'label-success', text: 'Number'},
@@ -421,8 +493,9 @@ angular.module('pivotchart.directive', [])
       link: function(scope, elm, attrs, ctrl, transcludeFn) {
         var titleElm = elm.find('.title')[0];
         scope.$watch('[data,maps]', function() {
-          if (scope.maps.colors && scope.maps.colors.length) {
-            scope.legendData = _(scope.data).map(scope.maps.colors[0].get).unique().value();
+          var colormaps = _.map(scope.maps.color, 'source');
+          if (colormaps && colormaps.length) {
+            scope.legendData = _(scope.data).map(colormaps[0].get).unique().value();
           } else {
             scope.legendData = [];
           }
