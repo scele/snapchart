@@ -13,7 +13,7 @@ angular.module('pivotchart.service', [])
       return 'text';
     }
     input.instantiateColumn = function (c) {
-      return { source: c };
+      return { source: c, fn: { name: 'SUM' } };
     };
     input.load = function(data) {
       function getEmptyRows(table) {

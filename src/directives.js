@@ -358,6 +358,14 @@ angular.module('pivotchart.directive', [])
         scope.$watch('instance', function () {
           scope.column = scope.instance.source || scope.instance;
         });
+        scope.getText = function (inst) {
+          if (!inst.source)
+            return inst.name;
+          else if (inst.fn && inst.source.type === 'number')
+            return inst.fn.name + ' ( ' + inst.source.name + ' )';
+          else
+            return inst.source.name;
+        };
         scope.columnLabel = function(type) {
           return {
             number: { class: 'label-success', text: 'Number'},
