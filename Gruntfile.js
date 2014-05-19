@@ -25,6 +25,13 @@ module.exports = function(grunt) {
         }
       }
     },
+    less: {
+      default: {
+        files: {
+          'dist/pivotchart.css': 'less/pivotchart.less',
+        },
+      },
+    },
     concat: {
       colorpicker: {
         src: ['bower_components/angular-bootstrap-colorpicker/css/colorpicker.css'],
@@ -70,6 +77,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-ngmin');
   grunt.loadNpmTasks('grunt-html2js');
   grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -78,6 +86,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   grunt.registerTask('serve', ['connect', 'watch']);
-  grunt.registerTask('default', ['jshint', 'ngmin', 'html2js', 'uglify', 'concat']);
+  grunt.registerTask('default', ['jshint', 'ngmin', 'html2js', 'uglify', 'concat', 'less']);
   grunt.registerTask('dist', ['copy:dist']);
 };
