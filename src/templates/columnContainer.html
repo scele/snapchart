@@ -1,0 +1,6 @@
+<ul class="list-group data-list" ng-class="{'data-src-list': isSource}"
+    ui-sortable="isSource ? sortableSrc : sortableDst">
+  <li pivot-column="col"
+      ng-repeat="col in columns track by $index"></li>
+</ul>
+
