@@ -133,7 +133,7 @@ function (data) {
         hasVAxis: true,
         hasHAxis: true,
       },
-      {
+      /*{
         name: 'Pie chart',
         type: 'pivot-pie',
         config: { legend: {display: true, position: 'right'} },
@@ -168,7 +168,7 @@ function(data) {
       {
         name: 'Area chart',
         type: 'pivot-area',
-      },
+      },*/
     ];
     return {
       get: function() {
