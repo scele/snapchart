@@ -94,11 +94,11 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       //var data = $('.chart-inner > .chart > .ac-chart').html();
       //img.src 'data:image/svg+xml;base64,' + btoa(data);
       var ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0);
       var url;
       try {
         // This will fail on most browsers
         // http://stackoverflow.com/questions/8158312/rasterizing-an-in-document-svg-to-canvas
+        ctx.drawImage(img, 0, 0);
         url = canvas.toDataURL('image/png');
       } catch (ex) {
         canvas = createCanvas();
