@@ -123,6 +123,9 @@ body.showPromo .tutorial {
 .chart-pane {
   text-align: center;
 }
+.chart-pane .resizable {
+  text-align: left;
+}
 accordion .panel-title a {
   display: block;
   cursor: pointer;
