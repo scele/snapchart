@@ -606,7 +606,8 @@ angular.module('pivotchart.directive', [])
         var ht;
         var opts = {
           cells: function (row, col, prop) {
-              if (!ht) return;
+              if (!ht || !ht.getData() || !ht.getData()[row])
+                return;
               var val = ht.getData()[row][col];
               var num = Number(val);
               var meta = {};
