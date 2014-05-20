@@ -51,6 +51,7 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       stretchH: 'all',
       minRows: 5,
       minCols: 4,
+      enterBeginsEditing: false,
     };
     $scope.$watch('tableInput', function() {
       input.load($scope.tableInput);
