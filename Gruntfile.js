@@ -85,7 +85,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask('serve', ['connect', 'watch']);
+  grunt.registerTask('serve', ['default', 'connect', 'watch']);
   grunt.registerTask('default', ['jshint', 'ngmin', 'html2js', 'uglify', 'concat', 'less']);
   grunt.registerTask('dist', ['copy:dist']);
 };
