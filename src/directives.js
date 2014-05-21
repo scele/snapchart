@@ -736,7 +736,7 @@ angular.module('pivotchart.directive', [])
   .directive('uiCodemirror', function () {
     return {
       restrict: 'EA',
-      require: '?ngModel',
+      require: '?^ngModel',
       priority: 1,
       link: function(scope, iElement, iAttrs, ngModel) {
         if (angular.isUndefined(window.CodeMirror)) {
@@ -836,11 +836,10 @@ angular.module('pivotchart.directive', [])
     _.mixin({'product': product}, {chain: false});
     return {
       restrict: 'E',
-      template: '<div><div js-function ui-codemirror="opts" ui-refresh="refresh" ng-model="scopemodel"></div>' +
+      template: '<div><div js-function ui-codemirror="opts" ui-refresh="refresh"></div>' +
           '<div class="alert alert-danger alert-bottom" ng-show="error">{{error}}</div>' +
           '</div>',
       scope: {
-        scopemodel: '=ngModel',
         evalThis: '=',
         evalArgs: '=',
         validateFn: '=',
@@ -871,6 +870,7 @@ angular.module('pivotchart.directive', [])
       },
       link: function(scope, elm, attrs, ctrls) {
         var ctrl = ctrls[0];
+        var ngModel = ctrls[1];
         function betterTab(cm) {
           if (cm.somethingSelected()) {
             cm.indentSelection("add");
@@ -880,10 +880,10 @@ angular.module('pivotchart.directive', [])
           }
         }
         scope.$watch('evalArgs', function() {
-          ctrl.validate(scope.scopemodel);
+          ctrl.validate(ngModel.$modelValue);
         });
         scope.$watch('evalThis', function() {
-          ctrl.validate(scope.scopemodel);
+          ctrl.validate(ngModel.$modelValue);
         });
         scope.opts = { tabSize: 2, extraKeys: { Tab: betterTab } };
       },
@@ -892,7 +892,7 @@ angular.module('pivotchart.directive', [])
   .directive("jsFunction", function() {
     return {
       restrict: 'A',
-      require: ['ngModel', '?^editableFunction'],
+      require: ['^ngModel', '?^editableFunction'],
       link: function(scope, elm, attrs, ctrl) {
         var ngModel = ctrl[0];
         var editableFunction = ctrl[1];
