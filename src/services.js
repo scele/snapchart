@@ -133,6 +133,16 @@ function (data) {
         hasVAxis: true,
         hasHAxis: true,
       },
+      {
+        name: 'Treemap',
+        type: 'pivot-treemap',
+        config: { },
+        fn:
+function(data) {
+  return data;
+},
+        validateFn: commonValidateFn,
+      },
       /*{
         name: 'Pie chart',
         type: 'pivot-pie',

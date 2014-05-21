@@ -536,6 +536,89 @@ angular.module('pivotchart.directive', [])
   .directive("pivotLines", function(pivotUtil) {
     return pivotUtil.twodChartDirective('src/templates/lines.html');
   })
+  .directive("pivotTreemap", function(pivotUtil) {
+    return {
+      restrict: 'E',
+      templateUrl: 'src/templates/treemap.html',
+      replace: true,
+      scope: {
+        chart: '=',
+        data: '=',
+        maps: '=',
+        width: '=?',
+        height: '=?',
+      },
+      require: '?^graphArea',
+      link: function(scope, elm, attrs, graphArea) {
+        if (graphArea) {
+          graphArea.setGraphArea(scope);
+        }
+        scope.$watch('[data, maps, chart, width, height]', function() {
+          var sizemaps = _(scope.maps.size).reject('error').map('source').value();
+          var colormaps = _(scope.maps.color).reject('error').map('source').value();
+          var textmaps = _(scope.maps.text).reject('error').map('source').value();
+          var numberColor = _(colormaps).all({type: 'number'});
+          var color, legenddata;
+          if (numberColor) {
+            var cd = d3.scale.category20().domain([0, 1]);
+            color = d3.scale.linear()
+              .domain(d3.extent(_(scope.data).map(colormaps[0].get).value()))
+              .range([cd(1), cd(0)]);
+            legenddata = [];
+          } else {
+            var colorkeys = _(colormaps).map(function (col) {
+              return _(scope.data).map(col.get).unique().value();
+            }).value();
+            legenddata = _(colorkeys)
+              .cartesianProduct().filter('length').map(function (a) {
+                return a.join(" ");
+              }).value();
+            color = d3.scale.category20().domain(legenddata);
+          }
+          if (graphArea) {
+            graphArea.setLegendData(_(legenddata).map(function (c) {
+              return {
+                text: c,
+                color: color(c),
+              };
+            }).value());
+          }
+          function colorKey(d) {
+            if (numberColor) {
+              return colormaps[0].get(d);
+            } else {
+              return _(colormaps).map(function(c) {
+                  return c.get(d);
+              }).join(" ");
+            }
+          }
+          scope.getColor = function (d) {
+            return d.item ? color(colorKey(d.item)) : '';
+          };
+          scope.getText = function (d) {
+            if (!d.item) return '';
+            return _(textmaps).map('get').call(d.item).value();
+          };
+
+          var sum = _(scope.data).map(sizemaps[0].get).sum();
+          var root = {
+            children: _(scope.data).map(function (d) {
+              return { item: d };
+            }).value(),
+          };
+          var treemap = d3.layout.treemap()
+            .value(function (node) {
+              if (node.item)
+                return sizemaps[0].get(node.item);
+              else
+                return sum;
+            })
+            .size([scope.width, scope.height]);
+          scope.nodes = treemap.nodes(root);
+        }, true);
+      },
+    };
+  })
   .directive("pivotPie", function(colors) {
     return {
       restrict: 'E',
@@ -723,6 +806,9 @@ angular.module('pivotchart.directive', [])
         throw new Error('transpose() can only be applied to an array of arrays');
       return _.range(x[0].length).map(function(i) { return _.map(x, function(e) { return e[i]; }); });
     }
+    function call(ff, v) {
+      return _.map(ff, function(f) { return f(v); });
+    }
     function sum(yy) {
       return _.reduce(yy, function(sum, num) {
         return sum + num;
@@ -744,6 +830,7 @@ angular.module('pivotchart.directive', [])
     }
 
     _.mixin({'transpose': transpose});
+    _.mixin({'call': call});
     _.mixin({'cartesianProduct': cartesianProduct});
     _.mixin({'sum': sum}, {chain: false});
     _.mixin({'product': product}, {chain: false});

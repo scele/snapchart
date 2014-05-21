@@ -66,6 +66,8 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.maps.y     = [input.instantiateColumn($scope.columns[3]),
                          input.instantiateColumn($scope.columns[4])];
     $scope.maps.color = [input.instantiateColumn($scope.columns[1])];
+    $scope.maps.size = [input.instantiateColumn($scope.columns[3])];
+    $scope.maps.text = [input.instantiateColumn($scope.columns[2])];
 
     $scope.scaleTypes = [
       { type: 'linear', name: 'Linear' },
