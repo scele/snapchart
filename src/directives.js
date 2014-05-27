@@ -597,7 +597,11 @@ angular.module('pivotchart.directive', [])
           };
           scope.getText = function (d) {
             if (!d.item) return '';
-            return _(textmaps).map('get').call(d.item).value();
+            return sprintf(scope.maps.text.format,
+                            _(textmaps).map(function (c) {
+                              return [c.name, c.get(d.item)];
+                            }).zipObject().value())
+                    .split('\n');
           };
 
           var sum = _(scope.data).map(sizemaps[0].get).sum();
