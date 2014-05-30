@@ -68,13 +68,28 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.maps.color = [input.instantiateColumn($scope.columns[1])];
     $scope.maps.size = [input.instantiateColumn($scope.columns[3])];
     $scope.maps.text = [input.instantiateColumn($scope.columns[2])];
-    $scope.maps.text.format = "Test";
+    $scope.maps.text.customFormat = false;
 
     $scope.scaleTypes = [
       { type: 'linear', name: 'Linear' },
       { type: 'log', name: 'Logarithmic' }
     ];
     $scope.showPromo = true;
+
+    $scope.$watch(function () {
+      var fmt = _.curry(function (showTitle, c) {
+        var fmt = c.source.type == 'text' ? 's' : 'f';
+        var title = showTitle && c.source.type == 'number' ? (c.source.name + ': ') : '';
+        return title + '%(' + c.source.name + ')' + fmt;
+      });
+      if (!$scope.maps.text.customFormat) {
+        if ($scope.maps.text.length == 1) {
+          $scope.maps.text.format = fmt(false, $scope.maps.text[0]);
+        } else {
+          $scope.maps.text.format = _($scope.maps.text).map(fmt(true)).join('\n');
+        }
+      }
+    });
 
     $scope.saveAs = function(event, selector) {
       // SVG XML

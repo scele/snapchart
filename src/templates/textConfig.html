@@ -2,9 +2,13 @@
   <div class="arrow"></div>
   <div class="modal-content">
     <div class="modal-body">
-      <label>Text format
-        <textarea class="form-control" ng-model="maps.text.format"></textarea>
-      </label>
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" ng-model="maps.text.customFormat"> Custom text format
+        </label>
+      </div>
+      <textarea rows="4" class="form-control" ng-model="maps.text.format"
+        ng-disabled="!maps.text.customFormat"></textarea>
     </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-sm btn-primary" ng-click="$hide()">OK</button>
