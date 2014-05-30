@@ -130,8 +130,7 @@ function (data) {
   };
 },*/
         validateFn: commonValidateFn,
-        hasVAxis: true,
-        hasHAxis: true,
+        maps: {x: true, y: true, color: true },
       },
       {
         name: 'Treemap',
@@ -142,6 +141,7 @@ function(data) {
   return data;
 },
         validateFn: commonValidateFn,
+        maps: {color: true, text: true },
       },
       /*{
         name: 'Pie chart',
@@ -167,8 +167,6 @@ function(data) {
       {
         name: 'Line chart',
         type: 'pivot-lines',
-        hasVAxis: true,
-        hasHAxis: true,
         hasMarkers: true,
       },
       {

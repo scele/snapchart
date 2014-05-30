@@ -147,26 +147,52 @@
                   </pivot-column-container>
                 </div>
                 <div class="col-xs-6">
-                  <h5>X-axis</h5>
-                  <pivot-column-container ng-model="maps.x">
-                  </pivot-column-container>
-                  <h5>Y-axis</h5>
-                  <pivot-column-container ng-model="maps.y" pivot-name="Y-axis"
-                    pivot-restrict="['number']">
-                  </pivot-column-container>
-                  <h5>Size</h5>
-                  <pivot-column-container ng-model="maps.size">
-                  </pivot-column-container>
-                  <h5>Color</h5>
-                  <pivot-column-container ng-model="maps.color">
-                  </pivot-column-container>
-                  <h5>Text
-                    <a title="Text settings" bs-popover data-template="src/templates/textConfig.html" data-content="bug" class="settings">
-                      <span class="glyphicon glyphicon-cog"></span>
-                    </a>
-                  </h5>
-                  <pivot-column-container ng-model="maps.text">
-                  </pivot-column-container>
+                  <div ng-show="chart.type.maps.x">
+                    <h5>X-axis
+                      <a title="X-axis settings" bs-popover
+                        ng-show="maps.x.length"
+                        data-template="src/templates/xAxisConfig.html"
+                        data-content="bug" class="settings">
+                        <span class="glyphicon glyphicon-cog"></span>
+                      </a>
+                    </h5>
+                    <pivot-column-container ng-model="maps.x">
+                    </pivot-column-container>
+                  </div>
+                  <div ng-show="chart.type.maps.y">
+                    <h5>Y-axis
+                      <a title="Y-axis settings" bs-popover
+                        ng-show="maps.y.length"
+                        data-template="src/templates/yAxisConfig.html"
+                        data-content="bug" class="settings">
+                        <span class="glyphicon glyphicon-cog"></span>
+                      </a>
+                    </h5>
+                    <pivot-column-container ng-model="maps.y" pivot-name="Y-axis"
+                      pivot-restrict="['number']">
+                    </pivot-column-container>
+                  </div>
+                  <div ng-show="chart.type.maps.size">
+                    <h5>Size</h5>
+                    <pivot-column-container ng-model="maps.size">
+                    </pivot-column-container>
+                  </div>
+                  <div ng-show="chart.type.maps.color">
+                    <h5>Color</h5>
+                    <pivot-column-container ng-model="maps.color">
+                    </pivot-column-container>
+                  </div>
+                  <div ng-show="chart.type.maps.text">
+                    <h5>Text
+                      <a title="Text settings" bs-popover
+                        data-template="src/templates/textConfig.html"
+                        data-content="bug" class="settings">
+                        <span class="glyphicon glyphicon-cog"></span>
+                      </a>
+                    </h5>
+                    <pivot-column-container ng-model="maps.text">
+                    </pivot-column-container>
+                  </div>
                   <!-- Size -->
                   <!-- Text -->
                   <!-- Detail? Tooltip? -->
@@ -231,24 +257,6 @@
                   <input type="number" ng-model="chart.markers.size" class="form-control">
                 </label>
               </div>
-            </accordion-group>
-            <accordion-group heading="X-axis"
-              ng-show="chart.type.hasHAxis && maps.x.length">
-              <axis-config axis="chart.hAxis"
-              ng-show="chart.hAxis.type != 'ordinal'"></axis-config>
-              <div class="form-group"
-                ng-repeat="col in maps.x">
-                <label>
-                  {{col.source.name}} spacing
-                  <input type="text" percentage ng-model="chart.hAxis.bands[$index]"
-                    class="form-control">
-                </label>
-              </div>
-
-            </accordion-group>
-            <accordion-group heading="Y-axis"
-              ng-show="chart.type.hasVAxis && maps.y.length">
-              <axis-config axis="chart.vAxis"></axis-config>
             </accordion-group>
           </accordion>
         </div>
