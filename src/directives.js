@@ -68,14 +68,15 @@ angular.module('pivotchart.directive', [])
               scope.x = _(xmaps).map(function(col, i) {
                 var xdata = scope.xdata[i];
                 var band = hAxis.bands ? hAxis.bands[i] : 0.1;
+                var innerBand = hAxis.innerBands ? hAxis.innerBands[i] : 0.1;
                 if (_.isUndefined(band)) {
                   band = 0.1;
                 }
                 var x = d3.scale.ordinal()
                   .domain(xdata)
-                  .rangeRoundBands([0, scope.barWidth], band, 0);
+                  .rangeRoundBands([0, scope.barWidth], band, innerBand);
                 if (x.rangeBand() === 0) {
-                  x.rangeBands([0, scope.barWidth], band, 0);
+                  x.rangeBands([0, scope.barWidth], band, innerBand);
                 }
                 scope.barWidth = x.rangeBand();
                 return x;

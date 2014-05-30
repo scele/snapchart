@@ -141,7 +141,7 @@ function(data) {
   return data;
 },
         validateFn: commonValidateFn,
-        maps: {color: true, text: true },
+        maps: {size: true, color: true, text: true },
       },
       /*{
         name: 'Pie chart',
