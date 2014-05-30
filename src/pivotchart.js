@@ -7,6 +7,7 @@ angular.module('pivotchart',
    'ui.slider',
    'colorpicker.module',
    'mgcrea.ngStrap.popover',
+   'mgcrea.ngStrap.button',
   ]).config([
     '$compileProvider',
     function($compileProvider) {
