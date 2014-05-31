@@ -116,8 +116,15 @@
                 </div>
               </div>
               <div class="form-group chart-type">
-                <label>
-                  <h5>Chart type</h5>
+                <div>
+                  <h5>Chart type
+                    <a title="Chart settings" bs-popover
+                      ng-show="chart.type.hasSettings"
+                      data-template="src/templates/chartTypeConfig.html"
+                      data-content="bug" class="settings">
+                      <span class="glyphicon glyphicon-cog"></span>
+                    </a>
+                  </h5>
                   <div class="btn-group" ng-model="chart.type">
                     <label class="btn btn-default" ng-repeat="type in chartTypes"
                       ng-class="{selected: type == $parent.chart.type}">
@@ -138,25 +145,8 @@
                         </svg>
                     </label>
                   </div>
-                </label>
+                </div>
               </div>
-              <div class="form-group" ng-show="chart.type.type == 'pivot-lines'">
-                <label>
-                  Line interpolation
-                  <select ng-model="chart.lineInterpolation" class="form-control"
-                    ng-options="mode as mode for mode in lineInterpolationModes">
-                  </select>
-                </label>
-              </div>
-              <div class="form-group" ng-show="chart.type.type == 'pivot-pie'">
-                <label>
-                  Inner radius
-                  <input type="text" percentage ng-model="chart.innerRadius"
-                    class="form-control">
-                  </select>
-                </label>
-              </div>
-
               <div class="row">
                 <div class="col-xs-6">
                   <h5>Data columns</h5>
