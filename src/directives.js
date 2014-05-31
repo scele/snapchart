@@ -263,6 +263,7 @@ angular.module('pivotchart.directive', [])
     return {
       restrict: 'EA',
       link: function(scope, elm, attrs, ctrl) {
+        var s = scope.$new();
         scope.$watch(
           function(scope) {
             return scope.$eval(attrs.dynamicDirective);
@@ -275,7 +276,9 @@ angular.module('pivotchart.directive', [])
               }
             });
             elm.html(e);
-            $compile(elm.contents())(scope);
+            s.$destroy();
+            s = scope.$new();
+            $compile(elm.contents())(s);
           }
         );
       },
