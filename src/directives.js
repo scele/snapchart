@@ -433,25 +433,12 @@ angular.module('pivotchart.directive', [])
   .directive("d3Legend", function(colors) {
     return {
       restrict: 'EA',
-      template: '<svg><g ng-repeat="d in reversedData track by $index" transform="translate(0,{{20 * $index}})">' +
-                  '<rect width="15" height="15" ' +
-                  '  style="fill:{{d.color}}">' +
-                  '</rect>' +
-                  '<text x="20" y="9" style="text-anchor:top; alignment-baseline:middle;">' +
-                    '{{d.text}}' +
-                  '</text>' +
-                '</g></svg>',
+      templateUrl: 'src/templates/legend.html',
       scope: {
-        reverse: '=',
       },
       require: '?^graphArea',
       replace: true,
       link: function(scope, elm, attrs, graphArea) {
-        scope.color = colors.get;
-        scope.$watch('[reverse,data]', function() {
-          scope.reversedData = _(scope.data).clone();
-          if (scope.reverse) scope.reversedData.reverse();
-        }, true);
         scope.$watch(function() {
           if (graphArea) {
             var s = scope.data;
