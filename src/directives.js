@@ -614,7 +614,7 @@ angular.module('pivotchart.directive', [])
       },
     };
   })
-  .directive("pivotPie", function(colors) {
+  .directive("pivotPie", function(colors, pivot) {
     return {
       restrict: 'E',
       templateUrl: 'src/templates/pie.html',
@@ -622,6 +622,7 @@ angular.module('pivotchart.directive', [])
       scope: {
         chart: '=',
         data: '=',
+        maps: '=',
         width: '=?',
         height: '=?',
       },
@@ -630,18 +631,82 @@ angular.module('pivotchart.directive', [])
         if (graphArea) {
           graphArea.setGraphArea(scope);
         }
-        scope.$watch('[data, width, height, chart]', function() {
+        scope.$watch('[data, maps, width, height, chart]', function() {
+          var sizemaps = _(scope.maps.size).reject('error').map('source').value();
+          var colormaps = _(scope.maps.color).reject('error').map('source').value();
+          var layermaps = _(scope.maps.layer).reject('error').map('source').value();
+          var colormapsByLayer = _(layermaps).foldl(function (list, lm) {
+            var eq = function (m) { return m !== lm; };
+            var rest = _.head(list);
+            return [_.tail(rest, eq), _.head(rest, eq)].concat(_.tail(list));
+          }, [colormaps]).reverse();
           var r = Math.min(scope.width, scope.height)/2;
-          var d3arc = d3.svg.arc()
-            .outerRadius(r)
-            .innerRadius((scope.chart.innerRadius || 0) * r);
-          scope.yfirst = _.map(scope.data.y, _.first);
-          var pie = d3.layout.pie()(scope.yfirst);
-          scope.arc = function(i) {
-            return d3arc(pie[i]);
+          var r0 = (scope.chart.innerRadius || 0) * r;
+          var dr = (r - r0) / colormapsByLayer.length;
+          var d3arcs = _(colormapsByLayer).map(function (c, i) {
+            return d3.svg.arc()
+              .innerRadius(r0 + i * dr)
+              .outerRadius(r0 + (i + 1.01) * dr);
+          }).value();
+          function process(i, data, parent) {
+            var cm = colormapsByLayer[i];
+            if (i > 0)
+              cm = [layermaps[i - 1]].concat(cm);
+            cm = _.unique(cm);
+            var processed = pivot.processSingle(cm, sizemaps, data);
+            var colorscaleIdx = -1;
+            if (!parent)
+              colorscaleIdx = 0;
+            else if (colormapsByLayer[i].length)
+              colorscaleIdx = parent.colorscaleIdx + 1;
+            if (colormapsByLayer[i].length)
+              colorscale = d3.scale.category20().domain(_.map(processed, 'colorKey'));
+            _(processed).each(function (l) {
+              l.layer = i;
+              l.colorscale = colorscale;
+              l.colorscaleIdx = colorscaleIdx;
+              l.parent = parent;
+            });
+            if (i >= colormapsByLayer.length - 1)
+              return processed;
+            var sublayers = _(processed).map(function (p) {
+              return process(i + 1, p.reducedItems, p);
+            }).flatten().value();
+            return processed.concat(sublayers);
+          }
+          scope.itemdata = process(0, scope.data, null);
+          scope.itemdataByLayer = _(scope.itemdata).groupBy('layer').value();
+          var pies = _(scope.itemdataByLayer).map(function (itemdata) {
+            return d3.layout.pie().sort(null)(_.map(itemdata, 'reducedValue'));
+          }).value();
+          var colorscales = _(colormapsByLayer).map(function (cc, i) {
+            var domain = _(scope.itemdata).filter({colorscaleIdx: i});
+            var scales = ['category20', 'category20b', 'category20c'];
+            return d3.scale[scales[i%3]]().domain(domain.map('colorKey').unique().value());
+          }).value();
+          if (graphArea) {
+            var legenddata = _(colorscales).map(function (scale) {
+              return _.map(scale.domain(), function(d) {
+                return { text: d, color: scale(d) };
+              }).concat([{isSeparator:true, color:'#000',test:'foo'}]);
+            }).flatten().value();
+            graphArea.setLegendData(legenddata);
+          }
+
+          scope.arc = function(layerIdx, idxWithinLayer) {
+            if (layerIdx >= d3arcs.length || idxWithinLayer >= pies[layerIdx].length)
+              return "M0,0";
+            return d3arcs[layerIdx](pies[layerIdx][idxWithinLayer]);
+          };
+          scope.color = function(item) {
+            if (item.colorscaleIdx >= colorscales.length)
+              return "M0,0";
+            if (item.colorscaleIdx !== -1)
+              return colorscales[item.colorscaleIdx](item.colorKey);
+            else
+              return scope.color(item.parent);
           };
         }, true);
-        scope.color = colors.get;
       },
     };
   })
@@ -823,7 +888,6 @@ angular.module('pivotchart.directive', [])
         }), true);
       }, [ [] ]);
     }
-
     _.mixin({'transpose': transpose});
     _.mixin({'call': call});
     _.mixin({'cartesianProduct': cartesianProduct});

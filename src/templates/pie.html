@@ -1,9 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg">
   <g transform="translate({{width/2}},{{height/2}})">
-    <g ng-repeat="group in yfirst">
-      <path ng-attr-d="{{arc($index)}}"
-        style="fill: {{color($index)}};">
-      </path>
+    <g ng-repeat="items in itemdataByLayer">
+      <g ng-repeat="item in items">
+        <path ng-attr-d="{{arc($parent.$index, $index)}}"
+          style="fill: {{color(item)}}; stroke: {{chart.background}};">
+        </path>
+      </g>
     </g>
   </g>
 </svg>

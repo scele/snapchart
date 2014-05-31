@@ -189,6 +189,11 @@
                     <pivot-column-container ng-model="maps.color">
                     </pivot-column-container>
                   </div>
+                  <div ng-show="chart.type.maps.layer">
+                    <h5>Layer</h5>
+                    <pivot-column-container ng-model="maps.layer">
+                    </pivot-column-container>
+                  </div>
                   <div ng-show="chart.type.maps.text">
                     <h5>Text
                       <a title="Text settings" bs-popover
