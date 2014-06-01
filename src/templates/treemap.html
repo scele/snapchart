@@ -5,7 +5,7 @@
     <rect
       ng-attr-width="{{node.dx}}"
       ng-attr-height="{{node.dy}}"
-      style="fill: {{getColor(node)}};">
+      style="fill: {{getColor(node)}}; stroke: {{chart.background}};">
     </rect>
     <text
       ng-repeat="line in getText(node) track by $index"
