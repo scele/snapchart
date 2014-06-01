@@ -282,7 +282,7 @@ function(data) {
       };
     }
 
-    function processSingle(colormaps, valuemaps, data) {
+    function processSingle(colormaps, valuemaps, data, xmapFilter, xmaps) {
       var colordata = _(colormaps).map(function (col, i) {
         if (col.variable) {
           return _(valuemaps).map('name').unique().value();
@@ -302,6 +302,17 @@ function(data) {
       }
 
       var ydata = _([data, valuemaps]).cartesianProduct().value();
+      if (xmapFilter) {
+        ydata = _(ydata).filter(function (dd) {
+          return _(xmaps).all(function (c, i) {
+            if (c.variable)
+              return dd[1].name == xmapFilter[i];
+            else
+              return c.get(dd[0]) == xmapFilter[i];
+          });
+        });
+      }
+
       var colors = _(ydata).groupBy(function (dd) {
         return barColorKey(dd[0], _.indexOf(valuemaps, dd[1]));
       }).map(function (v, k) {

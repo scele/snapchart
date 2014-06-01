@@ -1,5 +1,5 @@
 angular.module('pivotchart.directive', [])
-  .factory('pivotUtil', function (colors) {
+  .factory('pivotUtil', function (colors, pivot) {
     function getScale(config, defaultDomain) {
       var axis = d3.scale[config.type]();
       if (config.auto)
@@ -84,43 +84,10 @@ angular.module('pivotchart.directive', [])
 
               var bars = _(scope.xdata).cartesianProduct().value();
 
-              function barColorKey(d, yidx) {
-                return _(colormaps).map(function(c, i) {
-                  if (c.variable) {
-                    return scope.colordata[i][yidx];
-                  } else {
-                    return c.get(d);
-                  }
-                }).join(" ");
-              }
-
-              scope.ydata = _(bars).map(function (bar) {
-                return _([scope.data, ymaps]).cartesianProduct()
-                  //.map(function (dd) { return { d: dd[0], column: dd[1] }; })
-                  .filter(function (dd) {
-                    return _(xmaps).all(function (c, i) {
-                      if (c.variable)
-                        return dd[1].name == bar[i];
-                      else
-                        return c.get(dd[0]) == bar[i];
-                    });
-                  }).value();
-              }).value();
-              scope.itemdata = _(scope.ydata).map(function (bar, i) {
-                var colors = _(bar).groupBy(function (dd) {
-                  return barColorKey(dd[0], _.indexOf(ymaps, dd[1]));
-                }).map(function (v, k) {
-                  var reducedValue = _(v).map(function (dd) {
-                    return dd[1].get(dd[0]);
-                  }).sum();
-                  return {
-                    reduced: v,
-                    reducedValue: reducedValue,
-                    colorKey: k,
-                    barIdx: i
-                  };
-                }).reverse().value();
-                return colors;
+              scope.itemdata = _(bars).map(function (bar, i) {
+                var p = pivot.processSingle(colormaps, ymaps, scope.data, bar, xmaps);
+                _(p).each(function (p) { p.barIdx = i; });
+                return p;
               }).flatten().value();
 
               scope.axisPadding = 30;
@@ -158,21 +125,20 @@ angular.module('pivotchart.directive', [])
               scope.visibleXAxes = _(scope.x).filter(scope.showAxis).value();
 
               var minY, maxY;
+              var ydata = _(scope.itemdata).groupBy('barIdx').value();
               if (scope.chart.type.type == 'pivot-bars') {
-                maxY = _(scope.ydata).map(function (yy) {
-                  return _.reduce(yy, function(sum, y) {
-                    var num = y[1].get(y[0]);
-                    return sum + Math.max(num, 0);
-                  }, 0);
+                maxY = _(ydata).map(function (yy) {
+                  return _(yy).map('reducedValue')
+                              .filter(function (y) { return y > 0; })
+                              .sum();
                 }).max();
-                minY = _(scope.ydata).map(function (yy) {
-                  return _.reduce(yy, function(sum, y) {
-                    var num = y[1].get(y[0]);
-                    return sum + Math.min(num, 0);
-                  }, 0);
+                minY = _(ydata).map(function (yy) {
+                  return _(yy).map('reducedValue')
+                              .filter(function (y) { return y < 0; })
+                              .sum();
                 }).min();
               } else {
-                var allY = _(scope.ydata).flatten();
+                var allY = _(ydata).flatten();
                 minY = allY.min();
                 maxY = allY.max();
               }
