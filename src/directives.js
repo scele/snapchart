@@ -636,9 +636,10 @@ angular.module('pivotchart.directive', [])
           var colormaps = _(scope.maps.color).reject('error').map('source').value();
           var layermaps = _(scope.maps.layer).reject('error').map('source').value();
           var colormapsByLayer = _(layermaps).foldl(function (list, lm) {
-            var eq = function (m) { return m !== lm; };
             var rest = _.head(list);
-            return [_.tail(rest, eq), _.head(rest, eq)].concat(_.tail(list));
+            var i = _.findIndex(rest, lm);
+            var split = i === -1 ? rest.length : i + 1;
+            return [_.tail(rest, split), _.head(rest, split)].concat(_.tail(list));
           }, [colormaps]).reverse();
           var r = Math.min(scope.width, scope.height)/2;
           var r0 = (scope.chart.innerRadius || 0) * r;
@@ -648,12 +649,12 @@ angular.module('pivotchart.directive', [])
               .innerRadius(r0 + i * dr)
               .outerRadius(r0 + (i + 1.01) * dr);
           }).value();
-          function process(i, data, parent) {
+          function process(i, maps, data, parent) {
             var cm = colormapsByLayer[i];
-            if (i > 0)
-              cm = [layermaps[i - 1]].concat(cm);
+            //if (i > 0)
+            //  cm = [layermaps[i - 1]].concat(cm);
             cm = _.unique(cm);
-            var processed = pivot.processSingle(cm, sizemaps, data);
+            var processed = pivot.processSingle(cm, maps, data);
             var colorscaleIdx = -1;
             if (!parent)
               colorscaleIdx = 0;
@@ -670,11 +671,11 @@ angular.module('pivotchart.directive', [])
             if (i >= colormapsByLayer.length - 1)
               return processed;
             var sublayers = _(processed).map(function (p) {
-              return process(i + 1, p.reducedItems, p);
+              return process(i + 1, p.reducedValuemaps, p.reducedItems, p);
             }).flatten().value();
             return processed.concat(sublayers);
           }
-          scope.itemdata = process(0, scope.data, null);
+          scope.itemdata = process(0, sizemaps, scope.data, null);
           scope.itemdataByLayer = _(scope.itemdata).groupBy('layer').value();
           var pies = _(scope.itemdataByLayer).map(function (itemdata) {
             return d3.layout.pie().sort(null)(_.map(itemdata, 'reducedValue'));

@@ -311,6 +311,7 @@ function(data) {
         return {
           reduced: v,
           reducedItems: _.map(v, _.first),
+          reducedValuemaps: _(v).map(_.last).unique().value(),
           reducedValue: reducedValue,
           colorKey: k,
         };
