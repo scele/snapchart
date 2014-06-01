@@ -1,4 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .x.axis .domain { display: none; }
+  </style>
   <defs>
     <clipPath ng-attr-id="drawArea{{id}}">
       <rect x="0" ng-attr-y="{{y.range()[1]}}"
@@ -14,10 +17,12 @@
     </clipPath>
   </defs>
   <g transform="translate({{margin}},0)">
-    <g d3-axis class="x axis"
-      ticks="chart.hAxis.ticks"
-      tick-format="chart.hAxis.format"
-      ng-attr-transform="translate(0,{{height}})" orient="bottom" scale="x" tick-size="0">
+    <g ng-repeat="xx in visibleXAxes track by $index"
+      ng-attr-transform="translate(0,{{height - axisPadding * $index}})">
+      <g d3-axis class="x axis" ticks="chart.hAxis.ticks"
+        ng-repeat="d in xAxisPositions(xx) track by $index"
+        ng-attr-transform="translate({{d}},0)" orient="bottom" scale="xx" tick-size="0">
+      </g>
     </g>
     <!-- Draw one zero line in case negative values exist -->
     <line ng-attr-x1="{{width-margin}}" ng-attr-y1="{{y(0)}}" ng-attr-y2="{{y(0)}}"
@@ -27,17 +32,17 @@
       orient="left" ticks="chart.vAxis.ticks" tick-format="chart.vAxis.format" scale="y">
     </g>
 
-    <path ng-repeat="d in dataBySeries track by $index"
-      ng-attr-stroke="{{color($index)}}"
+    <path ng-repeat="(colorKey, pts) in itemdataByColorkey track by $index"
+      ng-attr-stroke="{{color(colorKey)}}"
       fill="none"
       ng-attr-clip-path="url(#drawArea{{id}})"
-      ng-attr-d="{{line(d)}}">
+      ng-attr-d="{{line(pts)}}">
     </path>
-    <g ng-repeat="pts in dataBySeries track by $index">
-      <circle ng-attr-cx="{{lineX(d.x)}}" ng-attr-cy="{{y(d.y)}}"
+    <g ng-repeat="(colorKey, pts) in itemdataByColorkey track by $index">
+      <circle ng-attr-cx="{{barX(d)}}" ng-attr-cy="{{y(d.reducedValue)}}"
         fill="white"
         ng-attr-r="{{chart.markers.size}}"
-        ng-attr-stroke="{{color($parent.$index)}}"
+        ng-attr-stroke="{{color(colorKey)}}"
         ng-attr-clip-path="url(#markersDrawArea{{id}})"
         ng-repeat="d in pts">
       </circle>

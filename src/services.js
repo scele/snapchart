@@ -165,14 +165,14 @@ function(data) {
         validateFn: commonValidateFn,
         maps: {size: true, color: true, layer: true },
         hasSettings: true,
-      },/*
+      },
       {
         name: 'Line chart',
         type: 'pivot-lines',
         hasMarkers: true,
         maps: {x: true, y: true, color: true },
         hasSettings: true,
-      },
+      },/*
       {
         name: 'Point chart',
         type: 'pivot-point',

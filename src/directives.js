@@ -33,6 +33,12 @@ angular.module('pivotchart.directive', [])
               var xmaps = _(scope.maps.x).reject('error').map('source').value();
               var ymaps = _(scope.maps.y).reject('error').map('source').value();
               var colormaps = _(scope.maps.color).reject('error').map('source').value();
+              var lastXmap = _(xmaps).last();
+              var lastXmapIsNumeric = false;
+              if (scope.chart.type.type === 'pivot-lines' &&
+                  lastXmap && lastXmap.type === 'number') {
+                lastXmapIsNumeric = true;
+              }
               var vAxis = scope.chart.vAxis;
               var hAxis = scope.chart.hAxis;
               scope.innerWidth = scope.width - scope.margin;
@@ -67,6 +73,13 @@ angular.module('pivotchart.directive', [])
 
               scope.x = _(xmaps).map(function(col, i) {
                 var xdata = scope.xdata[i];
+                // For line/scatte plots, the last x-scale may be linear.
+                if (col === lastXmap && lastXmapIsNumeric) {
+                  var x = d3.scale.linear()
+                    .domain(xdata)
+                    .rangeRound([0, scope.barWidth]);
+                  return x;
+                }
                 var band = hAxis.bands ? hAxis.bands[i] : 0.1;
                 var innerBand = hAxis.innerBands ? hAxis.innerBands[i] : 0.1;
                 if (_.isUndefined(band)) {
@@ -89,6 +102,7 @@ angular.module('pivotchart.directive', [])
                 _(p).each(function (p) { p.barIdx = i; });
                 return p;
               }).flatten().value();
+              scope.itemdataByColorkey = _(scope.itemdata).groupBy('colorKey').value();
 
               scope.axisPadding = 30;
               /* Linear scales
@@ -124,24 +138,17 @@ angular.module('pivotchart.directive', [])
               };
               scope.visibleXAxes = _(scope.x).filter(scope.showAxis).value();
 
-              var minY, maxY;
               var ydata = _(scope.itemdata).groupBy('barIdx').value();
-              if (scope.chart.type.type == 'pivot-bars') {
-                maxY = _(ydata).map(function (yy) {
-                  return _(yy).map('reducedValue')
-                              .filter(function (y) { return y > 0; })
-                              .sum();
-                }).max();
-                minY = _(ydata).map(function (yy) {
-                  return _(yy).map('reducedValue')
-                              .filter(function (y) { return y < 0; })
-                              .sum();
-                }).min();
-              } else {
-                var allY = _(ydata).flatten();
-                minY = allY.min();
-                maxY = allY.max();
-              }
+              var maxY = _(ydata).map(function (yy) {
+                return _(yy).map('reducedValue')
+                            .filter(function (y) { return y > 0; })
+                            .sum();
+              }).max();
+              var minY = _(ydata).map(function (yy) {
+                return _(yy).map('reducedValue')
+                            .filter(function (y) { return y < 0; })
+                            .sum();
+              }).min();
               scope.y = getScale(vAxis, [Math.min(0, minY), Math.max(maxY, 0)])
                 .range([scope.height - Math.max(0, (scope.visibleXAxes.length - 1)) *
                                           scope.axisPadding, 10]);
@@ -189,8 +196,12 @@ angular.module('pivotchart.directive', [])
 
               // Line graphs
               scope.line = d3.svg.line()
-                .x(function (d) { return scope.lineX(d.x); })
-                .y(function (d) { return scope.y(d.y); })
+                .x(function (d) {
+                  return scope.barX(d);
+                })
+                .y(function (d) {
+                  return scope.y(d.reducedValue);
+                })
                 .interpolate(scope.chart.lineInterpolation);
               scope.lineX = function (x) {
                 if (scope.chart.hAxis.type == 'ordinal') {

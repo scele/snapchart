@@ -14,7 +14,7 @@
       ng-attr-transform="translate(0,{{height - axisPadding * $index}})">
       <g d3-axis class="x axis" ticks="chart.hAxis.ticks"
         ng-repeat="d in xAxisPositions(xx) track by $index"
-      ng-attr-transform="translate({{d}},0)" orient="bottom" scale="xx" tick-size="0">
+        ng-attr-transform="translate({{d}},0)" orient="bottom" scale="xx" tick-size="0">
       </g>
     </g>
     <!-- Draw one zero line in case negative values exist -->
