@@ -193,6 +193,19 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.chart.hAxis = { auto: true, type: 'ordinal', format: 'n', ticks: 10, bands: [], innerBands: []};
     $scope.chart.markers = { show: true, size: 3 };
     $scope.chart.lineInterpolation = 'linear';
+    $scope.colorScales = [
+      {_id: 0, scale: d3.scale.category20c().domain(_.range(20)), primarySpan: 4},
+      {_id: 1, scale: d3.scale.category20b().domain(_.range(20)), primarySpan: 4},
+      {_id: 2, scale: d3.scale.category20().domain(_.range(20)), primarySpan: 2},
+      {_id: 3, scale: d3.scale.category10().domain(_.range(10)), primarySpan: 1},
+    ];
+    $scope.numberFormats = [
+      {format: 'n', text: '12'},
+      {format: 'p', text: '%'},
+      {format: 'e', text: '10<sup>2</sup>'},
+      {format: 's', text: '&mu;'},
+    ];
+    $scope.chart.colorScales = [$scope.colorScales[0]];
     $scope.fonts = [
       {title: "Open Sans Light", family: "'Open Sans',sans-serif", weight: 100},
       {title: "Open Sans", family: "'Open Sans',sans-serif", weight: 400},

@@ -108,11 +108,22 @@ accordion .panel .collapsing .popover div { display: none; }
 .popover { color: inherit !important; padding: 0px !important; border-width: 0px !important; outline:0; background-color: #e5e5e5 !important; }
 .popover textarea { resize: none; }
 .popover.right>.arrow:after { border-right-color: #aaa !important; }
-.popover .modal-body { width: 250px; }
+.popover .modal-body { width: 260px; }
+.popover .modal-footer { margin-top: 0px; }
 .panel a.settings { color: #bbb; float: right; cursor: pointer; }
 
-.popover .ui-slider { display: inline-block; width: 130px; margin-top: 10px;
+.popover .ui-slider { display: inline-block; width: 170px; margin-top: 10px;
 margin-right: 10px; }
-.chart-type input[type=radio] { display: none; }
-.chart-type .btn-group .btn:not(.selected) { background: inherit; }
+.btn-group input[type=radio] { display: none; }
+.btn-group .btn:not(.selected) { background: inherit; }
+.btn-group.color-buttons label { padding: 5px 10px; margin-bottom: 10px; }
+.btn-group.format-buttons .btn { width: 46px; }
 .chart-type rect, .chart-type path { fill: #999; stroke: white; stroke-width: 1; }
+.radio.min-max label label { display: inline-block; }
+.radio.min-max > label > input { margin-top: 25px; }
+.radio.min-max label label input { display: block; width: 80px; margin-right: 10px; }
+
+label { font-weight: 300 !important; }
+label input[type="radio"], label input[type="checkbox"] { margin: 0px; }
+.title { font-size: 15px; font-weight: 300; margin: 10.5px 0px; }
+

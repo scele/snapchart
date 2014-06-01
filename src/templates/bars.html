@@ -13,7 +13,7 @@
     <g ng-repeat="xx in visibleXAxes track by $index"
       ng-attr-transform="translate(0,{{height - axisPadding * $index}})">
       <g d3-axis class="x axis" ticks="chart.hAxis.ticks"
-        tick-format="chart.hAxis.format" ng-repeat="d in xAxisPositions(xx) track by $index"
+        ng-repeat="d in xAxisPositions(xx) track by $index"
       ng-attr-transform="translate({{d}},0)" orient="bottom" scale="xx" tick-size="0">
       </g>
     </g>

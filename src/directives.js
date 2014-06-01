@@ -55,7 +55,7 @@ angular.module('pivotchart.directive', [])
                 .cartesianProduct().filter('length').map(function (a) {
                   return a.join(" ");
                 }).value();
-              scope.color = d3.scale.category20().domain(scope.legenddata);
+              scope.color = scope.chart.colorScales[0].scale.copy().domain(scope.legenddata);
               if (graphArea) {
                 graphArea.setLegendData(_(scope.legenddata).map(function (c) {
                   return {
@@ -413,7 +413,7 @@ angular.module('pivotchart.directive', [])
         scope.$watch('[scale,orient,tickFormat,ticks,tickSize]', function() {
           if (!angular.isUndefined(scope.scale)) axis.scale(scope.scale);
           if (!angular.isUndefined(scope.orient)) axis.orient(scope.orient);
-          //if (!angular.isUndefined(scope.tickFormat)) axis.tickFormat(d3.format(scope.tickFormat));
+          if (!angular.isUndefined(scope.tickFormat)) axis.tickFormat(d3.format(scope.tickFormat));
           if (!angular.isUndefined(scope.ticks)) {
             var n = parseInt(scope.ticks);
             axis.ticks(n);
@@ -551,11 +551,25 @@ angular.module('pivotchart.directive', [])
           var numberColor = _(colormaps).all({type: 'number'});
           var color, legenddata;
           if (numberColor) {
-            var cd = d3.scale.category20().domain([0, 1]);
-            color = d3.scale.linear()
-              .domain(d3.extent(_(scope.data).map(colormaps[0].get).value()))
-              .range([cd(1), cd(0)]);
+            var c0 = scope.chart.colorScales[0].scale.range()[0];
+            var c1 = scope.chart.background.replace('rgba', 'rgb');
+            var c2 = scope.chart.colorScales[0].scale.range()[scope.chart.colorScales[0].primarySpan];
+            var cd = function (t) {
+              if (t > 0.5)
+                return d3.interpolateRgb(c1, c2)(t/2);
+              else
+                return d3.interpolateRgb(c0, c1)(t*2);
+            };
+            var domain = _(scope.data).map(colormaps[0].get).value();
+            var extent = d3.extent(domain);
+            color = d3.scale.ordinal()
+              .domain(domain)
+              .range(_(domain).map(function (d) {
+                var t = (d - extent[0]) / (extent[1] - extent[0]);
+                return cd(t);
+              }).value());
             legenddata = [];
+            scope.chart.colorScaleIsNumeric = true;
           } else {
             var colorkeys = _(colormaps).map(function (col) {
               return _(scope.data).map(col.get).unique().value();
@@ -564,7 +578,8 @@ angular.module('pivotchart.directive', [])
               .cartesianProduct().filter('length').map(function (a) {
                 return a.join(" ");
               }).value();
-            color = d3.scale.category20().domain(legenddata);
+            color = scope.chart.colorScales[0].scale.copy().domain(legenddata);
+            scope.chart.colorScaleIsNumeric = false;
           }
           if (graphArea) {
             graphArea.setLegendData(_(legenddata).map(function (c) {
@@ -660,11 +675,8 @@ angular.module('pivotchart.directive', [])
               colorscaleIdx = 0;
             else if (colormapsByLayer[i].length)
               colorscaleIdx = parent.colorscaleIdx + 1;
-            if (colormapsByLayer[i].length)
-              colorscale = d3.scale.category20().domain(_.map(processed, 'colorKey'));
             _(processed).each(function (l) {
               l.layer = i;
-              l.colorscale = colorscale;
               l.colorscaleIdx = colorscaleIdx;
               l.parent = parent;
             });
@@ -682,9 +694,21 @@ angular.module('pivotchart.directive', [])
           }).value();
           var colorscales = _(colormapsByLayer).map(function (cc, i) {
             var domain = _(scope.itemdata).filter({colorscaleIdx: i});
-            var scales = ['category20', 'category20b', 'category20c'];
-            return d3.scale[scales[i%3]]().domain(domain.map('colorKey').unique().value());
+            return scope.chart.colorScales[0].scale.copy().domain(domain.map('colorKey').unique().value());
           }).value();
+
+          // Set ranges for each colorscale so that they start from
+          // primary group boundaries.
+          _(colorscales).each(function (cc, i) {
+            var prevColors = _(colorscales).take(i).map(function (scale) {
+              function round(x, y) {
+                return Math.floor((x + y - 1) / y) * y;
+              }
+              return round(scale.domain().length, scope.chart.colorScales[0].primarySpan);
+            }).sum();
+            cc.range(_.rest(cc.range(), prevColors));
+          });
+
           if (graphArea) {
             var legenddata = _(colorscales).map(function (scale) {
               return _.map(scale.domain(), function(d) {

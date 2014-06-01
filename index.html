@@ -131,10 +131,12 @@
                       <input ng-model="$parent.chart.type"
                         type="radio" class="btn btn-default" ng-value="type">
                         <svg width="50" height="50" ng-show="type.type=='pivot-bars'">
-                          <rect x="0.5" y="10.5" width="8" height="80" />
-                          <rect x="10.5" y="20.5" width="8" height="80" />
-                          <rect x="30.5" y="7.5" width="8" height="80" />
-                          <rect x="40.5" y="30.5" width="8" height="80" />
+                          <rect x="0.5" y="20.5" width="10" height="80" />
+                          <rect x="10.5" y="10.5" width="10" height="80" />
+                          <rect x="30.5" y="10.5" width="10" height="15" />
+                          <rect x="30.5" y="25.5" width="10" height="80" />
+                          <rect x="40.5" y="30.5" width="10" height="6" />
+                          <rect x="40.5" y="36.5" width="10" height="80" />
                         </svg>
                         <svg width="50" height="50" ng-show="type.type=='pivot-treemap'">
                           <rect x="30.5" y="10.5" width="20" height="40" />
@@ -194,7 +196,13 @@
                     </pivot-column-container>
                   </div>
                   <div ng-show="chart.type.maps.color">
-                    <h5>Color</h5>
+                    <h5>Color
+                      <a title="Color settings" bs-popover
+                        data-template="src/templates/colorConfig.html"
+                        data-content="bug" class="settings">
+                        <span class="glyphicon glyphicon-cog"></span>
+                      </a>
+                    </h5>
                     <pivot-column-container ng-model="maps.color">
                     </pivot-column-container>
                   </div>

@@ -1,0 +1,24 @@
+<div class="popover" tabindex="-1" ng-show="content">
+  <div class="arrow"></div>
+  <div class="modal-content">
+    <div class="modal-body">
+      <div class="btn-group color-buttons" ng-model="chart.colorScales[$index]"
+          ng-repeat="boundScale in chart.colorScales track by $index">
+        <label class="btn btn-default" ng-repeat="s in colorScales track by $index"
+          ng-class="{selected: s == boundScale}">
+          <input ng-model="$parent.chart.colorScales[$parent.$index]"
+            type="radio" class="btn btn-default" ng-value="s">
+            <svg width="200" height="10">
+              <rect ng-repeat="v in s.scale.domain()"
+                ng-attr-style="fill:{{s.scale(v)}}"
+                ng-attr-x="{{(200/s.scale.domain().length) * $index + 0.5}}"
+                y="0" ng-attr-width="{{200/s.scale.domain().length}}" height="10" />
+            </svg>
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-sm btn-primary" ng-click="$hide()">OK</button>
+    </div>
+  </div>
+</div>

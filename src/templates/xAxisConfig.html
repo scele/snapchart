@@ -5,7 +5,7 @@
       <div class="form-group"
         ng-repeat="col in maps.x">
         <label>
-          <div>{{col.source.name}} spacing</div>
+          <div class="title">{{col.source.name}} spacing</div>
           <div ui-slider="{min: 0, max: 0.99, step: 0.01}"
             ng-model="chart.hAxis.innerBands[$index]"></div>
           <span>{{chart.hAxis.innerBands[$index]|percentage}}</span>
@@ -14,8 +14,9 @@
           <span>{{chart.hAxis.bands[$index]|percentage}}</span>
         </label>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-primary" ng-click="$hide()">OK</button>
-      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-sm btn-primary" ng-click="$hide()">OK</button>
+    </div>
   </div>
 </div>

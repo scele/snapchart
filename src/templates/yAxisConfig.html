@@ -10,41 +10,52 @@
           </select>
         </label>
       </div>-->
-      <div class="radio" ng-show="chart.vAxis.type != 'ordinal'">
-        <label>
-          <input type="radio" ng-model="chart.vAxis.auto" ng-value="true"> Auto
-        </label>
-      </div>
-      <div class="radio" ng-show="chart.vAxis.type != 'ordinal'">
-        <label>
-          <input type="radio" ng-model="chart.vAxis.auto" ng-value="false">
-          <div class="form-group form-inline axis-domain">
-            <label>
-              Min
-              <input type="number" ng-model="chart.vAxis.min" class="form-control">
-            </label>
-            <label>
-              Max
-              <input type="number" ng-model="chart.vAxis.max" class="form-control">
-            </label>
-          </div>
-        </label>
+      <div class="form-group">
+        <div class="title">Domain</div>
+        <div class="radio" ng-show="chart.vAxis.type != 'ordinal'">
+          <label>
+            <input type="radio" ng-model="chart.vAxis.auto" ng-value="true"> Auto
+          </label>
+        </div>
+        <div class="radio min-max" ng-show="chart.vAxis.type != 'ordinal'">
+          <label>
+            <input type="radio" ng-model="chart.vAxis.auto" ng-value="false">
+            <div class="form-group form-inline axis-domain">
+              <label>
+                Min
+                <input type="number" ng-model="chart.vAxis.min" class="form-control"
+                  ng-change="chart.vAxis.auto = false">
+              </label>
+              <label>
+                Max
+                <input type="number" ng-model="chart.vAxis.max" class="form-control"
+                  ng-change="chart.vAxis.auto = false">
+              </label>
+            </div>
+          </label>
+        </div>
       </div>
       <div class="form-group">
-        <label>
-          Format
-          <input type="text" ng-model="chart.vAxis.format" class="form-control">
-        </label>
+        <div class="title">Format</div>
+        <div class="btn-group format-buttons" ng-model="chart.vAxis.format">
+          <label class="btn btn-default" ng-repeat="s in numberFormats"
+            ng-class="{selected: s.format == chart.vAxis.format}">
+            <input ng-model="$parent.chart.vAxis.format"
+              type="radio" class="btn btn-default" ng-value="s.format">
+              <span ng-bind-html="s.text"></span>
+          </label>
+        </div>
       </div>
       <div class="form-group" ng-show="chart.vAxis.type == 'linear'">
         <label>
-          <div>Ticks</div>
+          <div class="title">Ticks</div>
           <div ui-slider="{min: 0, max: 50, step: 1}"
             ng-model="chart.vAxis.ticks"></div>
         </label>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-sm btn-primary" ng-click="$hide()">OK</button>
-      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-sm btn-primary" ng-click="$hide()">OK</button>
+    </div>
   </div>
 </div>

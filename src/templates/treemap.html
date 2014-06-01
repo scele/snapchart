@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg">
   <g
     ng-repeat="node in nodes"
-    ng-attr-transform="translate({{node.x}}, {{node.y}})">
+    ng-attr-transform="translate({{node.x + 0.5}}, {{node.y + 0.5}})">
     <rect
       ng-attr-width="{{node.dx}}"
       ng-attr-height="{{node.dy}}"

@@ -8,6 +8,7 @@ angular.module('pivotchart',
    'colorpicker.module',
    'mgcrea.ngStrap.popover',
    'mgcrea.ngStrap.button',
+   'ngSanitize',
   ]).config([
     '$compileProvider',
     function($compileProvider) {
