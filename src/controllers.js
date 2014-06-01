@@ -79,6 +79,11 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       { type: 'log', name: 'Logarithmic' }
     ];
     $scope.showPromo = true;
+    $scope.arc = function (r0, r1, a0, a1) {
+      return d3.svg.arc()
+        .innerRadius(r0)
+        .outerRadius(r1)({startAngle: a0, endAngle: a1});
+    };
 
     $scope.$watch(function () {
       var fmt = _.curry(function (showTitle, c) {

@@ -131,17 +131,26 @@
                       <input ng-model="$parent.chart.type"
                         type="radio" class="btn btn-default" ng-value="type">
                         <svg width="50" height="50" ng-show="type.type=='pivot-bars'">
-                          <rect x="0" y="10" width="8" height="80" />
-                          <rect x="10" y="20" width="8" height="80" />
-                          <rect x="30" y="7" width="8" height="80" />
-                          <rect x="40" y="30" width="8" height="80" />
+                          <rect x="0.5" y="10.5" width="8" height="80" />
+                          <rect x="10.5" y="20.5" width="8" height="80" />
+                          <rect x="30.5" y="7.5" width="8" height="80" />
+                          <rect x="40.5" y="30.5" width="8" height="80" />
                         </svg>
                         <svg width="50" height="50" ng-show="type.type=='pivot-treemap'">
-                          <rect x="30" y="10" width="20" height="40" />
-                          <rect x="0" y="10" width="28" height="14" />
-                          <rect x="18" y="26" width="10" height="24" />
-                          <rect x="0" y="26" width="16" height="14" />
-                          <rect x="0" y="42" width="16" height="8" />
+                          <rect x="30.5" y="10.5" width="20" height="40" />
+                          <rect x="0.5" y="10.5" width="30" height="15" />
+                          <rect x="20.5" y="25.5" width="10" height="25" />
+                          <rect x="0.5" y="25.5" width="20" height="15" />
+                          <rect x="0.5" y="40.5" width="20" height="10" />
+                        </svg>
+                        <svg width="50" height="50" ng-show="type.type=='pivot-pie'">
+                          <g transform="translate(25,30)">
+                            <path ng-attr-d="{{arc(0, 20, 0, 2)}}" />
+                            <path ng-attr-d="{{arc(10, 20, 2, 4)}}" />
+                            <path ng-attr-d="{{arc(5, 15, 4, 6.283)}}" />
+                            <path ng-attr-d="{{arc(15, 20, 4, 5)}}" />
+                            <path ng-attr-d="{{arc(15, 20, 5, 6.283)}}" />
+                          </g>
                         </svg>
                     </label>
                   </div>
