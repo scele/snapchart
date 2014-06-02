@@ -2,7 +2,7 @@
   <g>
     <g ng-repeat="item in links">
       <path ng-attr-d="{{stream(item)}}"
-        style="stroke: {{color(item)}}; fill: none; stroke-width: {{streamWidth(item)}};">
+        style="stroke: {{color(item)}}; stroke-opacity:{{linkOpacity}}; fill: none; stroke-width: {{streamWidth(item)}};">
       </path>
     </g>
   </g>

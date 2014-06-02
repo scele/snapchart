@@ -623,13 +623,13 @@ angular.module('pivotchart.directive', [])
           graphArea.setGraphArea(scope);
         }
         scope.$watch('[data, maps, width, height, chart]', function() {
-          var sizemaps = _(scope.maps.size).reject('error').map('source').value();
+          var ymaps = _(scope.maps.y).reject('error').map('source').value();
           var colormaps = _(scope.maps.color).reject('error').map('source').value();
-          var layermaps = _(scope.maps.layer).reject('error').map('source').value();
+          var xmaps = _(scope.maps.x).reject('error').map('source').value();
           var links = [];
-          var nodes = _(layermaps).map(function (col) {
+          var nodes = _(xmaps).map(function (col) {
             if (col.variable) {
-              return _(sizemaps).map('name').unique().value();
+              return _(ymaps).map('name').unique().value();
             } else {
               return _(scope.data).map(col.get).unique().value();
             }
@@ -637,20 +637,35 @@ angular.module('pivotchart.directive', [])
             return _(nn).map(function (n) { return {name: n}; }).value();
           }).value();
 
-          for (var i = 0; i < layermaps.length - 1; i++) {
-            var p = pivot.processSingle([layermaps[i], layermaps[i+1]], sizemaps, scope.data);
-            var base1 = _(nodes).take(i).map('length').sum();
-            var base2 = _(nodes).take(i+1).map('length').sum();
-            p = _(p).map(function (p) {
+          scope.linkOpacity = 0.7;
+          var colors = pivot.processColors(colormaps, ymaps,
+                                           scope.chart.colorScales, scope.data);
+          _(colors.legenddata).each(function (d) { d.opacity = scope.linkOpacity; });
+          if (graphArea)
+            graphArea.setLegendData(colors.legenddata);
+
+          function toLink(i) {
+            return function (p) {
+              var tail = _.last(p.colorKeys, 2);
+              var colorKey = _(p.colorKeys).head(p.colorKeys.length - 2).join(' ');
+              var sortKey = -1 * _(colors.legenddata).map('text').indexOf(colorKey);
               return {
-                source: _(nodes[i]).filter({name: p.colorKeys[0]}).first(),
-                target: _(nodes[i+1]).filter({name: p.colorKeys[1]}).first(),
+                source: _(nodes[i]).filter({name: tail[0]}).first(),
+                target: _(nodes[i+1]).filter({name: tail[1]}).first(),
                 value: p.reducedValue,
                 item: p,
+                targetSortKey: i === 0 ? 0 : sortKey,
+                sourceSortKey: i === xmaps.length - 2 ? 0 : sortKey,
               };
-            }).value();
+            };
+          }
+          for (var i = 0; i < xmaps.length - 1; i++) {
+            var maps = colormaps.concat([xmaps[i], xmaps[i+1]]);
+            var p = pivot.processSingle(maps, ymaps, scope.data);
+            p = _(p).map(toLink(i)).value();
             links = links.concat(p);
           }
+
           var sankey = d3.sankey()
             .nodeWidth(15)
             .nodePadding(10)
@@ -666,7 +681,10 @@ angular.module('pivotchart.directive', [])
           scope.streamWidth = function (link) {
             return Math.max(1, link.dy);
           };
-          scope.color = function (link) { return 'grey'; };
+          scope.color = function (link) {
+            var colorKey = _(link.item.colorKeys).head(link.item.colorKeys.length - 2).join(' ');
+            return colors.colorscale(colorKey);
+          };
         }, true);
       },
     };

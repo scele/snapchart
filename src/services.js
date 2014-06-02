@@ -105,21 +105,21 @@ angular.module('pivotchart.service', [])
         type: 'pivot-bars',
         config: { legend: {display: true, position: 'right'} },
         validateFn: commonValidateFn,
-        maps: {x: true, y: true, color: true },
+        maps: {x: "X-axis", y: "Y-axis", color: "Color" },
       },
       {
         name: 'Treemap',
         type: 'pivot-treemap',
         config: { },
         validateFn: commonValidateFn,
-        maps: {size: true, color: true, text: true },
+        maps: {size: "Size", color: "Color", text: "Text" },
       },
       {
         name: 'Pie chart',
         type: 'pivot-pie',
         config: { legend: {display: true, position: 'right'} },
         validateFn: commonValidateFn,
-        maps: {size: true, color: true, layer: true },
+        maps: {size: "Size", color: "Color", layer: "Layers" },
         hasSettings: true,
       },
       {
@@ -127,13 +127,13 @@ angular.module('pivotchart.service', [])
         type: 'pivot-sankey',
         config: { legend: {display: true, position: 'right'} },
         validateFn: commonValidateFn,
-        maps: {size: true, color: true, layer: true },
+        maps: {x: "Nodes", y: "Stream width", color: "Color" },
       },
       {
         name: 'Line chart',
         type: 'pivot-lines',
         hasMarkers: true,
-        maps: {x: true, y: true, color: true },
+        maps: {x: "X-axis", y: "Y-axis", color: "Color" },
         hasSettings: true,
       },/*
       {
@@ -168,7 +168,7 @@ angular.module('pivotchart.service', [])
     };
   })
   .factory('pivot', function() {
-    function getLegend(colormaps, categorymaps, valuemaps, data) {
+    function processColors(colormaps, valuemaps, colorscales, data) {
       var colordata = _(colormaps).map(function (col, i) {
         if (col.variable) {
           return _(valuemaps).map('name').unique().value();
@@ -180,68 +180,17 @@ angular.module('pivotchart.service', [])
         .cartesianProduct().filter('length').map(function (a) {
           return a.join(" ");
         }).value();
-      var color = d3.scale.category20().domain(legenddata);
+      var color = colorscales[0].scale.copy().domain(legenddata);
       var legenddata2 = _(legenddata).map(function (c) {
         return {
           text: c,
           color: color(c),
         };
       }).value();
-      var categorydata = _(categorymaps).map(function(col, i) {
-        if (col.variable) {
-          return _(valuemaps).map('name').unique().value();
-        } else {
-          return _(data).map(col.get).unique().value();
-        }
-      }).value();
-
-      var bars = _(categorydata).cartesianProduct().value();
-
-      function barColorKey(d, yidx) {
-        return _(colormaps).map(function(c, i) {
-          if (c.variable) {
-            return colordata[i][yidx];
-          } else {
-            return c.get(d);
-          }
-        }).join(" ");
-      }
-
-      var ydata = _(bars).map(function (bar) {
-        return _([data, valuemaps]).cartesianProduct()
-          //.map(function (dd) { return { d: dd[0], column: dd[1] }; })
-          .filter(function (dd) {
-            return _(categorymaps).all(function (c, i) {
-              if (c.variable)
-                return dd[1].name == bar[i];
-              else
-                return c.get(dd[0]) == bar[i];
-            });
-          }).value();
-      }).value();
-      var itemdata = _(ydata).map(function (bar, i) {
-        var colors = _(bar).groupBy(function (dd) {
-          return barColorKey(dd[0], _.indexOf(valuemaps, dd[1]));
-        }).map(function (v, k) {
-          var reducedValue = _(v).map(function (dd) {
-            return dd[1].get(dd[0]);
-          }).sum();
-          return {
-            reduced: v,
-            reducedValue: reducedValue,
-            colorKey: k,
-            barIdx: i
-          };
-        }).reverse().value();
-        return colors;
-      }).flatten().value();
 
       return {
-        colordata: colordata,
-        legenddata: legenddata,
-        color: color,
-        legenddata2: legenddata2,
-        itemdata: itemdata,
+        legenddata: legenddata2,
+        colorscale: color,
       };
     }
 
@@ -290,7 +239,7 @@ angular.module('pivotchart.service', [])
           reducedItems: _.map(v, _.first),
           reducedValuemaps: _(v).map(_.last).unique().value(),
           reducedValue: reducedValue,
-          colorKey: k.replace('\n', ' '),
+          colorKey: k.replace(/\n/g, ' '),
           colorKeys: k.split('\n'),
         };
       }).reverse().value();
@@ -298,5 +247,6 @@ angular.module('pivotchart.service', [])
     }
     return {
       processSingle: processSingle,
+      processColors: processColors,
     };
   });

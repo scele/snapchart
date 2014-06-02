@@ -165,20 +165,8 @@
                   </pivot-column-container>
                 </div>
                 <div class="col-xs-6">
-                  <div ng-show="chart.type.maps.x">
-                    <h5>X-axis
-                      <a title="X-axis settings" bs-popover
-                        ng-show="maps.x.length"
-                        data-template="src/templates/xAxisConfig.html"
-                        data-content="bug" class="settings">
-                        <span class="glyphicon glyphicon-cog"></span>
-                      </a>
-                    </h5>
-                    <pivot-column-container ng-model="maps.x">
-                    </pivot-column-container>
-                  </div>
                   <div ng-show="chart.type.maps.y">
-                    <h5>Y-axis
+                    <h5>{{chart.type.maps.y}}
                       <a title="Y-axis settings" bs-popover
                         ng-show="maps.y.length"
                         data-template="src/templates/yAxisConfig.html"
@@ -190,13 +178,25 @@
                       pivot-restrict="['number']">
                     </pivot-column-container>
                   </div>
+                  <div ng-show="chart.type.maps.x">
+                    <h5>{{chart.type.maps.x}}
+                      <a title="X-axis settings" bs-popover
+                        ng-show="maps.x.length"
+                        data-template="src/templates/xAxisConfig.html"
+                        data-content="bug" class="settings">
+                        <span class="glyphicon glyphicon-cog"></span>
+                      </a>
+                    </h5>
+                    <pivot-column-container ng-model="maps.x">
+                    </pivot-column-container>
+                  </div>
                   <div ng-show="chart.type.maps.size">
                     <h5>Size</h5>
                     <pivot-column-container ng-model="maps.size">
                     </pivot-column-container>
                   </div>
                   <div ng-show="chart.type.maps.color">
-                    <h5>Color
+                    <h5>{{chart.type.maps.color}}
                       <a title="Color settings" bs-popover
                         data-template="src/templates/colorConfig.html"
                         data-content="bug" class="settings">
@@ -207,12 +207,12 @@
                     </pivot-column-container>
                   </div>
                   <div ng-show="chart.type.maps.layer">
-                    <h5>Layer</h5>
+                    <h5>{{chart.type.maps.layer}}</h5>
                     <pivot-column-container ng-model="maps.layer">
                     </pivot-column-container>
                   </div>
                   <div ng-show="chart.type.maps.text">
-                    <h5>Text
+                    <h5>{{chart.type.maps.text}}
                       <a title="Text settings" bs-popover
                         data-template="src/templates/textConfig.html"
                         data-content="bug" class="settings">
