@@ -18,10 +18,11 @@
   </defs>
   <g transform="translate({{margin}},0)">
     <g ng-repeat="xx in visibleXAxes track by $index"
-      ng-attr-transform="translate(0,{{height - axisPadding * $index}})">
+      ng-attr-transform="translate(0.5,{{height - axisPadding * $index + 0.5}})">
       <g d3-axis class="x axis" ticks="chart.hAxis.ticks"
         ng-repeat="d in xAxisPositions(xx) track by $index"
-        ng-attr-transform="translate({{d}},0)" orient="bottom" scale="xx" tick-size="0">
+        ng-attr-transform="translate({{d}},0)" orient="bottom" scale="xx"
+        tick-size="xx.linear ? 6 : 0">
       </g>
     </g>
     <!-- Draw one zero line in case negative values exist -->

@@ -195,8 +195,8 @@
                         <span class="glyphicon glyphicon-cog"></span>
                       </a>
                     </h5>
-                    <pivot-column-container ng-model="maps.y" pivot-name="Y-axis"
-                      pivot-restrict="['number']">
+                    <pivot-column-container ng-model="maps.y" pivot-name="{{chart.type.maps.y.name}}"
+                      pivot-restrict="chart.type.maps.y.restrict">
                     </pivot-column-container>
                   </div>
                   <div ng-show="chart.type.maps.x">
@@ -208,12 +208,15 @@
                         <span class="glyphicon glyphicon-cog"></span>
                       </a>
                     </h5>
-                    <pivot-column-container ng-model="maps.x">
+                    <pivot-column-container ng-model="maps.x" pivot-name="{{chart.type.maps.x.name}}"
+                      pivot-restrict="chart.type.maps.x.restrict">
                     </pivot-column-container>
                   </div>
                   <div ng-show="chart.type.maps.size">
-                    <h5>Size</h5>
-                    <pivot-column-container ng-model="maps.size">
+                    <h5>{{chart.type.maps.size.name}}</h5>
+                    <pivot-column-container ng-model="maps.size"
+                      pivot-name="{{chart.type.maps.size.name}}"
+                      pivot-restrict="chart.type.maps.size.restrict">
                     </pivot-column-container>
                   </div>
                   <div ng-show="chart.type.maps.color">
@@ -230,7 +233,9 @@
                   </div>
                   <div ng-show="chart.type.maps.layer">
                     <h5>{{chart.type.maps.layer.name}}</h5>
-                    <pivot-column-container ng-model="maps.layer">
+                    <pivot-column-container ng-model="maps.layer"
+                      pivot-name="{{chart.type.maps.layer.name}}"
+                      pivot-restrict="chart.type.maps.layer.restrict">
                     </pivot-column-container>
                   </div>
                   <div ng-show="chart.type.maps.text">

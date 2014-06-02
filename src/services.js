@@ -107,7 +107,7 @@ angular.module('pivotchart.service', [])
         validateFn: commonValidateFn,
         maps: {
           x: {name: "X-axis", config: true},
-          y: {name: "Y-axis", config: true},
+          y: {name: "Y-axis", config: true, restrict: ['number']},
           color: {name: "Color", config: true},
         },
       },
@@ -117,7 +117,7 @@ angular.module('pivotchart.service', [])
         hasMarkers: true,
         maps: {
           x: {name: "X-axis", config: true},
-          y: {name: "Y-axis", config: true},
+          y: {name: "Y-axis", config: true, restrict: ['number']},
           color: {name: "Color", config: true},
         },
         hasSettings: true,
@@ -128,8 +128,8 @@ angular.module('pivotchart.service', [])
         config: { legend: {display: true, position: 'right'} },
         validateFn: commonValidateFn,
         maps: {
-          x: {name: "Node", config: true},
-          y: {name: "Stream", config: true},
+          x: {name: "Node", config: true, restrict: ['text']},
+          y: {name: "Stream", config: true, restrict: ['number']},
           color: {name: "Color", config: true},
         },
       },
@@ -139,9 +139,9 @@ angular.module('pivotchart.service', [])
         config: { legend: {display: true, position: 'right'} },
         validateFn: commonValidateFn,
         maps: {
-          size: {name: "Size", config: false},
+          size: {name: "Size", config: false, restrict: ['number']},
           color: {name: "Color", config: true},
-          layer: {name: "Layers", config: false},
+          layer: {name: "Layer", config: false, restrict: ['text']},
         },
         hasSettings: true,
       },
@@ -151,7 +151,7 @@ angular.module('pivotchart.service', [])
         config: { },
         validateFn: commonValidateFn,
         maps: {
-          size: {name: "Size", config: false},
+          size: {name: "Size", config: false, restrict: ['number']},
           color: {name: "Color", config: true},
           text: {name: "Text", config: true},
         },

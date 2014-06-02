@@ -75,9 +75,11 @@ angular.module('pivotchart.directive', [])
                 var xdata = scope.xdata[i];
                 // For line/scatte plots, the last x-scale may be linear.
                 if (col === lastXmap && lastXmapIsNumeric) {
-                  return d3.scale.linear()
-                    .domain(xdata)
+                  var l = d3.scale.linear()
+                    .domain(d3.extent(xdata))
                     .rangeRound([0, scope.barWidth]);
+                  l.linear = true;
+                  return l;
                 }
                 var band = hAxis.bands ? hAxis.bands[i] : 0.1;
                 var innerBand = hAxis.innerBands ? hAxis.innerBands[i] : 0.1;
@@ -85,12 +87,17 @@ angular.module('pivotchart.directive', [])
                   band = 0.1;
                 }
                 var x = d3.scale.ordinal()
-                  .domain(xdata)
-                  .rangeRoundBands([0, scope.barWidth], band, innerBand);
-                if (x.rangeBand() === 0) {
-                  x.rangeBands([0, scope.barWidth], band, innerBand);
+                  .domain(xdata);
+
+                if (col === lastXmap && scope.chart.type.type === 'pivot-lines') {
+                  x.rangePoints([0, scope.barWidth], 1);
+                } else {
+                  x.rangeRoundBands([0, scope.barWidth], band, innerBand);
+                  if (x.rangeBand() === 0) {
+                    x.rangeBands([0, scope.barWidth], band, innerBand);
+                  }
+                  scope.barWidth = x.rangeBand();
                 }
-                scope.barWidth = x.rangeBand();
                 return x;
               }).value();
 
@@ -285,7 +292,7 @@ angular.module('pivotchart.directive', [])
           //  };
           //}
         });
-        scope.$watch('columns', function () {
+        scope.$watch('[columns,restrict]', function () {
           _(scope.columns).each(function (c) {
             if (scope.restrict && !_(scope.restrict).contains(c.source.type)) {
               var types = scope.restrict.join(' and ');
@@ -398,6 +405,8 @@ angular.module('pivotchart.directive', [])
               var vals = scope.scale.domain()
                           .filter(function(d,i) { return i % nth === 0; });
               axis.tickValues(vals);
+            } else {
+              axis.tickValues(null);
             }
           }
           if (!angular.isUndefined(scope.tickSize)) axis.tickSize(parseInt(scope.tickSize));

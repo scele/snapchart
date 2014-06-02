@@ -87,6 +87,11 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
         .innerRadius(r0)
         .outerRadius(r1)({startAngle: a0, endAngle: a1});
     };
+    $scope.xmapIsLinear = function (xmap) {
+      if (xmap.source.type !== 'number') return false;
+      if ($scope.chart.type.type !== 'pivot-lines') return false;
+      return xmap === _.last($scope.maps.x);
+    };
 
     $scope.$watch(function () {
       var fmt = _.curry(function (showTitle, c) {
