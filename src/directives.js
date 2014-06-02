@@ -104,7 +104,7 @@ angular.module('pivotchart.directive', [])
               var bars = _(scope.xdata).cartesianProduct().value();
 
               scope.itemdata = _(bars).map(function (bar, i) {
-                var p = pivot.processSingle(colormaps, ymaps, scope.data, bar, xmaps);
+                var p = pivot.processSingle(colormaps, [], ymaps, scope.data, bar, xmaps);
                 _(p).each(function (p) { p.barIdx = i; });
                 return p;
               }).flatten().value();
@@ -186,9 +186,9 @@ angular.module('pivotchart.directive', [])
               scope.barX = function (d) {
                 return _(scope.x).map(function(x, i) {
                   if (xmaps[i].variable) {
-                    return x(d.reduced[0][1].name);
+                    return x(d.reduced[0].valuemap.name);
                   } else {
-                    return x(xmaps[i].get(d.reduced[0][0]));
+                    return x(xmaps[i].get(d.reduced[0].item));
                   }
                 }).sum();
               };
@@ -671,7 +671,7 @@ angular.module('pivotchart.directive', [])
           }
           for (var i = 0; i < xmaps.length - 1; i++) {
             var maps = colormaps.concat([xmaps[i], xmaps[i+1]]);
-            var p = pivot.processSingle(maps, ymaps, scope.data);
+            var p = pivot.processSingle(maps, [], ymaps, scope.data);
             p = _(p).map(toLink(i)).value();
             links = links.concat(p);
           }
@@ -780,10 +780,11 @@ angular.module('pivotchart.directive', [])
           }).value();
           function process(i, maps, data, parent) {
             var cm = colormapsByLayer[i];
-            //if (i > 0)
-            //  cm = [layermaps[i - 1]].concat(cm);
+            var detailmaps = [];
+            if (i > 0)
+              detailmaps = [layermaps[i - 1]];
             cm = _.unique(cm);
-            var processed = pivot.processSingle(cm, maps, data);
+            var processed = pivot.processSingle(cm, detailmaps, maps, data);
             var colorscaleIdx = -1;
             if (!parent)
               colorscaleIdx = 0;

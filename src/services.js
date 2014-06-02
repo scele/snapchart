@@ -215,7 +215,7 @@ angular.module('pivotchart.service', [])
       };
     }
 
-    function processSingle(colormaps, valuemaps, data, xmapFilter, xmaps) {
+    function processSingle(colormaps, detailmaps, valuemaps, data, xmapFilter, xmaps) {
       var colordata = _(colormaps).map(function (col, i) {
         if (col.variable) {
           return _(valuemaps).map('name').unique().value();
@@ -223,18 +223,28 @@ angular.module('pivotchart.service', [])
           return _(data).map(col.get).unique().value();
         }
       }).value();
+      var detaildata = _(detailmaps).map(function (col, i) {
+        if (col.variable) {
+          return _(valuemaps).map('name').unique().value();
+        } else {
+          return _(data).map(col.get).unique().value();
+        }
+      }).value();
 
-      function barColorKeys(d, yidx) {
-        return _(colormaps).map(function(c, i) {
+      function barKeys(maps, data, d, yidx) {
+        return _(maps).map(function(c, i) {
           if (c.variable) {
-            return colordata[i][yidx];
+            return data[i][yidx];
           } else {
             return c.get(d);
           }
         }).value();
       }
       function barColorKey(d, yidx) {
-        return barColorKeys(d, yidx).join('\n');
+        return barKeys(colormaps, colordata, d, yidx).join('\n');
+      }
+      function barDetailKey(d, yidx) {
+        return barKeys(detailmaps, detaildata, d, yidx).join('\n');
       }
 
       var ydata = _([data, valuemaps]).cartesianProduct().value();
@@ -249,22 +259,34 @@ angular.module('pivotchart.service', [])
         });
       }
 
-      var colors = _(ydata).groupBy(function (dd) {
-        return barColorKey(dd[0], _.indexOf(valuemaps, dd[1]));
-      }).map(function (v, k) {
-        var reducedValue = _(v).map(function (dd) {
-          return dd[1].get(dd[0]);
+      return _(ydata).map(function (dd) {
+        var item = dd[0];
+        var valuemap = dd[1];
+        var valueidx = _.indexOf(valuemaps, valuemap);
+        var detailkey = barDetailKey(item, valueidx);
+        var colorkey = barColorKey(item, valueidx);
+        return {
+          item: item,
+          valuemap: valuemap,
+          detailkey: detailkey,
+          colorkey: colorkey,
+          key: colorkey + '\n' + detailkey,
+        };
+      })
+      .groupBy('key')
+      .map(function (values, k) {
+        var reducedValue = _(values).map(function (d) {
+          return d.valuemap.get(d.item);
         }).sum();
         return {
-          reduced: v,
-          reducedItems: _.map(v, _.first),
-          reducedValuemaps: _(v).map(_.last).unique().value(),
+          reduced: values,
+          reducedItems: _.map(values, 'item'),
+          reducedValuemaps: _(values).map('valuemap').unique().value(),
           reducedValue: reducedValue,
-          colorKey: k.replace(/\n/g, ' '),
-          colorKeys: k.split('\n'),
+          colorKey: values[0].colorkey,
+          colorKeys: values[0].colorkey.split('\n'),
         };
       }).reverse().value();
-      return colors;
     }
     return {
       processSingle: processSingle,
