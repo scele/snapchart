@@ -112,25 +112,13 @@ angular.module('pivotchart.service', [])
         },
       },
       {
-        name: 'Treemap',
-        type: 'pivot-treemap',
-        config: { },
-        validateFn: commonValidateFn,
+        name: 'Line chart',
+        type: 'pivot-lines',
+        hasMarkers: true,
         maps: {
-          size: {name: "Size", config: false},
+          x: {name: "X-axis", config: true},
+          y: {name: "Y-axis", config: true},
           color: {name: "Color", config: true},
-          text: {name: "Text", config: true},
-        },
-      },
-      {
-        name: 'Pie chart',
-        type: 'pivot-pie',
-        config: { legend: {display: true, position: 'right'} },
-        validateFn: commonValidateFn,
-        maps: {
-          size: {name: "Size", config: false},
-          color: {name: "Color", config: true},
-          layer: {name: "Layers", config: false},
         },
         hasSettings: true,
       },
@@ -146,16 +134,29 @@ angular.module('pivotchart.service', [])
         },
       },
       {
-        name: 'Line chart',
-        type: 'pivot-lines',
-        hasMarkers: true,
+        name: 'Pie chart',
+        type: 'pivot-pie',
+        config: { legend: {display: true, position: 'right'} },
+        validateFn: commonValidateFn,
         maps: {
-          x: {name: "X-axis", config: true},
-          y: {name: "Y-axis", config: true},
+          size: {name: "Size", config: false},
           color: {name: "Color", config: true},
+          layer: {name: "Layers", config: false},
         },
         hasSettings: true,
-      },/*
+      },
+      {
+        name: 'Treemap',
+        type: 'pivot-treemap',
+        config: { },
+        validateFn: commonValidateFn,
+        maps: {
+          size: {name: "Size", config: false},
+          color: {name: "Color", config: true},
+          text: {name: "Text", config: true},
+        },
+      },
+      /*
       {
         name: 'Point chart',
         type: 'pivot-point',

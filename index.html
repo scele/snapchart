@@ -154,6 +154,27 @@
                             <path ng-attr-d="{{arc(15, 20, 5, 6.283)}}" />
                           </g>
                         </svg>
+                        <svg width="50" height="50"
+                        ng-show="type.type=='pivot-sankey'" class="sankey">
+                          <g>
+                            <path d="M0,17c25,0,25,5,50,5"
+                              style="stroke-width:8px;" />
+                            <path d="M0,30c25,0,25,9,50,9"
+                              style="stroke-width:10px;" />
+                            <path d="M0,42c25,0,25,-17,50,-17"
+                              style="stroke-width:4px;" />
+                            <path d="M0,47c25,0,25,0,50,0"
+                              style="stroke-width:6px;" />
+                          </g>
+                        </svg>
+                        <svg width="50" height="50"
+                        ng-show="type.type=='pivot-lines'" class="line">
+                          <g>
+                            <path d="M0,10l0,40l50,0" />
+                            <path d="M0,35l15,-15l15,10l15,-20" />
+                            <path d="M0,45l30,-30l15,15" />
+                          </g>
+                        </svg>
                     </label>
                   </div>
                 </div>

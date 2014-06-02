@@ -668,8 +668,8 @@ angular.module('pivotchart.directive', [])
           }
 
           var nodeWidth = scope.chart.nodeWidth * scope.width / xmaps.length;
-          var nodePadding = (1 - scope.chart.streamThickness) * scope.height
-                                / (_(nodes).map('length').max() - 1);
+          var nodePadding = (1 - scope.chart.streamThickness) * scope.height /
+                              (_(nodes).map('length').max() - 1);
           var middle = scope.chart.hAxis.nodeTextPosition === 'over';
           scope.ypad = middle ? 0 : 20;
           var sankey = d3.sankey()
