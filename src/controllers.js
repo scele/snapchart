@@ -180,6 +180,7 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     });
 
     $scope.chart = angular.copy($scope.chartTypes[0]);
+    $scope.chart.fn = function (d) { return d; };
     $scope.chart.type = $scope.chartTypes[0];
     $scope.chart.inputArg = $scope.inputArg;
     $scope.chart.title = "Chart title";

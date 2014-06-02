@@ -42,6 +42,8 @@ module.exports = function(grunt) {
           'bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js',
           'bower_components/angular-ui-sortable/sortable.js',
           'bower_components/angular-ui-slider/src/slider.js',
+          'bower_components/angular-ui-slider/src/slider.js',
+          'bower_components/d3-plugins/sankey/sankey.js',
         ],
         dest: 'dist/components.js',
       },

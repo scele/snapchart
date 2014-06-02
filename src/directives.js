@@ -75,10 +75,9 @@ angular.module('pivotchart.directive', [])
                 var xdata = scope.xdata[i];
                 // For line/scatte plots, the last x-scale may be linear.
                 if (col === lastXmap && lastXmapIsNumeric) {
-                  var x = d3.scale.linear()
+                  return d3.scale.linear()
                     .domain(xdata)
                     .rangeRound([0, scope.barWidth]);
-                  return x;
                 }
                 var band = hAxis.bands ? hAxis.bands[i] : 0.1;
                 var innerBand = hAxis.innerBands ? hAxis.innerBands[i] : 0.1;
@@ -602,6 +601,72 @@ angular.module('pivotchart.directive', [])
             })
             .size([scope.width, scope.height]);
           scope.nodes = treemap.nodes(root);
+        }, true);
+      },
+    };
+  })
+  .directive("pivotSankey", function(colors, pivot) {
+    return {
+      restrict: 'E',
+      templateUrl: 'src/templates/sankey.html',
+      replace: true,
+      scope: {
+        chart: '=',
+        data: '=',
+        maps: '=',
+        width: '=?',
+        height: '=?',
+      },
+      require: '?^graphArea',
+      link: function(scope, elm, attrs, graphArea) {
+        if (graphArea) {
+          graphArea.setGraphArea(scope);
+        }
+        scope.$watch('[data, maps, width, height, chart]', function() {
+          var sizemaps = _(scope.maps.size).reject('error').map('source').value();
+          var colormaps = _(scope.maps.color).reject('error').map('source').value();
+          var layermaps = _(scope.maps.layer).reject('error').map('source').value();
+          var links = [];
+          var nodes = _(layermaps).map(function (col) {
+            if (col.variable) {
+              return _(sizemaps).map('name').unique().value();
+            } else {
+              return _(scope.data).map(col.get).unique().value();
+            }
+          }).map(function (nn) {
+            return _(nn).map(function (n) { return {name: n}; }).value();
+          }).value();
+
+          for (var i = 0; i < layermaps.length - 1; i++) {
+            var p = pivot.processSingle([layermaps[i], layermaps[i+1]], sizemaps, scope.data);
+            var base1 = _(nodes).take(i).map('length').sum();
+            var base2 = _(nodes).take(i+1).map('length').sum();
+            p = _(p).map(function (p) {
+              return {
+                source: _(nodes[i]).filter({name: p.colorKeys[0]}).first(),
+                target: _(nodes[i+1]).filter({name: p.colorKeys[1]}).first(),
+                value: p.reducedValue,
+                item: p,
+              };
+            }).value();
+            links = links.concat(p);
+          }
+          var sankey = d3.sankey()
+            .nodeWidth(15)
+            .nodePadding(10)
+            .size([scope.width, scope.height])
+            .nodes(_.flatten(nodes))
+            .links(links)
+            .layout(32)
+            .link();
+          scope.links = links;
+          scope.stream = function (link) {
+            return sankey(link);
+          };
+          scope.streamWidth = function (link) {
+            return Math.max(1, link.dy);
+          };
+          scope.color = function (link) { return 'grey'; };
         }, true);
       },
     };

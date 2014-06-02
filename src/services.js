@@ -104,31 +104,6 @@ angular.module('pivotchart.service', [])
         name: 'Bar chart',
         type: 'pivot-bars',
         config: { legend: {display: true, position: 'right'} },
-        fn:
-function(data) {
-  return data;
-},
-/*function(data) {
-  return {
-    series: _(data).map(_.first).rest(1).value(),
-    x: _(data[0]).rest(1).value(),
-    y: _(data).rest(1).map(function(d){return _.rest(d,1); }).transpose().value(),
-  };
-},*//*
-function (data) {
-  data = ["sin", "cos"];
-  var fns = _.map(data, function(d) { return Math[d]; });
-  var domain = _.range(-5, 5 ,.1);
-  return {
-    series: data,
-    x: domain,
-    y: fns.map(function (f) {
-      return domain.map(function (x) {
-        return f(x);
-      });
-    }),
-  };
-},*/
         validateFn: commonValidateFn,
         maps: {x: true, y: true, color: true },
       },
@@ -136,10 +111,6 @@ function (data) {
         name: 'Treemap',
         type: 'pivot-treemap',
         config: { },
-        fn:
-function(data) {
-  return data;
-},
         validateFn: commonValidateFn,
         maps: {size: true, color: true, text: true },
       },
@@ -147,24 +118,16 @@ function(data) {
         name: 'Pie chart',
         type: 'pivot-pie',
         config: { legend: {display: true, position: 'right'} },
-        fn:
-function(data) {
-  return {
-    data: [
-      {
-        x: "Category 1",
-        y: 54,
-      },
-      {
-        x: "Category 2",
-        y: 150,
-      }
-    ]
-  };
-},
         validateFn: commonValidateFn,
         maps: {size: true, color: true, layer: true },
         hasSettings: true,
+      },
+      {
+        name: 'Sankey chart',
+        type: 'pivot-sankey',
+        config: { legend: {display: true, position: 'right'} },
+        validateFn: commonValidateFn,
+        maps: {size: true, color: true, layer: true },
       },
       {
         name: 'Line chart',
@@ -291,14 +254,17 @@ function(data) {
         }
       }).value();
 
-      function barColorKey(d, yidx) {
+      function barColorKeys(d, yidx) {
         return _(colormaps).map(function(c, i) {
           if (c.variable) {
             return colordata[i][yidx];
           } else {
             return c.get(d);
           }
-        }).join(" ");
+        }).value();
+      }
+      function barColorKey(d, yidx) {
+        return barColorKeys(d, yidx).join('\n');
       }
 
       var ydata = _([data, valuemaps]).cartesianProduct().value();
@@ -324,7 +290,8 @@ function(data) {
           reducedItems: _.map(v, _.first),
           reducedValuemaps: _(v).map(_.last).unique().value(),
           reducedValue: reducedValue,
-          colorKey: k,
+          colorKey: k.replace('\n', ' '),
+          colorKeys: k.split('\n'),
         };
       }).reverse().value();
       return colors;

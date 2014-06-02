@@ -28,6 +28,7 @@
     "d3": "~3.4.6",
     "handsontable": "~0.10.5",
     "angular-loader": "~1.2.16",
-    "angular-ui-slider": "~0.0.1"
+    "angular-ui-slider": "~0.0.1",
+    "d3-plugins": "*"
   }
 }
