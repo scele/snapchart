@@ -166,9 +166,9 @@
                 </div>
                 <div class="col-xs-6">
                   <div ng-show="chart.type.maps.y">
-                    <h5>{{chart.type.maps.y}}
-                      <a title="Y-axis settings" bs-popover
-                        ng-show="maps.y.length"
+                    <h5>{{chart.type.maps.y.name}}
+                      <a title="{{chart.type.maps.y.name}} settings" bs-popover
+                        ng-show="maps.y.length && chart.type.maps.y.config"
                         data-template="src/templates/yAxisConfig.html"
                         data-content="bug" class="settings">
                         <span class="glyphicon glyphicon-cog"></span>
@@ -179,9 +179,9 @@
                     </pivot-column-container>
                   </div>
                   <div ng-show="chart.type.maps.x">
-                    <h5>{{chart.type.maps.x}}
-                      <a title="X-axis settings" bs-popover
-                        ng-show="maps.x.length"
+                    <h5>{{chart.type.maps.x.name}}
+                      <a title="{{chart.type.maps.x.name}} settings" bs-popover
+                        ng-show="maps.x.length && chart.type.maps.x.config"
                         data-template="src/templates/xAxisConfig.html"
                         data-content="bug" class="settings">
                         <span class="glyphicon glyphicon-cog"></span>
@@ -196,8 +196,9 @@
                     </pivot-column-container>
                   </div>
                   <div ng-show="chart.type.maps.color">
-                    <h5>{{chart.type.maps.color}}
-                      <a title="Color settings" bs-popover
+                    <h5>{{chart.type.maps.color.name}}
+                      <a title="{{chart.type.maps.color.name}} settings" bs-popover
+                        ng-show="chart.type.maps.color.config"
                         data-template="src/templates/colorConfig.html"
                         data-content="bug" class="settings">
                         <span class="glyphicon glyphicon-cog"></span>
@@ -207,13 +208,14 @@
                     </pivot-column-container>
                   </div>
                   <div ng-show="chart.type.maps.layer">
-                    <h5>{{chart.type.maps.layer}}</h5>
+                    <h5>{{chart.type.maps.layer.name}}</h5>
                     <pivot-column-container ng-model="maps.layer">
                     </pivot-column-container>
                   </div>
                   <div ng-show="chart.type.maps.text">
-                    <h5>{{chart.type.maps.text}}
-                      <a title="Text settings" bs-popover
+                    <h5>{{chart.type.maps.text.name}}
+                      <a title="{{chart.type.maps.text.name}} settings" bs-popover
+                        ng-show="chart.type.maps.text.config"
                         data-template="src/templates/textConfig.html"
                         data-content="bug" class="settings">
                         <span class="glyphicon glyphicon-cog"></span>

@@ -31,6 +31,9 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       while ($scope.maps.x.length > $scope.chart.hAxis.innerBands.length) {
         $scope.chart.hAxis.innerBands.push(0.1);
       }
+      while ($scope.maps.x.length > $scope.chart.hAxis.showText.length) {
+        $scope.chart.hAxis.showText.push(true);
+      }
     }, true);
     $scope.tableInput = _.transpose([
       ["", "Category 1", "Category 2"],
@@ -191,9 +194,12 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.chart.background = "rgba(255,255,255,1)";
     $scope.chart.innerRadius = 0;
     $scope.chart.vAxis = { auto: true, type: 'linear', format: 'n', ticks: 10, bands: [] , innerBands: []};
-    $scope.chart.hAxis = { auto: true, type: 'ordinal', format: 'n', ticks: 10, bands: [], innerBands: []};
+    $scope.chart.hAxis = { auto: true, type: 'ordinal', format: 'n', ticks: 10, bands: [], innerBands: [], showText: [], nodeTextPosition: 'over'};
     $scope.chart.markers = { show: true, size: 3 };
     $scope.chart.lineInterpolation = 'linear';
+    $scope.chart.nodeWidth = 0.2;
+    $scope.chart.streamThickness = 0.5;
+    $scope.chart.streamOpacity = 0.7;
     $scope.colorScales = [
       {_id: 0, scale: d3.scale.category20c().domain(_.range(20)), primarySpan: 4},
       {_id: 1, scale: d3.scale.category20b().domain(_.range(20)), primarySpan: 4},

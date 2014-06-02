@@ -1,9 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg">
-  <g>
+  <style>
+    text.middle {
+      alignment-baseline: middle;
+      font-weight: 500;
+    }
+    text.top {
+      alignment-baseline: inherit;
+      font-weight: inherit;
+    }
+  </style>
+  <g ng-attr-transform="translate(0,{{ypad}})">
     <g ng-repeat="item in links">
       <path ng-attr-d="{{stream(item)}}"
         style="stroke: {{color(item)}}; stroke-opacity:{{linkOpacity}}; fill: none; stroke-width: {{streamWidth(item)}};">
       </path>
     </g>
+    <text pivot-scope="text(n)" ng-repeat="n in nodes" ng-attr-x="{{x}}" ng-attr-y="{{y}}"
+      ng-show="text(n).show"
+      ng-attr-class="{{class}}"
+      style="fill:{{color}};"
+      ng-attr-text-anchor="{{align}}">
+      {{n.name}}
+    </text>
   </g>
 </svg>

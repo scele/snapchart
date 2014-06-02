@@ -1,7 +1,7 @@
 <div class="popover" tabindex="-1" ng-show="content">
   <div class="arrow"></div>
   <div class="modal-content">
-    <div class="modal-body">
+    <div class="modal-body" ng-show="chart.type.type !== 'pivot-sankey'">
       <!--<div class="form-group">
         <label>
           Scale
@@ -51,6 +51,24 @@
           <div class="title">Ticks</div>
           <div ui-slider="{min: 0, max: 50, step: 1}"
             ng-model="chart.vAxis.ticks"></div>
+        </label>
+      </div>
+    </div>
+    <div class="modal-body" ng-show="chart.type.type === 'pivot-sankey'">
+      <div class="form-group">
+        <label>
+          <div class="title">Thickness</div>
+          <div ui-slider="{min: 0.01, max: 1, step: 0.01}"
+            ng-model="chart.streamThickness"></div>
+          <span>{{chart.streamThickness|percentage}}</span>
+        </label>
+      </div>
+      <div class="form-group">
+        <label>
+          <div class="title">Opacity</div>
+          <div ui-slider="{min: 0.01, max: 1, step: 0.01}"
+            ng-model="chart.streamOpacity"></div>
+          <span>{{chart.streamOpacity|percentage}}</span>
         </label>
       </div>
     </div>

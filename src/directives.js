@@ -633,11 +633,11 @@ angular.module('pivotchart.directive', [])
             } else {
               return _(scope.data).map(col.get).unique().value();
             }
-          }).map(function (nn) {
-            return _(nn).map(function (n) { return {name: n}; }).value();
+          }).map(function (nn, i) {
+            return _(nn).map(function (n) { return {name: n, xmapIdx: i}; }).value();
           }).value();
 
-          scope.linkOpacity = 0.7;
+          scope.linkOpacity = scope.chart.streamOpacity;
           var colors = pivot.processColors(colormaps, ymaps,
                                            scope.chart.colorScales, scope.data);
           _(colors.legenddata).each(function (d) { d.opacity = scope.linkOpacity; });
@@ -656,6 +656,7 @@ angular.module('pivotchart.directive', [])
                 item: p,
                 targetSortKey: i === 0 ? 0 : sortKey,
                 sourceSortKey: i === xmaps.length - 2 ? 0 : sortKey,
+                column: i,
               };
             };
           }
@@ -666,17 +667,24 @@ angular.module('pivotchart.directive', [])
             links = links.concat(p);
           }
 
+          var nodeWidth = scope.chart.nodeWidth * scope.width / xmaps.length;
+          var nodePadding = (1 - scope.chart.streamThickness) * scope.height
+                                / (_(nodes).map('length').max() - 1);
+          var middle = scope.chart.hAxis.nodeTextPosition === 'over';
+          scope.ypad = middle ? 0 : 20;
           var sankey = d3.sankey()
-            .nodeWidth(15)
-            .nodePadding(10)
-            .size([scope.width, scope.height])
+            .nodeWidth(nodeWidth)
+            .nodePadding(nodePadding)
+            .extendLinksThroughNodes(true)
+            .size([scope.width, scope.height - scope.ypad])
             .nodes(_.flatten(nodes))
             .links(links)
             .layout(32)
             .link();
           scope.links = links;
-          scope.stream = function (link) {
-            return sankey(link);
+          scope.nodes = _.flatten(nodes);
+          scope.stream = function (d) {
+            return sankey(d);
           };
           scope.streamWidth = function (link) {
             return Math.max(1, link.dy);
@@ -685,7 +693,44 @@ angular.module('pivotchart.directive', [])
             var colorKey = _(link.item.colorKeys).head(link.item.colorKeys.length - 2).join(' ');
             return colors.colorscale(colorKey);
           };
+          scope.text = function (n) {
+            var d = {};
+            d.show = scope.chart.hAxis.showText[n.xmapIdx];
+            if (middle) {
+              d.class = 'middle';
+              d.y = n.y + n.dy / 2;
+              d.color = scope.chart.background;
+            } else {
+              d.class = 'top';
+              d.y = n.y - 3;
+              d.color = 'inherit';
+            }
+            if (n.xmapIdx === 0) {
+              d.x = n.x;
+              d.align = 'start';
+              if (middle) d.x += 5;
+            } else if (n.xmapIdx === xmaps.length - 1) {
+              d.x = n.x + nodeWidth;
+              d.align = 'end';
+              if (middle) d.x -= 5;
+            } else {
+              d.x = n.x + nodeWidth / 2;
+              d.align = 'middle';
+            }
+            return d;
+          };
         }, true);
+      },
+    };
+  })
+  .directive("pivotScope", function() {
+    return {
+      restrict: 'A',
+      scope: true,
+      link: function(scope, elm, attrs) {
+        attrs.$observe('pivotScope', function() {
+          _.assign(scope, scope.$parent.$eval(attrs.pivotScope));
+        });
       },
     };
   })

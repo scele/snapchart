@@ -105,21 +105,33 @@ angular.module('pivotchart.service', [])
         type: 'pivot-bars',
         config: { legend: {display: true, position: 'right'} },
         validateFn: commonValidateFn,
-        maps: {x: "X-axis", y: "Y-axis", color: "Color" },
+        maps: {
+          x: {name: "X-axis", config: true},
+          y: {name: "Y-axis", config: true},
+          color: {name: "Color", config: true},
+        },
       },
       {
         name: 'Treemap',
         type: 'pivot-treemap',
         config: { },
         validateFn: commonValidateFn,
-        maps: {size: "Size", color: "Color", text: "Text" },
+        maps: {
+          size: {name: "Size", config: false},
+          color: {name: "Color", config: true},
+          text: {name: "Text", config: true},
+        },
       },
       {
         name: 'Pie chart',
         type: 'pivot-pie',
         config: { legend: {display: true, position: 'right'} },
         validateFn: commonValidateFn,
-        maps: {size: "Size", color: "Color", layer: "Layers" },
+        maps: {
+          size: {name: "Size", config: false},
+          color: {name: "Color", config: true},
+          layer: {name: "Layers", config: false},
+        },
         hasSettings: true,
       },
       {
@@ -127,13 +139,21 @@ angular.module('pivotchart.service', [])
         type: 'pivot-sankey',
         config: { legend: {display: true, position: 'right'} },
         validateFn: commonValidateFn,
-        maps: {x: "Nodes", y: "Stream width", color: "Color" },
+        maps: {
+          x: {name: "Node", config: true},
+          y: {name: "Stream", config: true},
+          color: {name: "Color", config: true},
+        },
       },
       {
         name: 'Line chart',
         type: 'pivot-lines',
         hasMarkers: true,
-        maps: {x: "X-axis", y: "Y-axis", color: "Color" },
+        maps: {
+          x: {name: "X-axis", config: true},
+          y: {name: "Y-axis", config: true},
+          color: {name: "Color", config: true},
+        },
         hasSettings: true,
       },/*
       {

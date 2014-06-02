@@ -2,7 +2,7 @@
   <div class="arrow"></div>
   <div class="modal-content">
     <div class="modal-body">
-      <div class="form-group"
+      <div class="form-group" ng-show="chart.type.type !== 'pivot-sankey'"
         ng-repeat="col in maps.x">
         <label>
           <div class="title">{{col.source.name}} spacing</div>
@@ -14,6 +14,39 @@
           <span>{{chart.hAxis.bands[$index]|percentage}}</span>
         </label>
       </div>
+      <div class="form-group"
+        ng-show="chart.type.type == 'pivot-sankey'">
+        <label>
+          <div class="title">Flat width</div>
+          <div ui-slider="{min: 0, max: 0.99, step: 0.01}"
+            ng-model="chart.nodeWidth"></div>
+          <span>{{chart.nodeWidth|percentage}}</span>
+        </label>
+      </div>
+      <div class="form-group"
+        ng-show="chart.type.type == 'pivot-sankey'">
+        <div class="title">Text position</div>
+        <div ng-model="chart.hAxis.nodeTextPosition">
+          <label>
+            <input ng-model="$parent.chart.hAxis.nodeTextPosition" type="radio" value="over">
+              Over
+          </label>
+          <label>
+            <input ng-model="$parent.chart.hAxis.nodeTextPosition" type="radio" value="above">
+              Above
+          </label>
+        </div>
+      </div>
+
+      <div class="form-group" ng-show="chart.type.type === 'pivot-sankey'"
+        ng-repeat="col in maps.x">
+        <label>
+          <div class="title">{{col.source.name}} nodes</div>
+          <input type="checkbox" ng-model="chart.hAxis.showText[$index]">
+            Show text
+        </label>
+      </div>
+
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-sm btn-primary" ng-click="$hide()">OK</button>
