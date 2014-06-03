@@ -225,13 +225,13 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     ];
     $scope.chart.colorScales = [$scope.colorScales[0]];
     $scope.fonts = [
-      {title: "Open Sans Light", family: "'Open Sans',sans-serif", weight: 100},
-      {title: "Open Sans", family: "'Open Sans',sans-serif", weight: 400},
-      {title: "Open Sans Bold", family: "'Open Sans',sans-serif", weight: 800},
-      {title: "Arial", family: "Arial,sans-serif", weight: 400},
-      {title: "Helvetica", family: "Helvetica,sans-serif", weight: 400},
-      {title: "Times New Roman", family: "'Times New Roman',Times,serif", weight: 400},
-      {title: "Courier New", family: "'Courier New',monospace", weight: 400},
+      {title: "Open Sans Light", family: "'Open Sans'", weight: 100},
+      {title: "Open Sans", family: "'Open Sans'", weight: 400},
+      {title: "Open Sans Bold", family: "'Open Sans'", weight: 800},
+      {title: "Arial", family: "Arial", weight: 400},
+      {title: "Helvetica", family: "Helvetica", weight: 400},
+      {title: "Times New Roman", family: "'Times New Roman'", weight: 400},
+      {title: "Courier New", family: "'Courier New'", weight: 400},
     ];
     $scope.chart.font = $scope.fonts[0];
     $scope.import = function(chart) {
