@@ -108,6 +108,12 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       }
     });
 
+    $scope.chartAsSvg = function (selector) {
+      var data = $(selector);
+      var header = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+      return header + (new XMLSerializer()).serializeToString(data.get(0));
+    };
+
     $scope.saveAs = function(event, selector) {
       // SVG XML
       var data = $(selector);

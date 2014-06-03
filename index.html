@@ -328,12 +328,7 @@
           </div>
 
           <div resizable width="width" height="height" class="resizable"
-            style="width:{{width+2}}px; height:{{height+2}}px;"
-            ng-mouseenter="hoverChart = true" ng-mouseleave="hoverChart = false">
-            <a class="save-as" title="Save as PNG" ng-click="saveAs($event, '#chart')"
-               download="pivotchartjs.png" ng-show="hoverChart">
-              <span class="glyphicon glyphicon-floppy-save"></span>
-            </a>
+            style="width:{{width+2}}px; height:{{height+2}}px;">
             <graph-area id="chart" data="chart._dataCache" maps="maps"
               x-w="width" x-h="height"
               show-title="chart.showTitle" title="chart.title"
@@ -344,6 +339,13 @@
                 maps="maps" chart="chart"></svg>
             </graph-area>
           </div>
+          <form action="/d/chart.png" method="post" target="_blank">
+            <input type="hidden" ng-value="chartAsSvg('#chart')" name="svg" />
+            <button class="btn btn-primary download" type="submit" download="pivotchartjs.png">
+              <span class="glyphicon glyphicon-floppy-save"></span>
+              Download as PNG
+            </button>
+          </form>
         </div>
       </div>
     </div>
