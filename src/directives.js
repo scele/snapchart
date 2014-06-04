@@ -537,7 +537,7 @@ angular.module('pivotchart.directive', [])
           var color, legenddata;
           if (numberColor) {
             var c0 = scope.chart.colorScales[0].scale.range()[0];
-            var c1 = scope.chart.background.replace('rgba', 'rgb');
+            var c1 = scope.chart.backgroundRgb;
             var c2 = scope.chart.colorScales[0].scale.range()[scope.chart.colorScales[0].primarySpan];
             var cd = function (t) {
               if (t > 0.5)
@@ -586,6 +586,7 @@ angular.module('pivotchart.directive', [])
           scope.getColor = function (d) {
             return d.item ? color(colorKey(d.item)) : '';
           };
+          scope.textColor = scope.chart.backgroundRgb;
           scope.getText = function (d) {
             if (!d.item) return '';
             return sprintf(scope.maps.text.format,
@@ -708,7 +709,7 @@ angular.module('pivotchart.directive', [])
             if (middle) {
               d.class = 'middle';
               d.y = n.y + n.dy / 2;
-              d.color = scope.chart.background;
+              d.color = scope.chart.backgroundRgb;
             } else {
               d.class = 'top';
               d.y = n.y - 3;

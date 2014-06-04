@@ -3,7 +3,7 @@
     <g ng-repeat="items in itemdataByLayer">
       <g ng-repeat="item in items">
         <path ng-attr-d="{{arc($parent.$index, $index)}}"
-          style="fill: {{color(item)}}; stroke: {{chart.background}};">
+          style="fill: {{color(item)}}; stroke: {{chart.backgroundRgb}};">
         </path>
       </g>
     </g>

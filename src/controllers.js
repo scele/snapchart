@@ -233,6 +233,10 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       {title: "Times New Roman", family: "'Times New Roman'", weight: 400},
       {title: "Courier New", family: "'Courier New'", weight: 400},
     ];
+    $scope.$watch('chart', function () {
+      $scope.chart.backgroundRgb =
+        $scope.chart.background.replace(/rgba\((.*),(.*),(.*),(.*)\)/, 'rgb($1,$2,$3)');
+    }, true);
     $scope.chart.font = $scope.fonts[0];
     $scope.import = function(chart) {
       var ModalInstanceCtrl = function ($scope, $modalInstance) {
