@@ -887,6 +887,11 @@ angular.module('pivotchart.directive', [])
       require: '?ngModel',
       link: function(scope, iElement, iAttrs, ngModel) {
         var ht;
+        // Use a TextRenderer-based renderer so we show all decimals.
+        var numRenderer = function (instance, td, row, col, prop, value, cellProperties) {
+          Handsontable.renderers.TextRenderer.apply(this, arguments);
+          $(td).addClass('htNumeric');
+        };
         var opts = {
           cells: function (row, col, prop) {
               if (!ht || !ht.getData() || !ht.getData()[row])
@@ -895,7 +900,7 @@ angular.module('pivotchart.directive', [])
               var num = Number(val);
               var meta = {};
               if (val !== '' && !Number.isNaN(num)) {
-                meta.renderer = Handsontable.NumericRenderer;
+                meta.renderer = numRenderer;
               } else {
                 meta.renderer = Handsontable.TextRenderer;
               }
@@ -908,7 +913,7 @@ angular.module('pivotchart.directive', [])
               var num = Number(c[3]);
               if (c[3] !== '' && !Number.isNaN(num)) {
                 c[3] = num;
-                meta.renderer = Handsontable.NumericRenderer;
+                meta.renderer = numRenderer;
               } else {
                 meta.renderer = Handsontable.TextRenderer;
               }
