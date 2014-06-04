@@ -1,9 +1,4 @@
 <svg xmlns="http://www.w3.org/2000/svg">
-  <style>
-    text {
-      font-weight: 500;
-    }
-  </style>
   <g
     ng-repeat="node in nodes"
     ng-attr-transform="translate({{node.x + 0.5}}, {{node.y + 0.5}})">
@@ -15,7 +10,7 @@
     <text
       ng-repeat="line in getText(node) track by $index"
       ng-attr-y="{{15 + 15 * $index}}"
-      style="fill:{{textColor}}"
+      style="fill:{{textColor}}; font-weight:500;"
       x="5">
       {{line}}
     </text>
