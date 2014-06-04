@@ -62,33 +62,32 @@ module.exports = function(grunt) {
     },
     watch: {
       files: ['<%= jshint.files %>', 'index.html', 'src/**/*.html', 'less/**/*.less'],
-      tasks: ['jshint', 'less'],
+      tasks: ['jshint', 'less', 'express:dev'],
       options: {
         livereload: true,
       },
     },
-    connect: {
-      server: {
-        options: {
-          useAvailablePort: true,
-          livereload: true,
-        },
+    express: {
+      options: {
+        script: 'server/server.js',
+      },
+      dev: {
       },
     },
   });
 
   grunt.loadNpmTasks('grunt-ngmin');
   grunt.loadNpmTasks('grunt-html2js');
+  grunt.loadNpmTasks('grunt-express-server');
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-less');
   grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-contrib-connect');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  grunt.registerTask('serve', ['default', 'connect', 'watch']);
+  grunt.registerTask('serve', ['default', 'express:dev', 'watch']);
   grunt.registerTask('default', ['jshint', 'ngmin', 'html2js', 'uglify', 'concat', 'less']);
   grunt.registerTask('dist', ['copy:dist']);
 };
