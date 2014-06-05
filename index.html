@@ -28,8 +28,8 @@
   </head>
 
   <body ng-class="{showPromo: showPromo}" ng-cloak>
-    <div class="fade" ng-show="showPromo"></div>
-    <div class="promo-outer" ng-show="showPromo">
+    <div class="fade hidden-print" ng-show="showPromo"></div>
+    <div class="promo-outer hidden-print" ng-show="showPromo">
       <div class="promo">
         <a class="btn btn-primary btn-lg" role="button" ng-click="showPromo = false">
           Got it!
@@ -61,10 +61,10 @@
 
     <div class="container-fluid main">
       <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-5 hidden-print">
           <accordion close-others="false">
             <accordion-group heading="Input" is-open="true">
-              <div class="tutorial-container">
+              <div class="tutorial-container hidden-print">
                 <div class="tutorial step1">
                   1. Paste your data from Excel
                   <div class="small">
@@ -110,7 +110,7 @@
                 <path d="M 0 240 q 50 30 110 10"></path>
                 <path d="M 0 240 m 15 1 q -25 -10 -10 10"></path>
               </svg>
-              <div class="tutorial-container">
+              <div class="tutorial-container hidden-print">
                 <div class="tutorial step2">
                   2. Drag columns around
                 </div>
@@ -318,7 +318,7 @@
           </accordion>
         </div>
         <div class="col-md-7 chart-pane">
-          <div class="tutorial-container">
+          <div class="tutorial-container hidden-print">
             <div class="tutorial step3">
               3. Save your chart as PNG
               <div class="small">
@@ -339,7 +339,8 @@
                 maps="maps" chart="chart"></svg>
             </graph-area>
           </div>
-          <form action="/d/chart.png" method="post" target="_blank" class="toolbar">
+          <form action="/d/chart.png" method="post" target="_blank"
+            class="toolbar hidden-print">
             <input type="hidden" ng-value="chartAsSvg('#chart')" name="svg" />
             <button class="btn btn-primary download" type="submit" download="pivotchartjs.png">
               <span class="glyphicon glyphicon-floppy-save"></span>
