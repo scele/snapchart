@@ -232,7 +232,14 @@
                     </pivot-column-container>
                   </div>
                   <div ng-show="chart.type.maps.layer">
-                    <h5>{{chart.type.maps.layer.name}}</h5>
+                    <h5>{{chart.type.maps.layer.name}}
+                      <a title="{{chart.type.maps.layer.name}} settings" bs-popover
+                        ng-show="chart.type.maps.layer.config"
+                        data-template="src/templates/layerConfig.html"
+                        data-content="bug" class="settings">
+                        <span class="glyphicon glyphicon-cog"></span>
+                      </a>
+                    </h5>
                     <pivot-column-container ng-model="maps.layer"
                       pivot-name="{{chart.type.maps.layer.name}}"
                       pivot-restrict="chart.type.maps.layer.restrict">

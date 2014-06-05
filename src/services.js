@@ -141,9 +141,8 @@ angular.module('pivotchart.service', [])
         maps: {
           size: {name: "Size", config: false, restrict: ['number']},
           color: {name: "Color", config: true},
-          layer: {name: "Layer", config: false, restrict: ['text']},
+          layer: {name: "Layer", config: true, restrict: ['text']},
         },
-        hasSettings: true,
       },
       {
         name: 'Treemap',
