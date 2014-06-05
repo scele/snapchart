@@ -1,0 +1,19 @@
+<div class="popover" tabindex="-1" ng-show="content">
+  <div class="arrow"></div>
+  <div class="modal-content">
+    <div class="modal-body">
+      <div class="form-group"
+        ng-show="chart.type.type == 'pivot-pie'">
+        <label>
+          <div class="title">Inner radius</div>
+          <div ui-slider="{min: 0, max: 0.99, step: 0.01}"
+            ng-model="chart.innerRadius"></div>
+          <span>{{chart.innerRadius|percentage}}</span>
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-sm btn-primary" ng-click="$hide()">OK</button>
+    </div>
+  </div>
+</div>
