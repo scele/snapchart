@@ -102,30 +102,6 @@ angular.module('pivotchart.directive', [])
               }
 
               scope.axisPadding = 30;
-              /* Linear scales
-                var band = scope.innerWidth/scope.xdata.length;
-                var range = d3.extent(scope.xdata);
-                if (scope.chart.type.type == 'pivot-bars') {
-                  var p = (band / 2) / scope.innerWidth * Math.abs(range[0] - range[1]);
-                  range = [range[0] - p, range[1] + p];
-                }
-                scope.x = getScale(hAxis, range);
-                scope.x.range([0, scope.innerWidth]);
-                var pad = hAxis.band * band / 2;
-                xOffset = -band/2 + pad;
-                range0 = [0, band - 2 * pad];
-                if (scope.chart.barPlacement == 'adjacent') {
-                  domain0 = d3.range(scope.ydata[0].length);
-                } else {
-                  domain0 = [0];
-                }
-                scope.x0 = d3.scale.ordinal()
-                  .rangeRoundBands(range0, hAxis.band2)
-                  .domain(domain0);
-                if (scope.x0.rangeBand() == 0) {
-                  scope.x0.rangeBands(range0, hAxis.band2);
-                }
-              }*/
               scope.showAxis = function (axis) {
                 var dimension = _.indexOf(scope.x, axis);
                 if (dimension == -1)
