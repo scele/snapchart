@@ -50,26 +50,6 @@ angular.module('pivotchart.directive', [])
                   return _(scope.data).map(col.get).unique().value();
                 }
               }).value();
-              scope.colordata = _(colormaps).map(function (col, i) {
-                if (col.variable) {
-                  return _(ymaps).map('name').unique().value();
-                } else {
-                  return _(scope.data).map(col.get).unique().value();
-                }
-              }).value();
-              scope.legenddata = _(scope.colordata)
-                .cartesianProduct().filter('length').map(function (a) {
-                  return a.join(" ");
-                }).value();
-              scope.color = scope.chart.colorScales[0].scale.copy().domain(scope.legenddata);
-              if (graphArea) {
-                graphArea.setLegendData(_(scope.legenddata).map(function (c) {
-                  return {
-                    text: c,
-                    color: scope.color(c),
-                  };
-                }).value());
-              }
 
               scope.x = _(xmaps).map(function(col, i) {
                 var xdata = scope.xdata[i];
@@ -109,6 +89,17 @@ angular.module('pivotchart.directive', [])
                 return p;
               }).flatten().value();
               scope.itemdataByColorkey = _(scope.itemdata).groupBy('colorKey').value();
+
+              var legenddata = _(scope.itemdata).map('colorKey').unique().value();
+              var colorscale = scope.chart.colorScales[0].scale.copy().domain(legenddata);
+              if (graphArea) {
+                graphArea.setLegendData(_(legenddata).map(function (c) {
+                  return {
+                    text: c,
+                    color: colorscale(c),
+                  };
+                }).value());
+              }
 
               scope.axisPadding = 30;
               /* Linear scales
@@ -193,7 +184,7 @@ angular.module('pivotchart.directive', [])
                 }).sum();
               };
               scope.barColor = function (d) {
-                return scope.color(d.colorKey);
+                return colorscale(d.colorKey);
               };
               scope.barHeight = function (d) {
                 var zero = Math.min(Math.max(0, vAxis.min), vAxis.max);
