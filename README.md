@@ -23,4 +23,10 @@ cd pivotchart
 sudo apt-get install imagemagick
 npm install
 bower install
+
+# Install imagemagick and fonts for server side svg rendering
+sudo apt-get install imagemagick
+# Download 'Open Sans' font from google fonts, then
+sudo cp -r ~/Downloads/Open_Sans /usr/local/share/fonts
+sudo fc-cache -f -v
 ```

@@ -226,13 +226,12 @@ angular.module('pivotchart.controller', ['pivotchart.service', 'pivotchart.power
     ];
     $scope.chart.colorScales = [$scope.colorScales[0]];
     $scope.fonts = [
-      {title: "Open Sans Light", family: "'Open Sans'", weight: 100},
-      {title: "Open Sans", family: "'Open Sans'", weight: 400},
-      {title: "Open Sans Bold", family: "'Open Sans'", weight: 800},
+      {title: "Open Sans Light", family: "Open Sans", weight: 300},
+      {title: "Open Sans", family: "Open Sans", weight: 400},
+      {title: "Open Sans Bold", family: "Open Sans", weight: 800},
       {title: "Arial", family: "Arial", weight: 400},
-      {title: "Helvetica", family: "Helvetica", weight: 400},
-      {title: "Times New Roman", family: "'Times New Roman'", weight: 400},
-      {title: "Courier New", family: "'Courier New'", weight: 400},
+      {title: "Times", family: "Times", weight: 400},
+      {title: "Courier", family: "Courier", weight: 400},
     ];
     $scope.$watch('chart', function () {
       $scope.chart.backgroundRgb =

@@ -411,6 +411,11 @@ angular.module('pivotchart.directive', [])
           }
           if (!angular.isUndefined(scope.tickSize)) axis.tickSize(parseInt(scope.tickSize));
           axis(elm);
+          // Server-side svg rendering needs inline styles...
+          $(elm).find("path, line").attr("style", "fill: none; stroke: #333;");
+          if (scope.orient == 'bottom') {
+            $(elm).find("text").attr("style", "text-anchor: middle; alignment-baseline: middle;");
+          }
         }, true);
       },
     };
