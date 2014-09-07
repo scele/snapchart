@@ -13,7 +13,6 @@
     <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/smoothness/jquery-ui.min.css" rel="stylesheet" media="screen">
     <link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css" rel="stylesheet">
     <link href="//cdnjs.cloudflare.com/ajax/libs/codemirror/4.1.0/codemirror.css" rel="stylesheet" type="text/css">
-    <link href="//cdnjs.cloudflare.com/ajax/libs/jquery-handsontable/0.10.2/jquery.handsontable.full.min.css" rel="stylesheet" media="screen">
     <link href="dist/components.css" rel="stylesheet" type="text/css">
     <link href="dist/pivotchart.css" rel="stylesheet" type="text/css">
 
@@ -83,8 +82,10 @@
               <editable-function ng-model="chart.inputArg" ng-show="jsonMode"
                 class="editor" ui-refresh="jsonMode">
               </editable-function>
-              <div ng-model="tableInput" ng-show="!jsonMode"
-                class="handsontable" handsontable="tableConfig">
+              <div class="table-container">
+                <div ng-model="tableInput" ng-show="!jsonMode"
+                  class="handsontable" handsontable="tableConfig">
+                </div>
               </div>
             </accordion-group>
             <accordion-group heading="Transformation" is-open="transformIsOpen"
@@ -375,7 +376,6 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-handsontable/0.10.2/jquery.handsontable.full.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/script.js/2.5.3/script.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/2.0.0/angular-strap.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/angular-strap/2.0.0/angular-strap.tpl.js"></script>

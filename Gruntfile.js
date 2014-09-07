@@ -33,16 +33,19 @@ module.exports = function(grunt) {
       },
     },
     concat: {
-      colorpicker: {
-        src: ['bower_components/angular-bootstrap-colorpicker/css/colorpicker.css'],
+      css: {
+        src: [
+          'bower_components/angular-bootstrap-colorpicker/css/colorpicker.css',
+          'bower_components/handsontable/dist/jquery.handsontable.full.css'
+        ],
         dest: 'dist/components.css',
       },
-      default: {
+      js: {
         src: [
           'bower_components/angular-bootstrap-colorpicker/js/bootstrap-colorpicker-module.js',
           'bower_components/angular-ui-sortable/sortable.js',
           'bower_components/angular-ui-slider/src/slider.js',
-          'bower_components/angular-ui-slider/src/slider.js',
+          'bower_components/handsontable/dist/jquery.handsontable.full.js',
           'bower_components/d3-plugins/sankey/sankey.js',
         ],
         dest: 'dist/components.js',
@@ -88,6 +91,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   grunt.registerTask('serve', ['default', 'express:dev', 'watch']);
-  grunt.registerTask('default', ['jshint', 'ngmin', 'html2js', 'uglify', 'concat', 'less']);
+  grunt.registerTask('default', ['jshint', 'ngmin', 'html2js', 'uglify', 'concat:js', 'concat:css', 'less']);
   grunt.registerTask('dist', ['copy:dist']);
 };

@@ -26,7 +26,7 @@
     "codemirror": "~4.1.0",
     "jquery": "~2.1.1",
     "d3": "~3.4.6",
-    "handsontable": "~0.10.5",
+    "handsontable": "0.11.1", /* Some newer/older versions break scroll. */
     "angular-loader": "~1.2.16",
     "angular-ui-slider": "~0.0.1",
     "d3-plugins": "git://github.com/scele/d3-plugins"
