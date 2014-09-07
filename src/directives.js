@@ -448,6 +448,7 @@ angular.module('pivotchart.directive', [])
         title: '=',
         showTitle: '=',
         titleSize: '=',
+        fontSize: '=',
         font: '=',
         userMargin: '=margin',
         showLegend: '=',
@@ -484,7 +485,7 @@ angular.module('pivotchart.directive', [])
             scope.legendData = [];
           }
         }, true);
-        scope.$watch('[width,height,legendWidth,title,showTitle,titleSize,font,userMargin,showLegend]', function() {
+        scope.$watch('[width,height,legendWidth,title,showTitle,titleSize,fontSize,font,userMargin,showLegend]', function() {
           scope.titleHeight = scope.showTitle ? 1.3 * titleElm.getBBox().height : 0;
           scope.legendWidth = scope.showLegend ? (scope.legendWidth || 0) : 0;
           scope.margin = {

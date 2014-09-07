@@ -274,61 +274,57 @@
             </accordion-group>
 
             <accordion-group heading="Appearance">
-              <div class="form-group">
-                <label>
-                  Font
-                  <select ng-model="chart.font" class="form-control"
-                    ng-options="font.title for font in fonts">
-                  </select>
-                </label>
-              </div>
-              <div class="form-group">
-                <label>
-                  Background
-                  <input colorpicker="rgba" type="text" ng-model="chart.background"
-                    class="form-control"/>
-                </label>
-              </div>
-              <div class="form-group">
-                <label>
-                  Margin
-                  <input type="number" ng-model="chart.margin" class="form-control">
-                </label>
-              </div>
-              <div class="checkbox" ng-show="maps.color.length">
-                <label>
-                  <input type="checkbox" ng-model="chart.showLegend"> Show legend
-                </label>
-              </div>
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" ng-model="chart.showTitle"> Show title
-                </label>
-              </div>
-              <div class="form-group" ng-show="chart.showTitle">
-                <label>
-                  Title
-                  <input type="text" ng-model="chart.title" class="form-control">
-                </label>
-              </div>
-              <div class="form-group" ng-show="chart.showTitle">
-                <label>
-                  Title size
-                  <input type="number" ng-model="chart.titleSize" class="form-control">
-                </label>
-              </div>
-            </accordion-group>
-            <accordion-group heading="Markers" ng-show="chart.type.hasMarkers">
-              <div class="checkbox">
-                <label>
-                  <input type="checkbox" ng-model="chart.markers.show"> Show markers
-                </label>
-              </div>
-              <div class="form-group" ng-show="chart.markers.show">
-                <label>
-                  Size
-                  <input type="number" ng-model="chart.markers.size" class="form-control">
-                </label>
+              <div class="row appearence">
+                <div class="col-xs-6">
+                  <div class="form-group">
+                    <label>
+                      <div class="title">Title</div>
+                      <input type="text" ng-model="chart.title" class="form-control">
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label>
+                      <div class="title">Font</div>
+                      <select ng-model="chart.font" class="form-control"
+                        ng-options="font.title for font in fonts">
+                      </select>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label>
+                      <div class="title">Background</div>
+                      <input colorpicker="rgba" colorpicker-position="top"
+                        type="text" ng-model="chart.background"
+                        class="form-control"/>
+                    </label>
+                  </div>
+                </div>
+                <div class="col-xs-6">
+                  <div class="form-group">
+                    <label>
+                      <div class="title">Title size</div>
+                      <span class="slider-text">{{chart.titleSize}}</span>
+                      <div ui-slider="{min: 0, max: 60, step: 1}"
+                        ng-model="chart.titleSize"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label>
+                      <div class="title">Font size</div>
+                      <span class="slider-text">{{chart.fontSize}}</span>
+                      <div ui-slider="{min: 4, max: 24, step: 0.5}"
+                        ng-model="chart.fontSize"></div>
+                    </label>
+                  </div>
+                  <div class="form-group">
+                    <label>
+                      <div class="title">Margin</div>
+                      <span class="slider-text">{{chart.margin}}</span>
+                      <div ui-slider="{min: 0, max: 100, step: 1}"
+                        ng-model="chart.margin"></div>
+                    </label>
+                  </div>
+                </div>
               </div>
             </accordion-group>
           </accordion>
@@ -349,6 +345,7 @@
               x-w="width" x-h="height"
               show-title="chart.showTitle" title="chart.title"
               title-size="chart.titleSize" font="chart.font"
+              font-size="chart.fontSize"
               margin="chart.margin" show-legend="chart.showLegend"
               background="chart.background">
               <svg dynamic-directive="chart.type.type" data="chart._dataCache"

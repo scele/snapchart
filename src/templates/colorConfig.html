@@ -2,6 +2,11 @@
   <div class="arrow"></div>
   <div class="modal-content">
     <div class="modal-body">
+      <div class="checkbox" ng-show="maps.color.length">
+        <label>
+          <input type="checkbox" ng-model="chart.showLegend"> Show legend
+        </label>
+      </div>
       <div class="btn-group color-buttons" ng-model="chart.colorScales[$index]"
           ng-repeat="boundScale in chart.colorScales track by $index">
         <label class="btn btn-default" ng-repeat="s in colorScales track by $index"

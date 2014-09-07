@@ -27,6 +27,7 @@ angular.module('pivotchart.tests', ['pivotchart.directive', 'pivotchart.service'
     var base = {
       title: "Chart title",
       titleSize: 12,
+      fontSize: 12,
       margin: 30,
       showLegend: true,
       showTitle: true,
@@ -87,6 +88,7 @@ angular.module('pivotchart.tests', ['pivotchart.directive', 'pivotchart.service'
         showLegend: false,
         font: { family: 'Arial' },
         titleSize: 30,
+        fontSize: 15,
         background: 'rgba(128,128,128,1)',
       }),
     ];

@@ -199,6 +199,7 @@ angular.module('pivotchart.controller', ['pivotchart.service', 'pivotchart.power
     $scope.chart.inputArg = $scope.inputArg;
     $scope.chart.title = "Chart title";
     $scope.chart.titleSize = 24;
+    $scope.chart.fontSize = 13;
     $scope.chart.margin = 30;
     $scope.chart.showLegend = true;
     $scope.chart.showTitle = true;
