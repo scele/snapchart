@@ -4,7 +4,8 @@ var fs            = require('fs'),
     cookieSession = require('cookie-session'),
     tmp           = require('tmp'),
     gm            = require('gm').subClass({imageMagick: true}),
-    _             = require('lodash');
+    _             = require('lodash'),
+    proxy         = require('express-http-proxy');
 
 var VERSION = '1.0';
 var app = express();
@@ -26,6 +27,7 @@ var clientBase = __dirname + '/..';
 app.use('/dist', express.static(clientBase + '/dist'));
 app.use('/src', express.static(clientBase + '/src'));
 app.use('/fonts', express.static(clientBase + '/fonts'));
+app.use('/proxy', proxy('jhellsten-lnxdt:8787'));
 
 app.use(cookieSession({secret: secret}));
 app.use(bodyParser());
