@@ -1,5 +1,5 @@
 angular.module('pivotchart.powerpaste', [])
-  .factory('powerpaste', function ($http, $modal) {
+  .factory('powerpaste', function ($http, $modal, $location) {
     function integr(t, f) {
       var sum = 0;
       for (var i = 0; i < t.length - 1; i++) {
@@ -59,10 +59,14 @@ angular.module('pivotchart.powerpaste', [])
     }
 
     function load(workspaceId, integrate, callback) {
-      var url = '/proxy/rest/workspace?workspaceId=' + workspaceId;
+      var base = $location.protocol() + '://' + $location.host();
+      if ($location.port()) {
+        base += ':' + $location.port();
+      }
+      var url = base + '/proxy/rest/workspace?workspaceId=' + workspaceId;
       $http({method: 'get', url: url})
         .success(function (data) {
-          callback(transformJson(data, integrate));
+          callback(transformJson(data, integrate), url);
         })
         .error(function (data, status) {
           if (status == 403) {

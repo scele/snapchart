@@ -271,7 +271,14 @@ angular.module('pivotchart.controller', ['pivotchart.service', 'pivotchart.power
     var parts = $location.path().match(/ws\/([0-9+])(\/raw)?/);
     if (parts) {
       var integrated = parts[2] != '/raw';
-      powerpaste.load(parts[1], integrated, function(data) {
+      $scope.datasource = {};
+      $scope.datasource.reload = function () {
+        powerpaste.load(parts[1], integrated, function(data) {
+         $scope.tableInput = data;
+        });
+      };
+      powerpaste.load(parts[1], integrated, function(data, url) {
+        $scope.datasource.url = url;
         $scope.tableInput = data;
         input.load($scope.tableInput);
         if (integrated) {
