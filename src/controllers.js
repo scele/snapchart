@@ -281,6 +281,9 @@ angular.module('pivotchart.controller', ['pivotchart.service', 'pivotchart.power
       powerpaste.load(parts[1], integrated, function(data, url) {
         $scope.datasource.url = url;
         $scope.tableInput = data;
+        $scope.chart.title = "Powerpaste";
+        $scope.chart.fontSize = 11;
+        $scope.chart.colorScales = [$scope.colorScales[2]];
         input.load($scope.tableInput);
         if (integrated) {
           $scope.maps.x     = [input.instantiateColumn($scope.columns[1]),
