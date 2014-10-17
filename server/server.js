@@ -28,6 +28,7 @@ app.use('/dist', express.static(clientBase + '/dist'));
 app.use('/src', express.static(clientBase + '/src'));
 app.use('/fonts', express.static(clientBase + '/fonts'));
 app.use('/proxy', proxy('jhellsten-lnxdt:8787'));
+app.use('/uidb-proxy', proxy('uidb.nvidia.com'));
 
 app.use(cookieSession({secret: secret}));
 app.use(bodyParser());
