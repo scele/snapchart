@@ -18,9 +18,9 @@ angular.module('pivotchart.uidb', [])
         'VIC Read',
         'VIC Write',
         'Display Read',
-        'DRAM mJ',
         'GPU mJ',
         'SOC mJ',
+        'DRAM mJ',
         'CPU mJ',
       ];
 
@@ -44,9 +44,9 @@ angular.module('pivotchart.uidb', [])
           d.VICSRD || 0,
           d.VICSWR || 0,
           d.DISPLAY0A || 0,
-          d.dram_epf,
           d.gpu_epf,
           d.soc_epf,
+          d.dram_epf,
           d.cpu_epf,
         ];
         var sol = [
@@ -67,7 +67,11 @@ angular.module('pivotchart.uidb', [])
         sol = common.concat(sol);
         measured[3] = 'Actual';
         sol[3] = 'SOL';
-        return [measured, sol];
+        var view = $location.search().view;
+        if (view == 'energy')
+          return [measured];
+        else
+          return [measured, sol];
         //'ALL': 'Total bandwidth',
         //'tpf': '',
         //'tpf_latency': '',

@@ -315,15 +315,16 @@ angular.module('pivotchart.controller', ['pivotchart.service', 'pivotchart.power
       });
       $scope.showPromo = false;
     }
-    parts = $location.path().match(/uidb\/(.*)/);
+    parts = $location.host().match(/uidb.*/);
     if (parts) {
+      var url = $location.path();
       $scope.datasource = {};
       $scope.datasource.reload = function () {
-        uidb.load(parts[1], function(data) {
+        uidb.load(url, function(data) {
          $scope.tableInput = data;
         });
       };
-      uidb.load(parts[1], function(data, url) {
+      uidb.load(url, function(data, url) {
         $scope.datasource.url = url;
         $scope.tableInput = data;
         $scope.chart.title = "";
@@ -332,15 +333,29 @@ angular.module('pivotchart.controller', ['pivotchart.service', 'pivotchart.power
         input.load($scope.tableInput);
 
         $scope.maps.x     = [];
+        function ith(i) { return function (c) { return c[i]; }; }
         for (var i = 0; i < 7; i++) {
-          var dd = _(data).tail().map(function (c) { return c[i]; });
+          var dd = _(data).tail().map(ith(i));
           if (dd.uniq().size() != 1)
             $scope.maps.x.push(input.instantiateColumn($scope.columns[i + 1]));
         }
 
-        $scope.maps.y     = [input.instantiateColumn($scope.columns[11]),
-                             input.instantiateColumn($scope.columns[10]),
-                             input.instantiateColumn($scope.columns[9])];
+        var view = $location.search().view;
+        if (view == 'energy') {
+          $scope.maps.y     = [input.instantiateColumn($scope.columns[17]),
+                               input.instantiateColumn($scope.columns[18]),
+                               input.instantiateColumn($scope.columns[19]),
+                               input.instantiateColumn($scope.columns[20])];
+        } else if (view == 'bandwidth') {
+          $scope.maps.y     = [input.instantiateColumn($scope.columns[14]),
+                               input.instantiateColumn($scope.columns[15]),
+                               input.instantiateColumn($scope.columns[12]),
+                               input.instantiateColumn($scope.columns[13])];
+        } else {
+          $scope.maps.y     = [input.instantiateColumn($scope.columns[11]),
+                               input.instantiateColumn($scope.columns[10]),
+                               input.instantiateColumn($scope.columns[9])];
+        }
         $scope.maps.color = [input.instantiateColumn($scope.columns[0])];
         $scope.maps.size  = [];
         $scope.maps.layer = [];
