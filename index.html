@@ -349,9 +349,14 @@
           <form action="/d/chart.png" method="post" target="_blank"
             class="toolbar hidden-print">
             <input type="hidden" ng-value="chartAsSvg('#chart')" name="svg" />
-            <button class="btn btn-primary download" type="submit" download="pivotchartjs.png">
-              <span class="glyphicon glyphicon-floppy-save"></span>
-              Download as PNG
+            <button type="button" ng-click="step(-1)">
+              <span class="glyphicon glyphicon-step-backward big"></span>
+            </button>
+            <button type="submit" download="snapchart.png">
+              <span class="glyphicon glyphicon-floppy-save big"></span>
+            </button>
+            <button type="button" ng-click="step(+1)">
+              <span class="glyphicon glyphicon-step-forward big"></span>
             </button>
           </form>
         </div>

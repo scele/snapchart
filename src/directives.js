@@ -779,6 +779,27 @@ angular.module('pivotchart.directive', [])
             var domain = _(scope.itemdata).filter({colorscaleIdx: i});
             return scope.chart.colorScales[0].scale.copy().domain(domain.map('colorKey').unique().value());
           }).value();
+          var layers = _(colormapsByLayer).map(function (colormaps, i) {
+            var arc = d3.svg.arc()
+              .innerRadius(r0 + i * dr)
+              .outerRadius(r0 + (i + 1.01) * dr);
+            var items = _(scope.itemdata).filter({layer: i}).value();
+            var pie = d3.layout.pie().sort(null)(_.map(items, 'reducedValue'));
+            var colorscale;
+//            var colordomain = _(scope.itemdata)
+//                  .filter({colorscaleIdx: i})
+//                  .map('colorkey')
+//                  .unique().value();
+//            var colorscale = scope.chart.colorScales[0].scale.copy().domain(colordomain);
+            return {
+              colormaps: colormaps,
+              arc: arc,
+              pie: pie,
+              items: items,
+              colorscale: colorscale,
+            };
+          });
+
 
           // Set ranges for each colorscale so that they start from
           // primary group boundaries.

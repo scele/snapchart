@@ -110,6 +110,42 @@ angular.module('pivotchart.service', [])
           y: {name: "Y-axis", config: true, restrict: ['number']},
           color: {name: "Color", config: true},
         },
+        generate: function (maps) {
+          function permutations(cols, min, max) {
+            if (max === 0) {
+              return [[]];
+            }
+            var p = _(cols).map(function (c) {
+              var per = permutations(_(cols).reject(function (cc) {
+                  return cc === c;
+              }).value(), min - 1, max - 1);
+              return _.map(per, function (p) { return [c].concat(p); });
+            }).flatten(true).value();
+            if (min <= 0) {
+              p.push([]);
+            }
+            return p;
+          }
+          var allMaps = _(maps.x.concat(maps.y, maps.color)).map('source').value();
+          var x = _(allMaps).filter({type: 'text'}).value();
+          var y = _(allMaps).filter({type: 'number'}).value();
+          var color = _(allMaps).filter({type: 'text'}).value();
+          var xx = permutations([1,2], 0,2);
+          function uniqueColumns(cc) {
+            var flat = _(cc).flatten();
+            return flat.unique().size() === flat.size() && flat.unique().size() == allMaps.length;
+          }
+          var r = _.cartesianProduct([[y], permutations(x, 1, 2), permutations(color, 0, 1)])
+            .filter(uniqueColumns)
+            .map(function (v) {
+              return {
+                y: v[0],
+                x: v[1],
+                color: v[2],
+              };
+            });
+          return r;
+        },
       },
       {
         name: 'Line chart',
@@ -119,6 +155,7 @@ angular.module('pivotchart.service', [])
           x: {name: "X-axis", config: true},
           y: {name: "Y-axis", config: true, restrict: ['number']},
           color: {name: "Color", config: true},
+          marker: {name: "Marker size", config: true},
         },
         hasSettings: true,
       },

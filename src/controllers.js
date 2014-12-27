@@ -72,9 +72,10 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
     $scope.maps.y     = [input.instantiateColumn($scope.columns[3]),
                          input.instantiateColumn($scope.columns[4])];
     $scope.maps.color = [input.instantiateColumn($scope.columns[1])];
-    $scope.maps.size = [input.instantiateColumn($scope.columns[3])];
+    $scope.maps.size  = [input.instantiateColumn($scope.columns[3])];
     $scope.maps.layer = [input.instantiateColumn($scope.columns[2])];
-    $scope.maps.text = [input.instantiateColumn($scope.columns[2])];
+    $scope.maps.text  = [input.instantiateColumn($scope.columns[2])];
+    $scope.maps.marker= [];
     $scope.maps.text.customFormat = false;
 
     $scope.scaleTypes = [
@@ -193,7 +194,7 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       }
     });
 
-    $scope.chart = angular.copy($scope.chartTypes[0]);
+    $scope.chart = angular.copy($scope.chartTypes[0]); /// {}
     $scope.chart.fn = function (d) { return d; };
     $scope.chart.type = $scope.chartTypes[0];
     $scope.chart.inputArg = $scope.inputArg;
@@ -237,6 +238,29 @@ angular.module('pivotchart.controller', ['pivotchart.service'])
       $scope.chart.backgroundRgb =
         $scope.chart.background.replace(/rgba\((.*),(.*),(.*),(.*)\)/, 'rgb($1,$2,$3)');
     }, true);
+    $scope.history = [
+      { maps: _.clone($scope.maps), type: $scope.chart.type, },
+    ];
+    $scope.historyIdx = 0;
+    $scope.step = function (delta) {
+      $scope.historyIdx += delta;
+      if ($scope.historyIdx >= $scope.history.length) {
+        var automaps = $scope.chart.type.generate($scope.maps);
+        $scope.history = $scope.history.concat(_(automaps).map(function (maps) {
+          return {
+            maps: maps,
+            type: $scope.chart.type,
+          };
+        }).value());
+      }
+      if ($scope.historyIdx < 0) {
+        $scope.historyIdx = 0;
+      }
+      _($scope.history[$scope.historyIdx].maps).each(function (maps, k) {
+        $scope.maps[k] = _(maps).map(input.instantiateColumn).value();
+      });
+      $scope.chart.type = $scope.history[$scope.historyIdx].type;
+    };
     $scope.chart.font = $scope.fonts[0];
     $scope.import = function(chart) {
       var ModalInstanceCtrl = function ($scope, $modalInstance) {
