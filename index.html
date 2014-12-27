@@ -83,12 +83,14 @@
                 class="editor" ui-refresh="jsonMode">
               </editable-function>
               <h5 ng-show="{{datasource}}">
-                Connected to <a target="_blank" href="{{datasource.url}}">{{datasource.url}}</a>
-                <a title="Chart settings" class="settings"
+                <a title="Refresh" class="settings refresh"
                   ng-show="datasource.reload"
                   ng-click="datasource.reload()">
                   <span class="glyphicon glyphicon-refresh"></span>
                 </a>
+                <div class="nowrap">
+                  Connected to <a target="_blank" href="{{datasource.url}}">{{datasource.url}}</a>
+                </div>
               </h5>
               <div class="table-container">
                 <div ng-model="tableInput" ng-show="!jsonMode"
