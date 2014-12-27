@@ -97,10 +97,7 @@ angular.module('pivotchart.uidb', [])
 // http://lpeltonen-lnx:3000/#/uidb/omni_t210.json
     function load(arg, callback) {
       var base = $location.protocol() + '://' + $location.host();
-      if ($location.port()) {
-        base += ':' + $location.port();
-      }
-      var url = base + '/uidb-proxy/d/' + arg;
+      var url = base + '/d' + arg;
       $http({method: 'get', url: url})
         .success(function (data) {
           callback(transformJson(data), url);
