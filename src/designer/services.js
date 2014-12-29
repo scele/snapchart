@@ -21,7 +21,6 @@ angular.module('snapchart.designer.services', [])
       {
         title: 'Bar chart',
         name: 'bars',
-        type: 'pivot-bars', // XXX Move directive name to registry
         config: { legend: {display: true, position: 'right'} },
         validateFn: commonValidateFn,
         maps: {
@@ -33,7 +32,6 @@ angular.module('snapchart.designer.services', [])
       {
         title: 'Line chart',
         name: 'lines',
-        type: 'pivot-lines',
         hasMarkers: true,
         maps: {
           x: {name: "X-axis", config: true},
@@ -45,7 +43,6 @@ angular.module('snapchart.designer.services', [])
       {
         title: 'Sankey chart',
         name: 'sankey',
-        type: 'pivot-sankey',
         config: { legend: {display: true, position: 'right'} },
         validateFn: commonValidateFn,
         maps: {
@@ -57,7 +54,6 @@ angular.module('snapchart.designer.services', [])
       {
         title: 'Pie chart',
         name: 'pie',
-        type: 'pivot-pie',
         config: { legend: {display: true, position: 'right'} },
         validateFn: commonValidateFn,
         maps: {
@@ -69,7 +65,6 @@ angular.module('snapchart.designer.services', [])
       {
         title: 'Treemap',
         name: 'treemap',
-        type: 'pivot-treemap',
         config: { },
         validateFn: commonValidateFn,
         maps: {
@@ -80,12 +75,12 @@ angular.module('snapchart.designer.services', [])
       },
       /*
       {
-        name: 'Point chart',
-        type: 'pivot-point',
+        title: 'Point chart',
+        name: 'pivot-point',
       },
       {
-        name: 'Area chart',
-        type: 'pivot-area',
+        title: 'Area chart',
+        name: 'pivot-area',
       },*/
     ];
     return {

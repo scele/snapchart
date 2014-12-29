@@ -1,5 +1,5 @@
 angular.module('snapchart.directives', ['snapchart.services'])
-  .directive("snapchart", function() {
+  .directive("snapchart", function(snapchartBootstrap, pivot) {
     return {
       restrict: 'E',
       templateUrl: 'src/templates/snapchart.html',
@@ -10,6 +10,9 @@ angular.module('snapchart.directives', ['snapchart.services'])
         maps: '=',
       },
       link: function(scope, elm, attrs) {
+        scope.$watch('chart.type', function (t) {
+          scope.directive = pivot.chartTypeToDirective[t];
+        });
       },
     };
   })
@@ -390,13 +393,13 @@ angular.module('snapchart.directives', ['snapchart.services'])
       },
     };
   })
-  .directive("pivotBars", function(pivotUtil) {
+  .directive("snapchartBars", function(pivotUtil) {
     return pivotUtil.twodChartDirective('src/templates/bars.html', 'bars');
   })
-  .directive("pivotLines", function(pivotUtil) {
+  .directive("snapchartLines", function(pivotUtil) {
     return pivotUtil.twodChartDirective('src/templates/lines.html', 'lines');
   })
-  .directive("pivotTreemap", function(pivotUtil, pivot) {
+  .directive("snapchartTreemap", function(pivotUtil, pivot) {
     return {
       restrict: 'E',
       templateUrl: 'src/templates/treemap.html',
@@ -500,7 +503,7 @@ angular.module('snapchart.directives', ['snapchart.services'])
       },
     };
   })
-  .directive("pivotSankey", function(pivot) {
+  .directive("snapchartSankey", function(pivot) {
     return {
       restrict: 'E',
       templateUrl: 'src/templates/sankey.html',
@@ -629,7 +632,7 @@ angular.module('snapchart.directives', ['snapchart.services'])
       },
     };
   })
-  .directive("pivotPie", function(pivot) {
+  .directive("snapchartPie", function(pivot) {
     return {
       restrict: 'E',
       templateUrl: 'src/templates/pie.html',

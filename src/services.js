@@ -1,6 +1,14 @@
 angular.module('snapchart', ['snapchart.services', 'snapchart.directives']);
 angular.module('snapchart.services', [])
-  .factory('snapchart', function (mixins) {
+  .factory('snapchartBootstrap', function (mixins, pivot) {
+    pivot.registerChartType('bars', 'snapchart-bars');
+    pivot.registerChartType('lines', 'snapchart-lines');
+    pivot.registerChartType('treemap', 'snapchart-treemap');
+    pivot.registerChartType('sankey', 'snapchart-sankey');
+    pivot.registerChartType('pie', 'snapchart-pie');
+  })
+  // Public API for creating charts and maps (series).
+  .factory('snapchart', function (pivot) {
     return {
       variableSeries: function () {
         return {
@@ -64,6 +72,7 @@ angular.module('snapchart.services', [])
         chart.font = {family: "Open Sans", weight: 300};
         return chart;
       },
+      registerChartType: pivot.registerChartType,
     };
   })
   .factory('mixins', function () {
@@ -155,6 +164,7 @@ angular.module('snapchart.services', [])
     };
     return input;
   })
+  // Private API: helpers, chart type registry etc.
   .factory('pivot', function() {
     function detectType(data) {
       if (_(data).all(function(d) { return typeof d === 'number' || d === '' || _.isNull(d); }))
@@ -265,10 +275,15 @@ angular.module('snapchart.services', [])
         };
       }).reverse().value();
     }
+    var chartTypeToDirective = {};
     return {
       detectType: detectType,
       getMapType: getMapType,
       processSingle: processSingle,
       processColors: processColors,
+      chartTypeToDirective: chartTypeToDirective,
+      registerChartType: function (name, directive) {
+        chartTypeToDirective[name] = directive;
+      },
     };
   });
