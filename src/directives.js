@@ -1,4 +1,18 @@
 angular.module('pivotchart.directive', [])
+  .directive("snapchart", function() {
+    return {
+      restrict: 'E',
+      templateUrl: 'src/templates/snapchart.html',
+      replace: true,
+      scope: {
+        chart: '=',
+        data: '=',
+        maps: '=',
+      },
+      link: function(scope, elm, attrs) {
+      },
+    };
+  })
   .factory('pivotUtil', function (colors, pivot) {
     function getScale(config, defaultDomain) {
       var axis = d3.scale[config.type]();
@@ -62,9 +76,12 @@ angular.module('pivotchart.directive', [])
                   return l;
                 }
                 var band = hAxis.bands ? hAxis.bands[i] : 0.1;
-                var innerBand = hAxis.innerBands ? hAxis.innerBands[i] : 0.1;
                 if (_.isUndefined(band)) {
                   band = 0.1;
+                }
+                var innerBand = hAxis.innerBands ? hAxis.innerBands[i] : 0.1;
+                if (_.isUndefined(innerBand)) {
+                  innerBand = 0.1;
                 }
                 var x = d3.scale.ordinal()
                   .domain(xdata);
@@ -193,17 +210,12 @@ angular.module('pivotchart.directive', [])
   .directive("resizable", function() {
     return {
       restrict: 'A',
-      scope: {
-        width: '=',
-        height: '=',
-      },
       link: function(scope, elm, attrs, ctrl) {
         elm.resizable({
           resize: function(e, ui) {
-            scope.$apply(function() {
-              scope.width = ui.size.width;
-              scope.height = ui.size.height;
-            });
+            // Let other angular components (e.g. graphArea)
+            // observe the size change.
+            scope.$apply();
           },
         });
       },
@@ -407,7 +419,7 @@ angular.module('pivotchart.directive', [])
       },
     };
   })
-  .directive("graphArea", function(colors) {
+  .directive("graphArea", function(colors, $window) {
     return {
       restrict: 'E',
       templateUrl: 'src/templates/graphArea.html',
@@ -415,8 +427,6 @@ angular.module('pivotchart.directive', [])
       scope: {
         data: '=',
         maps: '=',
-        width: '=w',
-        height: '=h',
         title: '=',
         showTitle: '=',
         titleSize: '=',
@@ -449,6 +459,19 @@ angular.module('pivotchart.directive', [])
       },
       link: function(scope, elm, attrs, ctrl, transcludeFn) {
         var titleElm = elm.find('.title')[0];
+        scope.$watch(function() {
+          return elm.parent().height();
+        }, function (newValue, oldValue, s) {
+          s.height = newValue;
+        });
+        scope.$watch(function() {
+          return elm.parent().width();
+        }, function (newValue, oldValue, s) {
+          s.width = newValue;
+        });
+        angular.element($window).bind('resize', function() {
+          scope.$apply();
+        });
         scope.$watch('[data,maps]', function() {
           var colormaps = _.map(scope.maps.color, 'source');
           if (colormaps && colormaps.length) {

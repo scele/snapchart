@@ -2,23 +2,7 @@ angular.module('pivotchart.controller', ['pivotchart.service', 'pivotchart.power
   .controller('MainCtrl', function($scope, chartTypes, charts, input, $modal, $http, $timeout, $window, $location, powerpaste, uidb) {
     $scope.charts = charts.get();
     $scope.chartTypes = chartTypes.get();
-    $scope.width = 525;
-    $scope.height = 376;
 
-    //$scope.columns = [
-    //  { name: 'Column 1', type: 'number' },
-    //  { name: 'Column 2', type: 'text' },
-    //  { name: 'Column 3', type: 'text' },
-    //];
-    //$scope.selectedColumns = [
-    //  { name: 'Column 3', type: 'text' },
-    //];
-    //$scope.selectedRows = [
-    //  { name: 'Column 3', type: 'text' },
-    //];
-    //$scope.selectedColors = [
-    //  { name: 'Column 1', type: 'number' },
-    //];
     $scope.maps = {
       y: [],
       x: [],
@@ -114,6 +98,8 @@ angular.module('pivotchart.controller', ['pivotchart.service', 'pivotchart.power
       return header + (new XMLSerializer()).serializeToString(data.get(0));
     };
 
+    /* Rendering SVG to PNG in the browser doesn't work due to
+     * security constraints.
     $scope.saveAs = function(event, selector) {
       // SVG XML
       var data = $(selector);
@@ -122,16 +108,16 @@ angular.module('pivotchart.controller', ['pivotchart.service', 'pivotchart.power
       // Canvas
       function createCanvas() {
         var canvas = document.createElement('canvas');
-        canvas.width = $scope.width;
-        canvas.height = $scope.height;
+        canvas.width = data.width();
+        canvas.height = data.height();
         return canvas;
       }
       var canvas = createCanvas();
 
       // Put SVG to the canvas
       var img = new Image();
-      img.width = $scope.width;
-      img.height = $scope.height;
+      img.width = data.width();
+      img.height = data.height();
       img.src =  'data:image/svg+xml;charset=utf-8,' + xml;
       //var data = $('.chart-inner > .chart > .ac-chart').html();
       //img.src 'data:image/svg+xml;base64,' + btoa(data);
@@ -150,6 +136,7 @@ angular.module('pivotchart.controller', ['pivotchart.service', 'pivotchart.power
 
       event.target.parentElement.href = url;
     };
+    */
 
     $scope.lineInterpolationModes = [
       'linear',

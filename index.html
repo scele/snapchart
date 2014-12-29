@@ -341,19 +341,10 @@
             </div>
           </div>
 
-          <div resizable width="width" height="height" class="resizable"
-            style="width:{{width+2}}px; height:{{height+2}}px;">
-            <graph-area id="chart" data="chart._dataCache" maps="maps"
-              x-w="width" x-h="height"
-              show-title="chart.showTitle" title="chart.title"
-              title-size="chart.titleSize" font="chart.font"
-              font-size="chart.fontSize"
-              margin="chart.margin" show-legend="chart.showLegend"
-              background="chart.background">
-              <svg dynamic-directive="chart.type.type" data="chart._dataCache"
-                maps="maps" chart="chart"></svg>
-            </graph-area>
-          </div>
+          <snapchart chart="chart" maps="maps" data="chart._dataCache" id="chart"
+            resizable style="width:525px; height:376px;">
+          </snapchart>
+
           <form action="/d/chart.png" method="post" target="_blank"
             class="toolbar hidden-print">
             <input type="hidden" ng-value="chartAsSvg('#chart')" name="svg" />
