@@ -2,7 +2,7 @@ angular.module('snapchart.directives', ['snapchart.services'])
   .directive("snapchart", function(snapchartBootstrap, pivot) {
     return {
       restrict: 'E',
-      templateUrl: 'src/templates/snapchart.html',
+      templateUrl: 'src/core/templates/snapchart.html',
       replace: true,
       scope: {
         chart: '=',
@@ -293,7 +293,7 @@ angular.module('snapchart.directives', ['snapchart.services'])
   .directive("d3Legend", function() {
     return {
       restrict: 'EA',
-      templateUrl: 'src/templates/legend.html',
+      templateUrl: 'src/core/templates/legend.html',
       scope: {
       },
       require: '?^graphArea',
@@ -313,7 +313,7 @@ angular.module('snapchart.directives', ['snapchart.services'])
   .directive("graphArea", function($window) {
     return {
       restrict: 'E',
-      templateUrl: 'src/templates/graphArea.html',
+      templateUrl: 'src/core/templates/graphArea.html',
       replace: true,
       scope: {
         data: '=',
@@ -394,15 +394,15 @@ angular.module('snapchart.directives', ['snapchart.services'])
     };
   })
   .directive("snapchartBars", function(pivotUtil) {
-    return pivotUtil.twodChartDirective('src/templates/bars.html', 'bars');
+    return pivotUtil.twodChartDirective('src/core/templates/bars.html', 'bars');
   })
   .directive("snapchartLines", function(pivotUtil) {
-    return pivotUtil.twodChartDirective('src/templates/lines.html', 'lines');
+    return pivotUtil.twodChartDirective('src/core/templates/lines.html', 'lines');
   })
   .directive("snapchartTreemap", function(pivotUtil, pivot) {
     return {
       restrict: 'E',
-      templateUrl: 'src/templates/treemap.html',
+      templateUrl: 'src/core/templates/treemap.html',
       replace: true,
       scope: {
         chart: '=',
@@ -506,7 +506,7 @@ angular.module('snapchart.directives', ['snapchart.services'])
   .directive("snapchartSankey", function(pivot) {
     return {
       restrict: 'E',
-      templateUrl: 'src/templates/sankey.html',
+      templateUrl: 'src/core/templates/sankey.html',
       replace: true,
       scope: {
         chart: '=',
@@ -635,7 +635,7 @@ angular.module('snapchart.directives', ['snapchart.services'])
   .directive("snapchartPie", function(pivot) {
     return {
       restrict: 'E',
-      templateUrl: 'src/templates/pie.html',
+      templateUrl: 'src/core/templates/pie.html',
       replace: true,
       scope: {
         chart: '=',

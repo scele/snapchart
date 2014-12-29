@@ -1,20 +1,4 @@
 angular.module('snapchart.designer.directives', [])
-  .directive("axisConfig", function() {
-    return {
-      restrict: 'E',
-      templateUrl: 'src/templates/axisConfig.html',
-      scope: {
-        axis: '=',
-      },
-      link: function(scope, elm, attrs, ctrl) {
-        scope.scaleTypes = [
-          { type: 'ordinal', name: 'Ordinal' },
-          { type: 'linear', name: 'Linear' },
-          { type: 'log', name: 'Logarithmic' }
-        ];
-      },
-    };
-  })
   .directive("pivotColumnContainer", function(input) {
     return {
       restrict: 'EA',

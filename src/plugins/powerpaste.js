@@ -52,7 +52,7 @@ angular.module('pivotchart.powerpaste', [])
         };
       };
       var modalInstance = $modal.open({
-        templateUrl: 'src/templates/login.html',
+        templateUrl: 'src/plugins/templates/login.html',
         controller: ModalInstanceCtrl,
         windowClass: 'login',
       });
