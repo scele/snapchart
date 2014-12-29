@@ -1,7 +1,4 @@
-angular.module('snapchart.component',
-  ['pivotchart.directive',
-   'pivotchart.filter',
-  ])
+angular.module('snapchart.component', ['snapchart'])
   .controller('MainCtrl', function($scope, snapchart) {
 
     $scope.data = [

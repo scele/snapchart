@@ -1,4 +1,5 @@
-angular.module('pivotchart.service', [])
+angular.module('snapchart', ['snapchart.services', 'snapchart.directives']);
+angular.module('snapchart.services', [])
   .factory('snapchart', function (mixins) {
     return {
       variableSeries: function () {

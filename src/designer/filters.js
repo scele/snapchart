@@ -1,4 +1,4 @@
-angular.module('pivotchart.filter', [])
+angular.module('snapchart.designer.filters', [])
   .filter('fmt', function() {
     return function(value, fmt) {
       return d3.format(fmt)(value);

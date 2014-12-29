@@ -1,4 +1,4 @@
-angular.module('pivotchart.tests', ['pivotchart.directive', 'pivotchart.service'])
+angular.module('snapchart.tests', ['snapchart.directives', 'snapchart.services'])
   .controller('TestsCtrl', function($scope) {
     function crossMap(ff, xx) {
       return _(ff).map(function (f) {

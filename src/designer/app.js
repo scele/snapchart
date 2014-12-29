@@ -1,8 +1,8 @@
 angular.module('snapchart.designer',
   ['snapchart.designer.directives',
    'snapchart.designer.services',
-   'pivotchart.directive',
-   'pivotchart.filter',
+   'snapchart.designer.filters',
+   'snapchart',
    'pivotchart.powerpaste',
    'pivotchart.uidb',
    'ui.bootstrap.accordion',
@@ -185,7 +185,7 @@ angular.module('snapchart.designer',
       } catch (e) {
         return e.message;
       }
-      return $scope.chart.validateFn(data);
+      return $scope.chartType.validateFn(data);
     };
 
     $scope.$watch(function() {
