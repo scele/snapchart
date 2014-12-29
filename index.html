@@ -388,10 +388,11 @@
           'src/filters.js',
           'src/powerpaste.js',
           'src/uidb.js',
-          'src/snapchart-designer.js',
+          'src/designer/directives.js',
+          'src/designer/app.js',
         ], function() {
           // when all is done, execute bootstrap angular application
-          angular.bootstrap(document, ['snapchart-designer']);
+          angular.bootstrap(document, ['snapchart.designer']);
         });
       } else {
         // Production mode

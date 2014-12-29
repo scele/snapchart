@@ -1,4 +1,4 @@
-angular.module('snapchart-component',
+angular.module('snapchart.component',
   ['pivotchart.directive',
    'pivotchart.filter',
    'ui.bootstrap',

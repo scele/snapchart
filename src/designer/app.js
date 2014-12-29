@@ -1,5 +1,6 @@
-angular.module('snapchart-designer',
-  ['pivotchart.directive',
+angular.module('snapchart.designer',
+  ['snapchart.designer.directives',
+   'pivotchart.directive',
    'pivotchart.filter',
    'pivotchart.powerpaste',
    'pivotchart.uidb',
