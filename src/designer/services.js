@@ -1,4 +1,56 @@
 angular.module('snapchart.designer.services', [])
+  .factory('input', function(mixins, pivot) {
+    var input = {
+      columns: [],
+      data: [],
+    };
+
+    input.instantiateColumn = function (c) {
+      return { source: c, fn: { name: 'SUM' } };
+    };
+    input.load = function(data) {
+      function getEmptyRows(table) {
+        return _(table).map(function (row) {
+          return _(row).all(function (x) {
+            return _.isNull(x) || x === '';
+          });
+        }).foldr(function (state, b) {
+          return b && !state[1] ? [state[0] + 1, false] : [state[0], true];
+        }, [0, false])[0];
+      }
+
+      // Look for empty rows at the bottom
+      var emptyRows = getEmptyRows(data);
+      input.data.length = 0;
+      _.merge(input.data, _(data).take(data.length - emptyRows).rest().value());
+
+      // Look for empty columns on the right
+      var emptyColumns = getEmptyRows(_(data).transpose());
+      var first = input.columns[0] || {};
+      _.merge(first, {
+        name: 'Variable name',
+        type: 'text',
+        index: -1,
+        variable: true,
+      });
+      input.columns[0] = first;
+      input.columns.length = data[0].length - emptyColumns + 1;
+      _(input.columns).rest().forEach(function (c, i) {
+        var get = function(d) { return d[i]; };
+        var values = _(input.data).map(get);
+        var dst = c || {};
+        _.merge(dst, {
+          name: data[0][i],
+          index: i,
+          type: pivot.detectType(values),
+          get: get,
+          tooltip: values.unique().join(', ').substring(0, 100),
+        });
+        input.columns[i+1] = dst;
+      });
+    };
+    return input;
+  })
   .factory('chartTypes', function() {
     function commonValidateFn(data) {
       if (typeof data !== 'object')
