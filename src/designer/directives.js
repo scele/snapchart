@@ -18,7 +18,7 @@ angular.module('snapchart.designer.directives', [])
   .directive("pivotColumnContainer", function(input) {
     return {
       restrict: 'EA',
-      templateUrl: 'src/templates/columnContainer.html',
+      templateUrl: 'src/designer/templates/columnContainer.html',
       replace: true,
       scope: {
         isSource: '=pivotIsSource',
@@ -84,7 +84,7 @@ angular.module('snapchart.designer.directives', [])
   .directive("pivotColumn", function() {
     return {
       restrict: 'EA',
-      templateUrl: 'src/templates/column.html',
+      templateUrl: 'src/designer/templates/column.html',
       replace: true,
       scope: {
         instance: '=pivotColumn',
