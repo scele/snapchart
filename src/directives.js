@@ -1001,40 +1001,6 @@ angular.module('pivotchart.directive', [])
     };
   })
   .directive("editableFunction", function() {
-    // Augment lodash with a transpose function commonly needed
-    // in input data transformations.
-    function transpose(x) {
-      if (!Array.isArray(x) || !Array.isArray(x[0]))
-        throw new Error('transpose() can only be applied to an array of arrays');
-      return _.range(x[0].length).map(function(i) { return _.map(x, function(e) { return e[i]; }); });
-    }
-    function call(ff, v) {
-      return _.map(ff, function(f) { return f(v); });
-    }
-    function sum(yy) {
-      return _.reduce(yy, function(sum, num) {
-        return sum + num;
-      }, 0);
-    }
-    function product(yy) {
-      return _.reduce(yy, function(product, num) {
-        return product * num;
-      }, 1);
-    }
-    function cartesianProduct(array) {
-      return _.reduce(array, function(a, b) {
-        return _.flatten(_.map(a, function(x) {
-          return _.map(b, function(y) {
-            return x.concat([y]);
-          });
-        }), true);
-      }, [ [] ]);
-    }
-    _.mixin({'transpose': transpose});
-    _.mixin({'call': call});
-    _.mixin({'cartesianProduct': cartesianProduct});
-    _.mixin({'sum': sum}, {chain: false});
-    _.mixin({'product': product}, {chain: false});
     return {
       restrict: 'E',
       template: '<div><div js-function ui-codemirror="opts" ui-refresh="refresh"></div>' +
