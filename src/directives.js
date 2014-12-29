@@ -13,7 +13,7 @@ angular.module('pivotchart.directive', ['pivotchart.service'])
       },
     };
   })
-  .factory('pivotUtil', function (colors, pivot) {
+  .factory('pivotUtil', function (pivot) {
     function getScale(config, defaultDomain) {
       var axis = d3.scale[config.type]();
       if (config.auto)
@@ -399,7 +399,7 @@ angular.module('pivotchart.directive', ['pivotchart.service'])
       },
     };
   })
-  .directive("d3Legend", function(colors) {
+  .directive("d3Legend", function() {
     return {
       restrict: 'EA',
       templateUrl: 'src/templates/legend.html',
@@ -419,7 +419,7 @@ angular.module('pivotchart.directive', ['pivotchart.service'])
       },
     };
   })
-  .directive("graphArea", function(colors, $window) {
+  .directive("graphArea", function($window) {
     return {
       restrict: 'E',
       templateUrl: 'src/templates/graphArea.html',
@@ -611,7 +611,7 @@ angular.module('pivotchart.directive', ['pivotchart.service'])
       },
     };
   })
-  .directive("pivotSankey", function(colors, pivot) {
+  .directive("pivotSankey", function(pivot) {
     return {
       restrict: 'E',
       templateUrl: 'src/templates/sankey.html',
@@ -740,7 +740,7 @@ angular.module('pivotchart.directive', ['pivotchart.service'])
       },
     };
   })
-  .directive("pivotPie", function(colors, pivot) {
+  .directive("pivotPie", function(pivot) {
     return {
       restrict: 'E',
       templateUrl: 'src/templates/pie.html',
