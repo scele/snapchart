@@ -1,4 +1,14 @@
 module.exports = function(grunt) {
+  var all = [
+    'jshint',
+    'ngmin',
+    'html2js',
+    'uglify',
+    'concat:js',
+    'concat:css',
+    'less',
+    'copy:dist',
+  ];
 
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -56,7 +66,11 @@ module.exports = function(grunt) {
         expand: true,
         flatten: true,
         filter: 'isFile',
-        src: ['out/pivotchart.min.js'],
+        src: [
+          'out/pivotchart.min.js',
+          'out/pivotchart.js',
+          'out/pivotchart-templates.js',
+        ],
         dest: 'dist/',
       },
     },
@@ -65,7 +79,7 @@ module.exports = function(grunt) {
     },
     watch: {
       files: ['<%= jshint.files %>', 'index.html', 'src/**/*.html', 'less/**/*.less'],
-      tasks: ['jshint', 'less', 'express:dev'],
+      tasks: all,
       options: {
         livereload: true,
       },
@@ -91,6 +105,5 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   grunt.registerTask('serve', ['default', 'express:dev', 'watch']);
-  grunt.registerTask('default', ['jshint', 'ngmin', 'html2js', 'uglify', 'concat:js', 'concat:css', 'less']);
-  grunt.registerTask('dist', ['copy:dist']);
+  grunt.registerTask('default', all);
 };
