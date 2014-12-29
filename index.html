@@ -130,18 +130,18 @@
                 <div>
                   <h5>Chart type
                     <a title="Chart settings" bs-popover
-                      ng-show="chart.type.hasSettings"
+                      ng-show="chartType.hasSettings"
                       data-template="src/templates/chartTypeConfig.html"
                       data-content="bug" class="settings">
                       <span class="glyphicon glyphicon-cog"></span>
                     </a>
                   </h5>
-                  <div class="btn-group" ng-model="chart.type">
+                  <div class="btn-group">
                     <label class="btn btn-default" ng-repeat="type in chartTypes"
-                      ng-class="{selected: type == $parent.chart.type}">
-                      <input ng-model="$parent.chart.type"
-                        type="radio" class="btn btn-default" ng-value="type">
-                        <svg width="50" height="50" ng-show="type.type=='pivot-bars'">
+                      ng-class="{selected: type.name == chart.type}">
+                      <input ng-model="chart.type"
+                        type="radio" class="btn btn-default" ng-value="type.name">
+                        <svg width="50" height="50" ng-show="type.name=='bars'">
                           <rect x="0.5" y="20.5" width="10" height="80" />
                           <rect x="10.5" y="10.5" width="10" height="80" />
                           <rect x="30.5" y="10.5" width="10" height="15" />
@@ -149,14 +149,14 @@
                           <rect x="40.5" y="30.5" width="10" height="6" />
                           <rect x="40.5" y="36.5" width="10" height="80" />
                         </svg>
-                        <svg width="50" height="50" ng-show="type.type=='pivot-treemap'">
+                        <svg width="50" height="50" ng-show="type.name=='treemap'">
                           <rect x="30.5" y="10.5" width="20" height="40" />
                           <rect x="0.5" y="10.5" width="30" height="15" />
                           <rect x="20.5" y="25.5" width="10" height="25" />
                           <rect x="0.5" y="25.5" width="20" height="15" />
                           <rect x="0.5" y="40.5" width="20" height="10" />
                         </svg>
-                        <svg width="50" height="50" ng-show="type.type=='pivot-pie'">
+                        <svg width="50" height="50" ng-show="type.name=='pie'">
                           <g transform="translate(25,30)">
                             <path ng-attr-d="{{arc(0, 20, 0, 2)}}" />
                             <path ng-attr-d="{{arc(10, 20, 2, 4)}}" />
@@ -166,7 +166,7 @@
                           </g>
                         </svg>
                         <svg width="50" height="50"
-                        ng-show="type.type=='pivot-sankey'" class="sankey">
+                             ng-show="type.name=='sankey'" class="sankey">
                           <g>
                             <path d="M0,17c25,0,25,5,50,5"
                               style="stroke-width:8px;" />
@@ -179,7 +179,7 @@
                           </g>
                         </svg>
                         <svg width="50" height="50"
-                        ng-show="type.type=='pivot-lines'" class="line">
+                             ng-show="type.name=='lines'" class="line">
                           <g>
                             <path d="M0,10l0,40l50,0" />
                             <path d="M0,35l15,-15l15,10l15,-20" />
@@ -197,43 +197,43 @@
                   </pivot-column-container>
                 </div>
                 <div class="col-xs-6">
-                  <div ng-show="chart.type.maps.y">
-                    <h5>{{chart.type.maps.y.name}}
-                      <a title="{{chart.type.maps.y.name}} settings" bs-popover
-                        ng-show="maps.y.length && chart.type.maps.y.config"
+                  <div ng-show="chartType.maps.y">
+                    <h5>{{chartType.maps.y.name}}
+                      <a title="{{chartType.maps.y.name}} settings" bs-popover
+                        ng-show="maps.y.length && chartType.maps.y.config"
                         data-template="src/templates/yAxisConfig.html"
                         data-content="bug" class="settings">
                         <span class="glyphicon glyphicon-cog"></span>
                       </a>
                     </h5>
-                    <pivot-column-container ng-model="maps.y" pivot-name="{{chart.type.maps.y.name}}"
-                      pivot-restrict="chart.type.maps.y.restrict">
+                    <pivot-column-container ng-model="maps.y" pivot-name="{{chartType.maps.y.name}}"
+                      pivot-restrict="chartType.maps.y.restrict">
                     </pivot-column-container>
                   </div>
-                  <div ng-show="chart.type.maps.x">
-                    <h5>{{chart.type.maps.x.name}}
-                      <a title="{{chart.type.maps.x.name}} settings" bs-popover
-                        ng-show="maps.x.length && chart.type.maps.x.config"
+                  <div ng-show="chartType.maps.x">
+                    <h5>{{chartType.maps.x.name}}
+                      <a title="{{chartType.maps.x.name}} settings" bs-popover
+                        ng-show="maps.x.length && chartType.maps.x.config"
                         data-template="src/templates/xAxisConfig.html"
                         data-content="bug" class="settings">
                         <span class="glyphicon glyphicon-cog"></span>
                       </a>
                     </h5>
-                    <pivot-column-container ng-model="maps.x" pivot-name="{{chart.type.maps.x.name}}"
-                      pivot-restrict="chart.type.maps.x.restrict">
+                    <pivot-column-container ng-model="maps.x" pivot-name="{{chartType.maps.x.name}}"
+                      pivot-restrict="chartType.maps.x.restrict">
                     </pivot-column-container>
                   </div>
-                  <div ng-show="chart.type.maps.size">
-                    <h5>{{chart.type.maps.size.name}}</h5>
+                  <div ng-show="chartType.maps.size">
+                    <h5>{{chartType.maps.size.name}}</h5>
                     <pivot-column-container ng-model="maps.size"
-                      pivot-name="{{chart.type.maps.size.name}}"
-                      pivot-restrict="chart.type.maps.size.restrict">
+                      pivot-name="{{chartType.maps.size.name}}"
+                      pivot-restrict="chartType.maps.size.restrict">
                     </pivot-column-container>
                   </div>
-                  <div ng-show="chart.type.maps.color">
-                    <h5>{{chart.type.maps.color.name}}
-                      <a title="{{chart.type.maps.color.name}} settings" bs-popover
-                        ng-show="chart.type.maps.color.config"
+                  <div ng-show="chartType.maps.color">
+                    <h5>{{chartType.maps.color.name}}
+                      <a title="{{chartType.maps.color.name}} settings" bs-popover
+                        ng-show="chartType.maps.color.config"
                         data-template="src/templates/colorConfig.html"
                         data-content="bug" class="settings">
                         <span class="glyphicon glyphicon-cog"></span>
@@ -242,24 +242,24 @@
                     <pivot-column-container ng-model="maps.color">
                     </pivot-column-container>
                   </div>
-                  <div ng-show="chart.type.maps.layer">
-                    <h5>{{chart.type.maps.layer.name}}
-                      <a title="{{chart.type.maps.layer.name}} settings" bs-popover
-                        ng-show="chart.type.maps.layer.config"
+                  <div ng-show="chartType.maps.layer">
+                    <h5>{{chartType.maps.layer.name}}
+                      <a title="{{chartType.maps.layer.name}} settings" bs-popover
+                        ng-show="chartType.maps.layer.config"
                         data-template="src/templates/layerConfig.html"
                         data-content="bug" class="settings">
                         <span class="glyphicon glyphicon-cog"></span>
                       </a>
                     </h5>
                     <pivot-column-container ng-model="maps.layer"
-                      pivot-name="{{chart.type.maps.layer.name}}"
-                      pivot-restrict="chart.type.maps.layer.restrict">
+                      pivot-name="{{chartType.maps.layer.name}}"
+                      pivot-restrict="chartType.maps.layer.restrict">
                     </pivot-column-container>
                   </div>
-                  <div ng-show="chart.type.maps.text">
-                    <h5>{{chart.type.maps.text.name}}
-                      <a title="{{chart.type.maps.text.name}} settings" bs-popover
-                        ng-show="chart.type.maps.text.config"
+                  <div ng-show="chartType.maps.text">
+                    <h5>{{chartType.maps.text.name}}
+                      <a title="{{chartType.maps.text.name}} settings" bs-popover
+                        ng-show="chartType.maps.text.config"
                         data-template="src/templates/textConfig.html"
                         data-content="bug" class="settings">
                         <span class="glyphicon glyphicon-cog"></span>

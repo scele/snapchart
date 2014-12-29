@@ -23,7 +23,7 @@ angular.module('pivotchart.directive', ['pivotchart.service'])
     }
     return {
       getScale: getScale,
-      twodChartDirective: function (template) {
+      twodChartDirective: function (template, subtype) {
         var id = 0;
         return {
           restrict: 'E',
@@ -49,7 +49,7 @@ angular.module('pivotchart.directive', ['pivotchart.service'])
               var colormaps = _(scope.maps.color).reject('error').map('source').value();
               var lastXmap = _(xmaps).last();
               var lastXmapIsNumeric = false;
-              if (scope.chart.type.type === 'pivot-lines' &&
+              if (subtype === 'lines' &&
                   lastXmap && lastXmap.type === 'number') {
                 lastXmapIsNumeric = true;
               }
@@ -86,7 +86,7 @@ angular.module('pivotchart.directive', ['pivotchart.service'])
                 var x = d3.scale.ordinal()
                   .domain(xdata);
 
-                if (col === lastXmap && scope.chart.type.type === 'pivot-lines') {
+                if (col === lastXmap && subtype === 'lines') {
                   x.rangePoints([0, scope.barWidth], 1);
                 } else {
                   x.rangeRoundBands([0, scope.barWidth], band, innerBand);
@@ -228,7 +228,7 @@ angular.module('pivotchart.directive', ['pivotchart.service'])
         var s = scope.$new();
         scope.$watch(
           function(scope) {
-            return scope.$eval(attrs.dynamicDirective);
+            return attrs.dynamicDirective;
           },
           function(newVal, prevVal) {
             var e = angular.element('<' + newVal + '></' + newVal + '>');
@@ -391,10 +391,10 @@ angular.module('pivotchart.directive', ['pivotchart.service'])
     };
   })
   .directive("pivotBars", function(pivotUtil) {
-    return pivotUtil.twodChartDirective('src/templates/bars.html');
+    return pivotUtil.twodChartDirective('src/templates/bars.html', 'bars');
   })
   .directive("pivotLines", function(pivotUtil) {
-    return pivotUtil.twodChartDirective('src/templates/lines.html');
+    return pivotUtil.twodChartDirective('src/templates/lines.html', 'lines');
   })
   .directive("pivotTreemap", function(pivotUtil) {
     return {

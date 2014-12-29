@@ -93,9 +93,13 @@ angular.module('snapchart.designer',
     };
     $scope.xmapIsLinear = function (xmap) {
       if (xmap.source.type !== 'number') return false;
-      if ($scope.chart.type.type !== 'pivot-lines') return false;
+      if ($scope.chartType.name !== 'lines') return false;
       return xmap === _.last($scope.maps.x);
     };
+
+    $scope.$watch('chart.type', function (t) {
+      $scope.chartType = _.find($scope.chartTypes, {name: t});
+    });
 
     $scope.$watch(function () {
       var fmt = _.curry(function (showTitle, c) {
@@ -200,9 +204,10 @@ angular.module('snapchart.designer',
       }
     });
 
+    $scope.chartType = $scope.chartTypes[0];
     $scope.chart = angular.copy($scope.chartTypes[0]);
     $scope.chart.fn = function (d) { return d; };
-    $scope.chart.type = $scope.chartTypes[0];
+    $scope.chart.type = $scope.chartType.name;
     $scope.chart.inputArg = $scope.inputArg;
     $scope.chart.title = "Chart title";
     $scope.chart.titleSize = 24;
@@ -306,7 +311,8 @@ angular.module('snapchart.designer',
           $scope.maps.layer = [];
           $scope.maps.text = [];
         } else {
-          $scope.chart.type = $scope.chartTypes[1];
+          $scope.chartType = $scope.chartTypes[1];
+          $scope.chart.type = $scope.chartType.name;
           $scope.maps.x     = [input.instantiateColumn($scope.columns[2])];
           $scope.maps.y     = [input.instantiateColumn($scope.columns[3]),
                                input.instantiateColumn($scope.columns[4]),

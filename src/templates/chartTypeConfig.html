@@ -2,7 +2,7 @@
   <div class="arrow"></div>
   <div class="modal-content">
     <div class="modal-body">
-      <div class="form-group" ng-show="chart.type.type == 'pivot-lines'">
+      <div class="form-group" ng-show="chart.type == 'lines'">
         <label>
           <div class="title">Line interpolation</div>
           <select ng-model="chart.lineInterpolation" class="form-control"
@@ -10,7 +10,7 @@
           </select>
         </label>
       </div>
-      <div class="form-group" ng-show="chart.type.hasMarkers">
+      <div class="form-group" ng-show="chart.type == 'lines'">
         <label>
           <div class="title">Marker size</div>
           <div ui-slider="{min: 0, max: 20, step: 1}"

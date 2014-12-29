@@ -1,7 +1,7 @@
 <div class="popover" tabindex="-1" ng-show="content">
   <div class="arrow"></div>
   <div class="modal-content">
-    <div class="modal-body" ng-show="chart.type.type !== 'pivot-sankey'">
+    <div class="modal-body" ng-show="chart.type !== 'sankey'">
       <!--<div class="form-group">
         <label>
           Scale
@@ -54,7 +54,7 @@
         </label>
       </div>
     </div>
-    <div class="modal-body" ng-show="chart.type.type === 'pivot-sankey'">
+    <div class="modal-body" ng-show="chart.type === 'sankey'">
       <div class="form-group">
         <label>
           <div class="title">Thickness</div>

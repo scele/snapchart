@@ -115,8 +115,9 @@ angular.module('pivotchart.service', [])
     }
     var types = [
       {
-        name: 'Bar chart',
-        type: 'pivot-bars',
+        title: 'Bar chart',
+        name: 'bars',
+        type: 'pivot-bars', // XXX Move directive name to registry
         config: { legend: {display: true, position: 'right'} },
         validateFn: commonValidateFn,
         maps: {
@@ -126,7 +127,8 @@ angular.module('pivotchart.service', [])
         },
       },
       {
-        name: 'Line chart',
+        title: 'Line chart',
+        name: 'lines',
         type: 'pivot-lines',
         hasMarkers: true,
         maps: {
@@ -137,7 +139,8 @@ angular.module('pivotchart.service', [])
         hasSettings: true,
       },
       {
-        name: 'Sankey chart',
+        title: 'Sankey chart',
+        name: 'sankey',
         type: 'pivot-sankey',
         config: { legend: {display: true, position: 'right'} },
         validateFn: commonValidateFn,
@@ -148,7 +151,8 @@ angular.module('pivotchart.service', [])
         },
       },
       {
-        name: 'Pie chart',
+        title: 'Pie chart',
+        name: 'pie',
         type: 'pivot-pie',
         config: { legend: {display: true, position: 'right'} },
         validateFn: commonValidateFn,
@@ -159,7 +163,8 @@ angular.module('pivotchart.service', [])
         },
       },
       {
-        name: 'Treemap',
+        title: 'Treemap',
+        name: 'treemap',
         type: 'pivot-treemap',
         config: { },
         validateFn: commonValidateFn,

@@ -46,7 +46,7 @@ angular.module('snapchart.component',
 
 
     $scope.chart = angular.copy($scope.chartTypes[0]);
-    $scope.chart.type = $scope.chartTypes[0];
+    $scope.chart.type = 'bars';
     $scope.chart.title = "Chart title";
     $scope.chart.titleSize = 24;
     $scope.chart.fontSize = 13;
