@@ -1,11 +1,8 @@
 angular.module('snapchart.component',
   ['pivotchart.directive',
    'pivotchart.filter',
-   'ui.bootstrap',
   ])
-  .controller('MainCtrl', function($scope, chartTypes, charts, input) {
-    $scope.charts = charts.get();
-    $scope.chartTypes = chartTypes.get();
+  .controller('MainCtrl', function($scope, input) {
 
     $scope.tableInput = [
       ["Category", "Geography", "Sales", "Profit"],
@@ -45,7 +42,7 @@ angular.module('snapchart.component',
     $scope.maps.text.customFormat = false;
 
 
-    $scope.chart = angular.copy($scope.chartTypes[0]);
+    $scope.chart = {};
     $scope.chart.type = 'bars';
     $scope.chart.title = "Chart title";
     $scope.chart.titleSize = 24;

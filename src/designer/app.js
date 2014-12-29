@@ -1,5 +1,6 @@
 angular.module('snapchart.designer',
   ['snapchart.designer.directives',
+   'snapchart.designer.services',
    'pivotchart.directive',
    'pivotchart.filter',
    'pivotchart.powerpaste',
@@ -19,8 +20,7 @@ angular.module('snapchart.designer',
       $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|data):/);
     }
   ])
-  .controller('MainCtrl', function($scope, chartTypes, charts, input, $modal, $http, $timeout, $window, $location, powerpaste, uidb) {
-    $scope.charts = charts.get();
+  .controller('MainCtrl', function($scope, chartTypes, input, $modal, $http, $timeout, $window, $location, powerpaste, uidb) {
     $scope.chartTypes = chartTypes.get();
 
     $scope.maps = {
@@ -93,7 +93,7 @@ angular.module('snapchart.designer',
     };
     $scope.xmapIsLinear = function (xmap) {
       if (xmap.source.type !== 'number') return false;
-      if ($scope.chartType.name !== 'lines') return false;
+      if ($scope.chart.type !== 'lines') return false;
       return xmap === _.last($scope.maps.x);
     };
 
@@ -204,10 +204,9 @@ angular.module('snapchart.designer',
       }
     });
 
-    $scope.chartType = $scope.chartTypes[0];
-    $scope.chart = angular.copy($scope.chartTypes[0]);
+    $scope.chart = {};
     $scope.chart.fn = function (d) { return d; };
-    $scope.chart.type = $scope.chartType.name;
+    $scope.chart.type = 'bars';
     $scope.chart.inputArg = $scope.inputArg;
     $scope.chart.title = "Chart title";
     $scope.chart.titleSize = 24;
@@ -311,8 +310,7 @@ angular.module('snapchart.designer',
           $scope.maps.layer = [];
           $scope.maps.text = [];
         } else {
-          $scope.chartType = $scope.chartTypes[1];
-          $scope.chart.type = $scope.chartType.name;
+          $scope.chart.type = 'line';
           $scope.maps.x     = [input.instantiateColumn($scope.columns[2])];
           $scope.maps.y     = [input.instantiateColumn($scope.columns[3]),
                                input.instantiateColumn($scope.columns[4]),
