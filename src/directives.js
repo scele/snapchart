@@ -50,7 +50,7 @@ angular.module('pivotchart.directive', ['pivotchart.service'])
               var lastXmap = _(xmaps).last();
               var lastXmapIsNumeric = false;
               if (subtype === 'lines' &&
-                  lastXmap && lastXmap.type === 'number') {
+                  lastXmap && pivot.getMapType(lastXmap, scope.data) === 'number') {
                 lastXmapIsNumeric = true;
               }
               var vAxis = scope.chart.vAxis;
@@ -396,7 +396,7 @@ angular.module('pivotchart.directive', ['pivotchart.service'])
   .directive("pivotLines", function(pivotUtil) {
     return pivotUtil.twodChartDirective('src/templates/lines.html', 'lines');
   })
-  .directive("pivotTreemap", function(pivotUtil) {
+  .directive("pivotTreemap", function(pivotUtil, pivot) {
     return {
       restrict: 'E',
       templateUrl: 'src/templates/treemap.html',
@@ -417,7 +417,8 @@ angular.module('pivotchart.directive', ['pivotchart.service'])
           var sizemaps = _(scope.maps.size).reject('error').map('source').value();
           var colormaps = _(scope.maps.color).reject('error').map('source').value();
           var textmaps = _(scope.maps.text).reject('error').map('source').value();
-          var numberColor = _(colormaps).all({type: 'number'});
+          var numberColor = _(colormaps).all(function (c) {
+                                  return pivot.getMapType(c, scope.data) === 'number';});
           var color, legenddata;
           if (numberColor) {
             var c0 = scope.chart.colorScales[0].scale.range()[0];

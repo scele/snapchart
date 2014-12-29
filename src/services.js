@@ -1,4 +1,28 @@
 angular.module('pivotchart.service', [])
+  .factory('snapchart', function () {
+    return {
+      variableSeries: function () {
+        return {
+          source: {
+            name: 'Variable name',
+            type: 'text',
+            index: -1,
+            variable: true,
+          },
+        };
+      },
+      series: function (i, name) {
+        var get = typeof i === 'function' ? i : function (d) { return d[i]; };
+        return {
+          source: {
+            name: name,
+            index: i,
+            get: get,
+          },
+        };
+      },
+    };
+  })
   .factory('mixins', function () {
     // Augment lodash with a transpose function commonly needed
     // in input data transformations.
@@ -36,19 +60,12 @@ angular.module('pivotchart.service', [])
     _.mixin({'product': product}, {chain: false});
     return {};
   })
-  .factory('input', function(mixins) {
+  .factory('input', function(mixins, pivot) {
     var input = {
       columns: [],
       data: [],
     };
 
-    function detectType(data) {
-      if (_(data).all(function(d) { return typeof d === 'number' || d === '' || _.isNull(d); }))
-        return 'number';
-      if (_(data).all(function(d) { return d instanceof Date; }))
-        return 'date';
-      return 'text';
-    }
     input.instantiateColumn = function (c) {
       return { source: c, fn: { name: 'SUM' } };
     };
@@ -86,7 +103,7 @@ angular.module('pivotchart.service', [])
         _.merge(dst, {
           name: data[0][i],
           index: i,
-          type: detectType(values),
+          type: pivot.detectType(values),
           get: get,
           tooltip: values.unique().join(', ').substring(0, 100),
         });
@@ -96,6 +113,16 @@ angular.module('pivotchart.service', [])
     return input;
   })
   .factory('pivot', function() {
+    function detectType(data) {
+      if (_(data).all(function(d) { return typeof d === 'number' || d === '' || _.isNull(d); }))
+        return 'number';
+      if (_(data).all(function(d) { return d instanceof Date; }))
+        return 'date';
+      return 'text';
+    }
+    function getMapType(map, data) {
+      return map.type ? map.type : detectType(_(input.data).map(map.get));
+    }
     function processColors(colormaps, valuemaps, colorscales, data) {
       var colordata = _(colormaps).map(function (col, i) {
         if (col.variable) {
@@ -196,6 +223,8 @@ angular.module('pivotchart.service', [])
       }).reverse().value();
     }
     return {
+      detectType: detectType,
+      getMapType: getMapType,
       processSingle: processSingle,
       processColors: processColors,
     };

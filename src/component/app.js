@@ -2,7 +2,7 @@ angular.module('snapchart.component',
   ['pivotchart.directive',
    'pivotchart.filter',
   ])
-  .controller('MainCtrl', function($scope, input) {
+  .controller('MainCtrl', function($scope, input, snapchart) {
 
     $scope.tableInput = [
       ["Category", "Geography", "Sales", "Profit"],
@@ -30,17 +30,11 @@ angular.module('snapchart.component',
     };
 
     // Put up a sample graph
-    $scope.maps = {};
-    $scope.maps.x     = [input.instantiateColumn($scope.columns[2]),
-                         input.instantiateColumn($scope.columns[0])];
-    $scope.maps.y     = [input.instantiateColumn($scope.columns[3]),
-                         input.instantiateColumn($scope.columns[4])];
-    $scope.maps.color = [input.instantiateColumn($scope.columns[1])];
-    $scope.maps.size = [input.instantiateColumn($scope.columns[3])];
-    $scope.maps.layer = [input.instantiateColumn($scope.columns[2])];
-    $scope.maps.text = [input.instantiateColumn($scope.columns[2])];
-    $scope.maps.text.customFormat = false;
-
+    $scope.maps = {
+      x: [snapchart.variableSeries(), snapchart.series(1, "Geography")],
+      y: [snapchart.series(2, "Sales"), snapchart.series(3, "Profit")],
+      color: [snapchart.series(0, "Category")],
+    };
 
     $scope.chart = {};
     $scope.chart.type = 'bars';
