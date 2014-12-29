@@ -1,5 +1,5 @@
 angular.module('pivotchart.service', [])
-  .factory('snapchart', function () {
+  .factory('snapchart', function (mixins) {
     return {
       variableSeries: function () {
         return {
@@ -20,6 +20,48 @@ angular.module('pivotchart.service', [])
             get: get,
           },
         };
+      },
+      chart: function () {
+        var chart = {};
+        chart.type = 'bars';
+        chart.title = '';
+        chart.titleSize = 24;
+        chart.fontSize = 13;
+        chart.margin = 30;
+        chart.showLegend = true;
+        chart.showTitle = true;
+        chart.background = "rgb(255,255,255)";
+        chart.innerRadius = 0;
+        chart.vAxis = {
+          auto: true,
+          type: 'linear', // https://github.com/mbostock/d3/wiki/Scales
+                          // (at least 'linear', 'log' and 'ordinal' should work)
+          format: 'n', // https://github.com/mbostock/d3/wiki/Formatting
+          ticks: 10,
+          bands: [] ,
+          innerBands: []
+        };
+        chart.hAxis = {
+          auto: true,
+          type: 'ordinal',
+          format: 'n',
+          ticks: 10,
+          bands: [],
+          innerBands: [],
+          showText: [],
+          nodeTextPosition: 'over'
+        };
+        chart.markers = { show: true, size: 3 };
+        // https://github.com/mbostock/d3/wiki/SVG-Shapes#line_interpolate
+        chart.lineInterpolation = 'linear';
+        chart.nodeWidth = 0.2;
+        chart.streamThickness = 0.5;
+        chart.streamOpacity = 0.7;
+        chart.colorScales = [
+          {scale: d3.scale.category20c().domain(_.range(20)), primarySpan: 1},
+        ];
+        chart.font = {family: "Open Sans", weight: 300};
+        return chart;
       },
     };
   })

@@ -20,7 +20,7 @@ angular.module('snapchart.designer',
       $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|data):/);
     }
   ])
-  .controller('MainCtrl', function($scope, chartTypes, input, $modal, $http, $timeout, $window, $location, powerpaste, uidb) {
+  .controller('MainCtrl', function($scope, chartTypes, input, snapchart, $modal, $http, $timeout, $window, $location, powerpaste, uidb) {
     $scope.chartTypes = chartTypes.get();
 
     $scope.maps = {
@@ -204,25 +204,11 @@ angular.module('snapchart.designer',
       }
     });
 
-    $scope.chart = {};
+    $scope.chart = snapchart.chart();
     $scope.chart.fn = function (d) { return d; };
-    $scope.chart.type = 'bars';
     $scope.chart.inputArg = $scope.inputArg;
     $scope.chart.title = "Chart title";
-    $scope.chart.titleSize = 24;
-    $scope.chart.fontSize = 13;
-    $scope.chart.margin = 30;
-    $scope.chart.showLegend = true;
-    $scope.chart.showTitle = true;
     $scope.chart.background = "rgba(255,255,255,1)";
-    $scope.chart.innerRadius = 0;
-    $scope.chart.vAxis = { auto: true, type: 'linear', format: 'n', ticks: 10, bands: [] , innerBands: []};
-    $scope.chart.hAxis = { auto: true, type: 'ordinal', format: 'n', ticks: 10, bands: [], innerBands: [], showText: [], nodeTextPosition: 'over'};
-    $scope.chart.markers = { show: true, size: 3 };
-    $scope.chart.lineInterpolation = 'linear';
-    $scope.chart.nodeWidth = 0.2;
-    $scope.chart.streamThickness = 0.5;
-    $scope.chart.streamOpacity = 0.7;
     $scope.colorScales = [
       {_id: 0, scale: d3.scale.category20c().domain(_.range(20)), primarySpan: 4},
       {_id: 1, scale: d3.scale.category20b().domain(_.range(20)), primarySpan: 4},
