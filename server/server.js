@@ -33,6 +33,7 @@ app.use(cookieSession({secret: secret}));
 app.use(bodyParser());
 
 app.get('/', function(req, res) { res.sendfile('index.html'); });
+app.get('/component.html', function(req, res) { res.sendfile('component.html'); });
 app.get('/d/version', function(req, res) {
   res.json({
     version: VERSION,

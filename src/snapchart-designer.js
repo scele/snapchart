@@ -1,4 +1,21 @@
-angular.module('pivotchart.controller', ['pivotchart.service', 'pivotchart.powerpaste', 'pivotchart.uidb'])
+angular.module('snapchart-designer',
+  ['pivotchart.directive',
+   'pivotchart.filter',
+   'pivotchart.powerpaste',
+   'pivotchart.uidb',
+   'ui.bootstrap',
+   'ui.sortable',
+   'ui.slider',
+   'colorpicker.module',
+   'mgcrea.ngStrap.popover',
+   'mgcrea.ngStrap.button',
+   'ngSanitize',
+  ]).config([
+    '$compileProvider',
+    function($compileProvider) {
+      $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|data):/);
+    }
+  ])
   .controller('MainCtrl', function($scope, chartTypes, charts, input, $modal, $http, $timeout, $window, $location, powerpaste, uidb) {
     $scope.charts = charts.get();
     $scope.chartTypes = chartTypes.get();

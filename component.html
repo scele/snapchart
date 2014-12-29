@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="snapchart-component">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.ico">
+
+    <title>Snapchart.io</title>
+
+    <link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.1/themes/smoothness/jquery-ui.min.css" rel="stylesheet" media="screen">
+    <link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/yeti/bootstrap.min.css" rel="stylesheet">
+    <link href="dist/pivotchart.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+      [ng-cloak] { display: none; }
+    </style>
+  </head>
+
+  <body ng-cloak>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <!--
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>-->
+          <a class="navbar-brand" href="#">Snapchart.io</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <!--<ul class="nav navbar-nav">
+            <li><a href="#">Create!</a></li>
+            <li><a href="#">Examples</a></li>
+            <li><a href="#">Documentation</a></li>
+            <li><a href="#">Developers</a></li>
+          </ul>-->
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid main">
+      <div class="row">
+        <div class="col-md-3 hidden-print">
+        </div>
+        <div class="col-md-6 chart-pane" ng-controller="MainCtrl">
+          <snapchart chart="chart" maps="maps" data="data"
+            style="height:400px;">
+          </snapchart>
+
+          <snapchart chart="chart" maps="maps" data="data"
+            resizable style="width:300px; height:200px;">
+          </snapchart>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.6/d3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular-animate.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.16/angular-sanitize.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.10.0/ui-bootstrap-tpls.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/sprintf/0.0.7/sprintf.min.js"></script>
+    <script src="dist/components.js"></script>
+    <script src="dist/pivotchart.js"></script>
+    <script src="dist/pivotchart-templates.js"></script>
+  </body>
+</html>

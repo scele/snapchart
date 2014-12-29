@@ -348,7 +348,7 @@
           <form action="/d/chart.png" method="post" target="_blank"
             class="toolbar hidden-print">
             <input type="hidden" ng-value="chartAsSvg('#chart')" name="svg" />
-            <button class="btn btn-primary download" type="submit" download="pivotchartjs.png">
+            <button class="btn btn-primary download" type="submit" download="snapchart.png">
               <span class="glyphicon glyphicon-floppy-save"></span>
               Download as PNG
             </button>
@@ -385,14 +385,13 @@
         $script([
           'src/directives.js',
           'src/services.js',
-          'src/controllers.js',
           'src/filters.js',
           'src/powerpaste.js',
           'src/uidb.js',
-          'src/pivotchart.js',
+          'src/snapchart-designer.js',
         ], function() {
           // when all is done, execute bootstrap angular application
-          angular.bootstrap(document, ['pivotchart']);
+          angular.bootstrap(document, ['snapchart-designer']);
         });
       } else {
         // Production mode
@@ -407,7 +406,7 @@
         $script([
           'dist/pivotchart.min.js',
         ], function() {
-          angular.bootstrap(document, ['pivotchart']);
+          angular.bootstrap(document, ['snapchart-designer']);
         });
       }
     </script>

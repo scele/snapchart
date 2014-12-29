@@ -1,4 +1,4 @@
-angular.module('pivotchart.directive', [])
+angular.module('pivotchart.directive', ['pivotchart.service'])
   .directive("snapchart", function() {
     return {
       restrict: 'E',
